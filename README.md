@@ -1,2 +1,3 @@
-# p3_module_template
-Template repository for PATRIC release engineered modules.
+P3 Solr Pipeline
+
+Home for the RAST=>Solr processing code.
