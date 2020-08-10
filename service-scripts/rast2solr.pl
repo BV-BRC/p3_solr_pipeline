@@ -272,8 +272,8 @@ sub getGenomeQuality {
 	$genome->{chromosomes} = $qc->{chromosomes};
 	$genome->{plasmids} = $qc->{plasmids};
 	$genome->{contigs} = $qc->{contigs};
-	$genome->{genome_length} = $qc->{genome_length};
-	$genome->{gc_content} = $qc->{gc_content};
+	$genome->{genome_length} = $qc->{genome_length}; # Missing for viruses
+	$genome->{gc_content} = $qc->{gc_content}; # Missing for viruses
 	$genome->{contig_l50} = $qc->{genome_metrics}->{L50};
 	$genome->{contig_n50} = $qc->{genome_metrics}->{N50};
 
