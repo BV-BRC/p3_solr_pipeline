@@ -32,6 +32,7 @@ bin: $(BIN_PERL) $(BIN_SERVICE_PERL)
 deploy: deploy-all
 deploy-all: deploy-client 
 deploy-client: deploy-libs deploy-scripts deploy-docs
+deploy-service: deploy-libs deploy-scripts deploy-service-scripts
 
 deploy-service-scripts:
 	export KB_TOP=$(TARGET); \
