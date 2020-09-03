@@ -35,7 +35,11 @@ use Bio::SeqFeature::Generic;
 use Date::Parse;
 use XML::Simple;
 use File::Slurp;
+
+use lib "$Bin/../lib";
+use SolrAPI;
 use P3RateLimitedUserAgent;
+
 our $have_config;
 eval
 {
@@ -44,9 +48,6 @@ eval
 };
 
 our $user_agent = P3RateLimitedUserAgent->new(3);
-
-use lib "$Bin";
-use SolrAPI;
 
 my ($data_api_url, $reference_data_dir);
 if ($have_config)
@@ -211,6 +212,7 @@ sub getGenomeInfo {
 	$genome->{genome_name} = $genomeObj->{scientific_name};
 	$genome->{common_name} = $genomeObj->{scientific_name};
 	$genome->{common_name}=~s/\W+/_/g;
+	$genome->{common_name}=~s/_*$//g;
 
 	$genome->{taxon_id}    =  $genomeObj->{ncbi_taxonomy_id};
 	($genome->{taxon_lineage_ids}, $genome->{taxon_lineage_names}, $taxon_lineage_ranks)  = $solrh->getTaxonLineage($genome->{taxon_id});
@@ -366,24 +368,22 @@ sub getGenomeSequences {
 			$sequence->{accession} = $sequence->{sequence_id};
 		}
 
+		$sequence->{description} = $seqObj->{genbank_locus}->{definition}? $seqObj->{genbank_locus}->{definition} : $seqObj->{id};
 		$sequence->{topology} =	$seqObj->{genbank_locus}->{geometry};
-		$sequence->{description} = $seqObj->{genbank_locus}->{definition};
-		$sequence->{description} = $seqObj->{id}; # Copy original contig id as description
+		#$sequence->{mol_type} =	$seqObj->{genbank_locus}->{mol_type};
 
-		if ($sequence->{description}=~/chromosome|complete genome/i){
-			$sequence->{sequence_type} = "chromosome";
-		}elsif ($sequence->{description}=~/plasmid/i){
-			$sequence->{sequence_type} = "plasmid";
-		}else{
-			$sequence->{sequence_type} = "contig";
-		}
+		$sequence->{sequence_type} = $1 if $sequence->{description}=~/(chromosome|plasmid|segment|contig|scaffold)/i;
+		$sequence->{sequence_status} = $1 if $sequence->{description}=~/(complete|partial)/i;
 
 		$sequence->{chromosome} = $1 if $sequence->{description}=~/chromosome (\S*)\s*,/i;
 		$sequence->{plasmid} = $1 if $sequence->{description}=~/plasmid (\S*)\s*,/i;
+		$sequence->{segment} = $1	if $seqObj->{description}=~/segment (\S*)\s*,/i;
 
 		$sequence->{gc_content} = sprintf("%.2f", ($seqObj->{dna}=~tr/GCgc//)*100/length($seqObj->{dna}));
 		$sequence->{length} = length($seqObj->{dna});
+		#$genome->{length} += length($seqObj->{dna});
 		$sequence->{sequence} = lc($seqObj->{dna});
+		$sequence->{sequence_md5} = md5_hex(lc $seqObj->{dna});
 	
 		$sequence->{version} = $1 if $seqObj->{genbank_locus}->{version}[0]=~/^.*\.(\d+)$/;
 		$sequence->{release_date} = strftime "%Y-%m-%dT%H:%M:%SZ", localtime str2time($seqObj->{genbank_locus}->{date});
@@ -748,40 +748,38 @@ sub getMetadataFromGenBankFile {
 
 	open GB, "<$genbank_file" || return "Can't open genbank file: $genbank_file\n";
 	my @gb = <GB>;
-	my $gb = join "", @gb;
 	close GB;
 
-	my $strain = $2 if $gb=~/\/(strain|isolate)="([^"]*)"/;
-	$strain =~s/\n */ /g;
-	$genome->{strain} = $strain unless $strain=~/^ *(-|missing|na|n\/a|not available|not provided|not determined|nd|unknown) *$/i;
+	my $gb = join "", @gb;
+	$gb=~s/\n */ /g;
 
-	$genome->{genome_name} .= " strain $genome->{strain}" if ($genome->{strain} && (not $genome->{genome_name}=~/$genome->{strain}/i));
+	my $strain = $1 if $gb=~/\/strain="([^"]*)"/;
+	$strain=~s/\([A-Z][0-9][A-Z][0-9]\)$//;
+	$genome->{strain} = $strain unless $strain=~/^ *(-|missing|na|n\/a|not available|not provided|not determined|nd|unknown) *$/i;
+	$genome->{genome_name} .= " $genome->{strain}" if ($genome->{strain} && (not $genome->{genome_name}=~/$genome->{strain}/i));
+	$genome->{genome_name}=~s/\($genome->{strain}\)/$genome->{strain}/;
+
+	#$genome->{isolate} = $1 if $gb=~/\/isolate="([^"]*)"/;
+	$genome->{serovar} = $1 if $gb=~/\/serotype="([^"]*)"/;
 
 	$genome->{geographic_location} = $1 if $gb=~/\/country="([^"]*)"/;
-	$genome->{geographic_location} =~s/\n */ /g;
 	$genome->{isolation_country} = $1 if $genome->{geographic_location}=~/^([^:]*):.*/;
 	
 	$genome->{host_name} = $1 if $gb=~/\/host="([^"]*)"/;
-	$genome->{host_name} =~s/\n */ /g;
-  
+	$genome->{host_name} = $1 if $gb=~/\/lab_host="([^"]*)"/;
+	
 	$genome->{isolation_source} = $1 if $gb=~/\/isolation_source="([^"]*)"/;
-	$genome->{isolation_source} =~s/\n */ /g;
 	
 	$genome->{collection_date} = $1 if $gb=~/\/collection_date="([^"]*)"/;
-	$genome->{collection_date} =~s/\n */ /g;
 	$genome->{collection_year} = $1 if $genome->{collection_date}=~/(\d\d\d\d)/;
 
 	$genome->{culture_collection} = $1 if $gb=~/\/culture_collection="([^"]*)"/;
-	$genome->{culture_collection} =~s/\n */ /g;
 	
 	$genome->{assembly_method} = $1 if $gb=~/Assembly Method\s*:: (.*)/;
-	$genome->{assembly_method} =~s/\n */ /g;
   
 	$genome->{sequencing_depth} = $1 if $gb=~/Genome Coverage\s*:: (.*)/;
-	$genome->{sequencing_depth} =~s/\n */ /g;
   
 	$genome->{sequencing_platform} = $1 if $gb=~/Sequencing Technology\s*:: (.*)/;
-	$genome->{sequencing_platform} =~s/\n */ /g;
 
 }
 
@@ -1043,6 +1041,8 @@ sub getGenomeFeaturesFromGenBankFile {
 			for my $tag ($featObj->get_all_tags){
 
 				for my $value ($featObj->get_tag_values($tag)){
+					
+					$feature->{codon_start} = $value if $tag eq 'codon_start';
 
 					$feature->{feature_type} 	= 'pseudogene' if ($tag eq 'pseudo' && $feature->{feature_type} eq 'gene');
 
