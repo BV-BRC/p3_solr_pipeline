@@ -751,8 +751,21 @@ sub getMetadataFromGenBankFile {
 	close GB;
 
 	my $gb = join "", @gb;
-	$gb=~s/\n */ /g;
+	
+	$genome->{assembly_method} = $1 if $gb=~/Assembly Method\s*:: (.*)/;
+	$genome->{sequencing_depth} = $1 if $gb=~/Genome Coverage\s*:: (.*)/;
+	$genome->{sequencing_platform} = $1 if $gb=~/Sequencing Technology\s*:: (.*)/;
 
+	my $flu_data=$1 if $gb=~/##FluData-START##(.+?)##FluData-END##/s;
+	foreach my $entry (split /\n/, $flu_data){
+		next unless $entry=~/::/;
+		$entry=~s/^\s*|\s*$//g;
+		$entry=~s/\s*::\s*/:/;
+		push @{$genome->{other_clinical}}, $entry; 
+	} 
+
+	$gb=~s/\n */ /g;
+	
 	my $strain = $1 if $gb=~/\/strain="([^"]*)"/;
 	$strain=~s/\([A-Z][0-9][A-Z][0-9]\)$//;
 	$genome->{strain} = $strain unless $strain=~/^ *(-|missing|na|n\/a|not available|not provided|not determined|nd|unknown) *$/i;
@@ -774,12 +787,6 @@ sub getMetadataFromGenBankFile {
 	$genome->{collection_year} = $1 if $genome->{collection_date}=~/(\d\d\d\d)/;
 
 	$genome->{culture_collection} = $1 if $gb=~/\/culture_collection="([^"]*)"/;
-	
-	$genome->{assembly_method} = $1 if $gb=~/Assembly Method\s*:: (.*)/;
-  
-	$genome->{sequencing_depth} = $1 if $gb=~/Genome Coverage\s*:: (.*)/;
-  
-	$genome->{sequencing_platform} = $1 if $gb=~/Sequencing Technology\s*:: (.*)/;
 
 }
 
