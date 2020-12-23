@@ -759,9 +759,17 @@ sub getMetadataFromGenBankFile {
 	my $flu_data=$1 if $gb=~/##FluData-START##(.+?)##FluData-END##/s;
 	foreach my $entry (split /\n/, $flu_data){
 		next unless $entry=~/::/;
-		$entry=~s/^\s*|\s*$//g;
-		$entry=~s/\s*::\s*/:/;
-		push @{$genome->{other_clinical}}, $entry; 
+		my ($attrib,$value) = $entry=~/^\s*(\S+)\s+::\s+(.*)\s*$/;
+		$attrib = lc $attrib;
+		if ($attrib=~/host_age|host_gender|passage/i){
+			$genome->{$attrib} = $value;
+		}elsif($attrib=~/^collect_date$/i){
+			$genome->{collection_date}=$value;
+		}elsif($attrib=~/^type$/i){
+			$genome->{serovar}=$value;
+		}else{
+			push @{$genome->{other_clinical}}, "$attrib:$value"; 
+		}
 	} 
 
 	$gb=~s/\n */ /g;
@@ -769,6 +777,7 @@ sub getMetadataFromGenBankFile {
 	my $strain = $1 if $gb=~/\/strain="([^"]*)"/;
 	$strain=~s/\([A-Z][0-9][A-Z][0-9]\)$//;
 	$genome->{strain} = $strain unless $strain=~/^ *(-|missing|na|n\/a|not available|not provided|not determined|nd|unknown) *$/i;
+	
 	$genome->{genome_name} .= " $genome->{strain}" if ($genome->{strain} && (not $genome->{genome_name}=~/$genome->{strain}/i));
 	$genome->{genome_name}=~s/\($genome->{strain}\)/$genome->{strain}/;
 
@@ -945,7 +954,7 @@ sub getMetadataFromBioProject {
 
 	# Organism Info
 
-	$genome->{serovar} = $serovar if $serovar;
+	$genome->{serovar} = $serovar if $serovar && not $genome->{serovar};
 	$genome->{biovar} = $biovar if $biovar;
 	$genome->{pathovar} = $pathovar if $pathovar;
 	$genome->{type_strain} = $typeStrain if $typeStrain;
@@ -957,11 +966,11 @@ sub getMetadataFromBioProject {
 	# Isolate / Environmental Metadata
 	
 	#$genome->{isolation_site} = ""; #$source;
-	$genome->{isolation_source} = $source if $source;
-	$genome->{isolation_comments} = $isolateComment if $isolateComment;
-	$genome->{collection_date} = $year if $year;
+	$genome->{isolation_source} = $source if $source && not $genome->{isolation_source};
+	$genome->{isolation_comments} = $isolateComment if $isolateComment && not $genome->{isolation_comments};
+	$genome->{collection_date} = $year if $year && not $genome->{collection_date};
 	#$genome->{isolation_country} = ""; #$location;
-	$genome->{geographic_location} = $location if $location;
+	$genome->{geographic_location} = $location if $location && not $genome->{geographic_location};
 	#$genome->{latitude} = "";
 	#$genome->{longitude} = "";
 	#$genome->{altitude} = "";
@@ -969,10 +978,10 @@ sub getMetadataFromBioProject {
 
 	# Host Metadata
 	
-	$genome->{host_name} = $hostName if $hostName;
-	$genome->{host_gender} = $hostGender if $hostGender;
-	$genome->{host_age} = $hostAge if $hostAge ;
-	$genome->{host_health} = $hostHealth if $hostHealth;
+	$genome->{host_name} = $hostName if $hostName && not $genome->{host_name};
+	$genome->{host_gender} = $hostGender if $hostGender && not $genome->{host_gender};
+	$genome->{host_age} = $hostAge if $hostAge && not $genome->{host_age};
+	$genome->{host_health} = $hostHealth if $hostHealth && not $genome->{host_health};
 	#$genome->{body_sample_site} = "";
 	#$genome->{body_sample_substitute} = "";
 
@@ -1229,7 +1238,8 @@ sub biosample2patricAttrib{
 		"lat_lon" => "other_environmental:lat_lon", 
 		"mating_type" => "additional_metadata:mating_type", 
 		"organism" => "",
-		"passage_history" => "additional_metadata:passage_history",
+		"passage_history" => "passage",
+		"passage" => "passage",
 		"pathotype" => "pathovar",
 		"sample_name" => "",
 		"sample_title" => "",
