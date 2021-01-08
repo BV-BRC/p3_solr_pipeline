@@ -774,14 +774,19 @@ sub getMetadataFromGenBankFile {
 
 	$gb=~s/\n */ /g;
 	
-	my $strain = $1 if $gb=~/\/strain="([^"]*)"/;
+	my $strain = ""; 
+	if ($gb=~/\/strain="([^"]*)"/){
+		$strain = $1;
+	}elsif($gb=~/\/isolate="([^"]*)"/){
+		$strain = $1;
+	}else{}
+
 	$strain=~s/\([A-Z][0-9][A-Z][0-9]\)$//;
 	$genome->{strain} = $strain unless $strain=~/^ *(-|missing|na|n\/a|not available|not provided|not determined|nd|unknown) *$/i;
 	
 	$genome->{genome_name} .= " $genome->{strain}" if ($genome->{strain} && (not $genome->{genome_name}=~/$genome->{strain}/i));
 	$genome->{genome_name}=~s/\($genome->{strain}\)/$genome->{strain}/;
 
-	#$genome->{isolate} = $1 if $gb=~/\/isolate="([^"]*)"/;
 	$genome->{serovar} = $1 if $gb=~/\/serotype="([^"]*)"/;
 
 	$genome->{geographic_location} = $1 if $gb=~/\/country="([^"]*)"/;
