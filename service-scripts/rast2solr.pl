@@ -49,31 +49,45 @@ use lib "$Bin";
 use SolrAPI;
 
 my ($data_api_url, $reference_data_dir);
-if ($have_config)
+
+my $data_api_url = $ENV{PATRIC_DATA_API};
+my $reference_data_dir = $ENV{PATRIC_REFERENCE_DATA};
+
+if (!defined($data_api_url) && $have_config)
 {
     $data_api_url = Bio::KBase::AppService::AppConfig->data_api_url;
+}
+
+if (!defined($reference_data_dir) && $have_config)
+{
     $reference_data_dir = Bio::KBase::AppService::AppConfig->reference_data_dir;
-}else{
-		$data_api_url = $ENV{PATRIC_DATA_API};
-		$reference_data_dir = $ENV{PATRIC_REFERENCE_DATA};	
 }
 
 my $json = JSON->new->allow_nonref;
 
 my ($opt, $usage) = describe_options("%c %o",
-				[],
-				["genomeobj-file=s", "RASTtk annotations as GenomeObj.json file"],
-				["genbank-file=s", "Original GenBank file that was used as input to RASTtk"],
-				["public", "public, default is private"],
-				["data-api-url=s", "Data API URL", { default => $data_api_url }],
-				["reference-data-dir=s", "Data API URL", { default => $reference_data_dir }],
-				[],
-				["help|h", "Print usage message and exit"] );
+				     [],
+				     ["write-reference-data", "Query reference data from Solr and write reference files"],
+				     ["genomeobj-file=s", "RASTtk annotations as GenomeObj.json file"],
+				     ["genbank-file=s", "Original GenBank file that was used as input to RASTtk"],
+				     ["public", "public, default is private"],
+				     ["data-api-url=s", "Data API URL", { default => $data_api_url }],
+				     ["reference-data-dir=s", "Data API URL", { default => $reference_data_dir }],
+				     [],
+				     ["help|h", "Print usage message and exit"] );
 
 print($usage->text), exit 0 if $opt->help;
-die($usage->text) unless $opt->genomeobj_file;
+die($usage->text) unless $opt->write_reference_data || $opt->genomeobj_file;
 
 my $solrh = SolrAPI->new($opt->data_api_url, $opt->reference_data_dir);
+
+if ($opt->write_reference_data)
+{
+    $solrh->getECRef();
+    $solrh->getPathwayRef();
+    $solrh->getSpGeneRef();
+    exit 0;
+}
 
 my $genomeobj_file = $opt->genomeobj_file;
 my $genbank_file = $opt->genbank_file;
