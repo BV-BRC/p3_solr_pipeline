@@ -32,6 +32,7 @@ bin: $(BIN_PERL) $(BIN_SERVICE_PERL)
 deploy: deploy-all
 deploy-all: deploy-client 
 deploy-client: deploy-libs deploy-scripts deploy-docs
+deploy-service: deploy-libs deploy-scripts deploy-service-scripts
 
 deploy-service-scripts:
 	export KB_TOP=$(TARGET); \
@@ -42,7 +43,7 @@ deploy-service-scripts:
 	        base=`basename $$src .pl`; \
 	        echo install $$src $$base ; \
 	        cp $$src $(TARGET)/plbin ; \
-	        $(WRAP_PERL_SCRIPT) "$(TARGET)/plbin/$$basefile" $(TARGET)/services/$(SERVICE)/bin/$$base ; \
+	        $(WRAP_PERL_SCRIPT) "$(TARGET)/plbin/$$basefile" $(TARGET)/bin/$$base ; \
 	done
 
 

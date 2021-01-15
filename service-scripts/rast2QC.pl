@@ -25,7 +25,7 @@ eval
     $have_config = 1;
 };
     
-use lib "$Bin";
+use lib "$Bin/../lib";
 use SolrAPI;
 
 my ($data_api_url, $reference_data_dir);
@@ -96,6 +96,7 @@ sub genomeQuality
 		$species = $solrh->getSpeciesInfo($lineage_ids->[$i]);
 	    }
 	    $genomeObj->{ncbi_genus} = $lineage_names->[$i] if $lineage_ranks->[$i] =~ /genus/i;
+	    $genomeObj->{ncbi_superkingdom} = $lineage_names->[$i] if $lineage_ranks->[$i] =~ /superkingdom/i;
 	}
     }
 
@@ -108,6 +109,7 @@ sub genomeQuality
     {
 	$qc->{chromosomes}++ if $seqObj->{genbank_locus}->{definition}=~/chromosome|complete genome/i;
 	$qc->{plasmids}++ if $seqObj->{genbank_locus}->{definition}=~/plasmid/i;
+	$qc->{segments}++ if $seqObj->{genbank_locus}->{definition}=~/segment/i;
 	$qc->{contigs}++;
     }
 	
@@ -140,7 +142,7 @@ sub genomeQuality
     
     # Compute annotation stats
 
-    my @keys = qw(cds partial_cds rRNA tRNA misc_RNA repeat_region);
+    my @keys = qw(cds partial_cds rRNA tRNA misc_RNA repeat_region mat_peptide);
     $qc->{feature_summary}->{$_} = 0 foreach @keys;
 
     foreach my $feature ($genomeObj->features())
@@ -166,6 +168,10 @@ sub genomeQuality
 	elsif ($feature->{type}=~/repeat/)
 	{
 	    $qc->{feature_summary}->{repeat_region}++;
+	}
+	elsif ($feature->{type}=~/mat_peptide/)
+	{
+	    $qc->{feature_summary}->{mat_peptide}++;
 	}
 
 	# If CDS, process for protein summary, else skip to next feature
@@ -261,6 +267,8 @@ sub genomeQuality
     
     # Prepare Genome quality flags based on the assembly and annotation stats
 
+	if ($genomeObj->{ncbi_superkingdom}=~/bacteria|archaea/i){ 
+
     $qc->{genome_quality_flags} = [];
 	
     # Genome quality flags blased on genome assembly quality
@@ -322,7 +330,12 @@ sub genomeQuality
 	$qc->{genome_quality} = "Poor";
     } else {
 	$qc->{genome_quality} = "Good";
-    } 
+    }
+
+	}
+	else # Not a microbial genome
+	{ 
+	}
     
     # Update the genome quality measure obj in the GTO
     $genomeObj->{quality} = $qc;
