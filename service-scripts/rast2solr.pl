@@ -39,6 +39,7 @@ use File::Slurp;
 use lib "$Bin/../lib";
 use SolrAPI;
 use P3RateLimitedUserAgent;
+use Bio::P3::NCBILookup::NCBILookupClient;
 
 our $have_config;
 eval
@@ -64,7 +65,9 @@ if (!defined($reference_data_dir) && $have_config)
     $reference_data_dir = Bio::KBase::AppService::AppConfig->reference_data_dir;
 }
 
-my $json = JSON->new->allow_nonref;
+my $lookup_client = Bio::P3::NCBILookup::NCBILookupClient->new("http://holly.mcs.anl.gov:5000");
+
+my $json = JSON->new->allow_nonref->canonical;
 
 my ($opt, $usage) = describe_options("%c %o",
 				     [],
@@ -820,22 +823,27 @@ sub getMetadataFromGenBankFile {
 
 sub getAssemblyAccession {
 
-	my ($accn) = @_;
+    my ($accn) = @_;
 
-	my $xml = get_xml("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=nuccore&term=$accn");
-
-  $xml=~s/\n//;
-  my ($gi) = $xml=~/<Id>(\d+)<\/Id>/;
-
-  my $xml = get_xml("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/elink.fcgi?dbfrom=nuccore&db=assembly&id=$gi");
-  $xml=~s/\n//;
-  my ($assembly_id) = $xml=~/<Link>\s*<Id>(\d+)<\/Id>/;
-
-  my $xml = get_xml("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=assembly&id=$assembly_id");
-	my ($assembly_accession) = $xml=~/<Genbank>(\S*)<\/Genbank>/;
-
+    if ($lookup_client)
+    {
+	my $assembly_accession = $lookup_client->get_assembly_accession($accn);
 	return $assembly_accession;
+    }
 
+    my $xml = get_xml("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=nuccore&term=$accn");
+    
+    $xml=~s/\n//;
+    my ($gi) = $xml=~/<Id>(\d+)<\/Id>/;
+    
+    my $xml = get_xml("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/elink.fcgi?dbfrom=nuccore&db=assembly&id=$gi");
+    $xml=~s/\n//;
+    my ($assembly_id) = $xml=~/<Link>\s*<Id>(\d+)<\/Id>/;
+    
+    my $xml = get_xml("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=assembly&id=$assembly_id");
+    my ($assembly_accession) = $xml=~/<Genbank>(\S*)<\/Genbank>/;
+    
+    return $assembly_accession;
 }
 
 sub getMetadataFromBioProject {
@@ -844,27 +852,36 @@ sub getMetadataFromBioProject {
 
 	print "Getting genome metadata from BioProject: $bioproject_accn...\n";
 
-	my $url = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=bioproject&term=$bioproject_accn";
-	my $res = $user_agent->get($url);
-	if (!$res->is_success)
+	my($bioproject_id, $bioproject_xml);
+
+	if ($lookup_client)
 	{
-	    warn "Failure retrieving $url: " . $res->content;
-	    return;
+	    ($bioproject_id, $bioproject_xml) = $lookup_client->get_metadata_from_bioproject($bioproject_accn);
 	}
-	my $xml = $res->content;
-	$xml=~s/\n//;
-	my ($bioproject_id) = $xml=~/<Id>(\d+)<\/Id>/;
+	else
+	{	
+	    my $url = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=bioproject&term=$bioproject_accn";
+	    my $res = $user_agent->get($url);
+	    if (!$res->is_success)
+	    {
+		warn "Failure retrieving $url: " . $res->content;
+		return;
+	    }
+	    my $xml = $res->content;
+	    $xml=~s/\n//;
+	    ($bioproject_id) = $xml=~/<Id>(\d+)<\/Id>/;
 
-	get_xml_to_file("$outfile.bioproject.xml", "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=bioproject&retmode=xml&id=$bioproject_id");
-
-	return unless -f "$outfile.bioproject.xml";
+	    $bioproject_xml = get_xml("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=bioproject&retmode=xml&id=$bioproject_id");
+	    
+	    return unless $bioproject_xml;
+	}
 	
 	my ($projID, $projDescription, $subgroup, $organism, $description, $var, $serovar, $biovar, $pathovar, $strain, $cultureCollection, $typeStrain);
 	my ($isolateComment, $source, $month, $year, $country, $method, $person, $epidemic, $location, $altitude, $depth);
 	my ($hostName, $hostGender, $hostAge, $hostHealth);
 	my ($publication, $taxonID, $epidemiology);
 
-	my $xml = XMLin("$outfile.bioproject.xml", ForceArray => ["Organization"]);
+	my $xml = XMLin($bioproject_xml, ForceArray => ["Organization"]);
 	my $root = $xml->{DocumentSummary};
 
 	# print Dumper $xml;
@@ -1146,16 +1163,26 @@ sub getMetadataFromBioSample {
 	my($biosample_accn) = @_;
 
 	print "Getting genome metadata from BioSample: $biosample_accn ...\n";
-  
-	my $xml = get_xml("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=biosample&term=$biosample_accn");
-  $xml=~s/\n//;
-  my ($biosample_id) = $xml=~/<Id>(\d+)<\/Id>/;
 
-	get_xml_to_file("$outfile.biosample.xml", "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=biosample&retmode=xml&id=$biosample_id");
+	my($biosample_id, $biosample_xml);
 
-	return unless -f "$outfile.biosample.xml";
+	if ($lookup_client)
+	{
+	    ($biosample_id, $biosample_xml) = $lookup_client->get_metadata_from_biosample($biosample_accn);
+	}
+	else
+	{	
+
+	    my $xml = get_xml("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=biosample&term=$biosample_accn");
+	    $xml =~ s/\n//;
+	    ($biosample_id) = $xml=~/<Id>(\d+)<\/Id>/;
+
+	    $biosample_xml = get_xml("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=biosample&retmode=xml&id=$biosample_id");
+
+	    return unless $biosample_xml;
+	}
 	
-	my $xml = XMLin("$outfile.biosample.xml", ForceArray => ["Row"]);
+	my $xml = XMLin($biosample_xml, ForceArray => ["Row"]);
 
 	return unless ref $xml->{BioSample}->{Attributes}->{Attribute} eq 'ARRAY';
 
