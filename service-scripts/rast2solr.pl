@@ -822,16 +822,16 @@ sub getAssemblyAccession {
 
 	my ($accn) = @_;
 
-	my $xml = get_xml("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=nuccore&term=$accn");
+	my $xml = get_xml("https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=nuccore&term=$accn");
 
   $xml=~s/\n//;
   my ($gi) = $xml=~/<Id>(\d+)<\/Id>/;
 
-  my $xml = get_xml("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/elink.fcgi?dbfrom=nuccore&db=assembly&id=$gi");
+  my $xml = get_xml("https://eutils.ncbi.nlm.nih.gov/entrez/eutils/elink.fcgi?dbfrom=nuccore&db=assembly&id=$gi");
   $xml=~s/\n//;
   my ($assembly_id) = $xml=~/<Link>\s*<Id>(\d+)<\/Id>/;
 
-  my $xml = get_xml("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=assembly&id=$assembly_id");
+  my $xml = get_xml("https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=assembly&id=$assembly_id");
 	my ($assembly_accession) = $xml=~/<Genbank>(\S*)<\/Genbank>/;
 
 	return $assembly_accession;
@@ -844,7 +844,7 @@ sub getMetadataFromBioProject {
 
 	print "Getting genome metadata from BioProject: $bioproject_accn...\n";
 
-	my $url = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=bioproject&term=$bioproject_accn";
+	my $url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=bioproject&term=$bioproject_accn";
 	my $res = $user_agent->get($url);
 	if (!$res->is_success)
 	{
@@ -855,7 +855,7 @@ sub getMetadataFromBioProject {
 	$xml=~s/\n//;
 	my ($bioproject_id) = $xml=~/<Id>(\d+)<\/Id>/;
 
-	get_xml_to_file("$outfile.bioproject.xml", "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=bioproject&retmode=xml&id=$bioproject_id");
+	get_xml_to_file("$outfile.bioproject.xml", "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=bioproject&retmode=xml&id=$bioproject_id");
 
 	return unless -f "$outfile.bioproject.xml";
 	
@@ -1147,11 +1147,11 @@ sub getMetadataFromBioSample {
 
 	print "Getting genome metadata from BioSample: $biosample_accn ...\n";
   
-	my $xml = get_xml("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=biosample&term=$biosample_accn");
+	my $xml = get_xml("https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=biosample&term=$biosample_accn");
   $xml=~s/\n//;
   my ($biosample_id) = $xml=~/<Id>(\d+)<\/Id>/;
 
-	get_xml_to_file("$outfile.biosample.xml", "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=biosample&retmode=xml&id=$biosample_id");
+	get_xml_to_file("$outfile.biosample.xml", "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=biosample&retmode=xml&id=$biosample_id");
 
 	return unless -f "$outfile.biosample.xml";
 	
