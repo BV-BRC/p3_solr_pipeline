@@ -166,6 +166,7 @@ getGenomeFeatures();
 # Get additional features from the GenBank file
 getGenomeFeaturesFromGenBankFile($genbank_file) if -f $genbank_file;
 
+# delete $genome->{superkingdom};
 
 # write to json files
 writeJson();
