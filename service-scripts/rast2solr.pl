@@ -81,7 +81,6 @@ my ($opt, $usage) = describe_options("%c %o",
 
 print($usage->text), exit 0 if $opt->help;
 die($usage->text) unless $opt->write_reference_data || $opt->genomeobj_file;
-
 my $lookup_client = Bio::P3::NCBILookup::NCBILookupClient->new($opt->lookup_client_url) if $opt->lookup_client_url;
 my $solrh = SolrAPI->new($opt->data_api_url, $opt->reference_data_dir);
 
@@ -141,7 +140,15 @@ getGenomeQuality();
 
 # Get additional genome metadata 
 getMetadataFromGenBankFile($genbank_file) if -f $genbank_file;
-getMetadataFromBioProject($genome->{bioproject_accession}) if $genome->{bioproject_accession};
+
+if ($genome->{superkingdom} eq 'Viruses')
+{
+    print STDERR "Skipping bioproject for virus\n";
+}
+else
+{
+    getMetadataFromBioProject($genome->{bioproject_accession}) if $genome->{bioproject_accession};
+}
 getMetadataFromBioSample($genome->{biosample_accession}) if $genome->{biosample_accession};
 
 # Get predicted AMR phenotypes 
@@ -236,16 +243,15 @@ sub getGenomeInfo {
 
 	prepareTaxonomy($genome->{taxon_lineage_ids}) if $public;
 
-	my $i=0;
-	for my $rank (@{$taxon_lineage_ranks}){
-		$genome->{kingdom} = $genome->{taxon_lineage_names}[$i] if $rank=~/kingdom/i;
-		$genome->{phylum} = $genome->{taxon_lineage_names}[$i] if $rank=~/phylum/i;
-		$genome->{class} = $genome->{taxon_lineage_names}[$i] if $rank=~/class/i;
-		$genome->{order} = $genome->{taxon_lineage_names}[$i] if $rank=~/order/i;
-		$genome->{family} = $genome->{taxon_lineage_names}[$i] if $rank=~/family/i;
-		$genome->{genus} = $genome->{taxon_lineage_names}[$i] if $rank=~/genus/i;
-		$genome->{species} = $genome->{taxon_lineage_names}[$i] if $rank=~/species/i;
-		$i++;
+	my %desired_ranks = map { $_ => 1 } qw(superkingdom kingdom phylum class order family genus species);
+	for (my $i = 0; $i < @$taxon_lineage_ranks; $i++)
+	{
+	    my $rank = $taxon_lineage_ranks->[$i];
+	    my $name = $genome->{taxon_lineage_names}->[$i];
+	    if ($desired_ranks{lc($rank)})
+	    {
+		$genome->{$rank} = $name;
+	    }
 	}
 
 	foreach my $type (@{$genomeObj->{typing}}){
@@ -261,8 +267,15 @@ sub getGenomeInfo {
 			foreach my $dblink (@{$seqObj->{genbank_locus}->{dblink}}){
 				$genome->{bioproject_accession} = $1 if $dblink=~/BioProject:\s*(.*)/;
 				$genome->{biosample_accession} = $1 if $dblink=~/BioSample:\s*(.*)/;
+			    }
+			if ($genome->{superkingdom} eq 'Viruses')
+			{
+			    print STDERR "Skipping assembly accession for virus\n";
 			}
-			$genome->{assembly_accession} = getAssemblyAccession($seqObj->{genbank_locus}->{locus}) if $seqObj->{genbank_locus}->{locus};				
+			else
+			{
+			    $genome->{assembly_accession} = getAssemblyAccession($seqObj->{genbank_locus}->{locus}) if $seqObj->{genbank_locus}->{locus};
+			}
 			foreach my $reference (@{$seqObj->{genbank_locus}->{references}}){
 				$genome->{publication} .= $reference->{PUBMED}."," unless $genome->{publication}=~/$reference->{PUBMED}/;
 			}
@@ -833,16 +846,16 @@ sub getAssemblyAccession {
 	return $assembly_accession;
     }
 
-    my $xml = get_xml("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=nuccore&term=$accn");
+    my $xml = get_xml("https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=nuccore&term=$accn");
     
     $xml=~s/\n//;
     my ($gi) = $xml=~/<Id>(\d+)<\/Id>/;
     
-    my $xml = get_xml("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/elink.fcgi?dbfrom=nuccore&db=assembly&id=$gi");
+    my $xml = get_xml("https://eutils.ncbi.nlm.nih.gov/entrez/eutils/elink.fcgi?dbfrom=nuccore&db=assembly&id=$gi");
     $xml=~s/\n//;
     my ($assembly_id) = $xml=~/<Link>\s*<Id>(\d+)<\/Id>/;
     
-    my $xml = get_xml("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=assembly&id=$assembly_id");
+    my $xml = get_xml("https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=assembly&id=$assembly_id");
     my ($assembly_accession) = $xml=~/<Genbank>(\S*)<\/Genbank>/;
     
     return $assembly_accession;
@@ -862,7 +875,7 @@ sub getMetadataFromBioProject {
 	}
 	else
 	{	
-	    my $url = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=bioproject&term=$bioproject_accn";
+	    my $url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=bioproject&term=$bioproject_accn";
 	    my $res = $user_agent->get($url);
 	    if (!$res->is_success)
 	    {
@@ -873,7 +886,7 @@ sub getMetadataFromBioProject {
 	    $xml=~s/\n//;
 	    ($bioproject_id) = $xml=~/<Id>(\d+)<\/Id>/;
 
-	    $bioproject_xml = get_xml("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=bioproject&retmode=xml&id=$bioproject_id");
+	    $bioproject_xml = get_xml("https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=bioproject&retmode=xml&id=$bioproject_id");
 	    
 	    return unless $bioproject_xml;
 	}
@@ -1175,11 +1188,11 @@ sub getMetadataFromBioSample {
 	else
 	{	
 
-	    my $xml = get_xml("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=biosample&term=$biosample_accn");
+	    my $xml = get_xml("https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=biosample&term=$biosample_accn");
 	    $xml =~ s/\n//;
 	    ($biosample_id) = $xml=~/<Id>(\d+)<\/Id>/;
 
-	    $biosample_xml = get_xml("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=biosample&retmode=xml&id=$biosample_id");
+	    $biosample_xml = get_xml("https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=biosample&retmode=xml&id=$biosample_id");
 
 	    return unless $biosample_xml;
 	}

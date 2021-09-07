@@ -19,9 +19,11 @@ sub new
     return bless $self, $class;
 }
 
+
 sub request
 {
     my ($self, $request, $arg, $size, $previous) = @_;
+
     my $u = URI->new($request->uri);
     my $host = $u->host;
     $self->{_history}->{$host} //= [];
@@ -43,8 +45,11 @@ sub request
 	if (@$h >= $self->{_limit})
 	{
 	    my $del = 1 - ($now - $h->[0]);
-	    print "del=$del\n";
-	    usleep(1e6 * $del) if $del > 0;
+	    if ($del > 0)
+	    {
+		print "del=$del\n";
+		usleep(1e6 * $del);
+	    }
 	}
 	push(@$h, $now);
 	$ret = $self->SUPER::request($request, $arg, $size, $previous);
@@ -53,13 +58,15 @@ sub request
 	    warn $ret->status_line;
 	    #my $delay = rand(2) + $retry_count;
 	    my $delay = rand(0.5);
-	    print STDERR "Retry $retry_count delay=$delay\n";
-	    usleep($delay * 1e6);
+	    my $usdelay = $delay * 1e6;
+	    print STDERR "Retry $retry_count delay=$delay $usdelay\n";
+	    usleep($usdelay);
 	    $retry_count++;
 	    $retry = 1;
 	}
     }
     while ($retry);
+    
     return $ret;
 }
 
