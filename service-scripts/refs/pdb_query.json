@@ -1,0 +1,29 @@
+{
+  "query": {
+    "type": "group",
+    "logical_operator": "and",
+    "nodes": [
+      {
+        "type": "terminal",
+        "service": "text",
+        "parameters": {
+          "attribute": "rcsb_entity_source_organism.taxonomy_lineage.name",
+          "operator": "in",
+          "negation": false,
+          "value": [
+            "Bacteria",
+            "Archaea",
+            "Viruses"
+          ]
+        }
+      }
+    ]
+  },
+  "return_type": "entry",
+  "request_options": {
+    "pager": {
+      "start": 0,
+      "rows": 1000000
+    }
+  }
+}

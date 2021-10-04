@@ -1,0 +1,260 @@
+COUNTRY	GROUP	FLU_SEASON
+Afghanistan	Asia	NA
+Aland Islands	Europe	NA
+Albania	Europe	yes
+Algeria	Africa	NA
+American Samoa	Oceania	NA
+Andorra	Europe	yes
+Angola	Africa	NA
+Anguilla	North America	NA
+Antarctica	Antarctica	NA
+Antigua and Barbuda	North America	NA
+Argentina	South America	NA
+Armenia	Asia	yes
+Aruba	North America	NA
+Australia	Oceania	NA
+Austria	Europe	yes
+Azerbaijan	Asia	yes
+Bahamas	North America	NA
+Bahrain	Asia	NA
+Bangladesh	Asia	NA
+Barbados	North America	NA
+Belarus	Europe	yes
+Belgium	Europe	yes
+Belize	North America	NA
+Benin	Africa	NA
+Bermuda	North America	NA
+Bhutan	Asia	NA
+Bolivia	South America	NA
+Bosnia and Herzegovina	Europe	yes
+Botswana	Africa	NA
+Bouvet Island	Antarctica	NA
+Brazil	South America	NA
+British Indian Ocean Territory	Asia	NA
+British Virgin Islands	North America	NA
+Brunei	Asia	NA
+Bulgaria	Europe	yes
+Burkina Faso	Africa	NA
+Burma	Asia	NA
+Burundi	Africa	NA
+Cambodia	Asia	NA
+Cameroon	Africa	NA
+Canada	North America	yes
+Cape Verde	Africa	NA
+Cayman Islands	North America	NA
+Central African Republic	Africa	NA
+Chad	Africa	NA
+Chile	South America	NA
+China	Asia	NA
+Christmas Island	Asia	NA
+Cocos	Asia	NA
+Colombia	South America	NA
+Comoros	Africa	NA
+Congo	Africa	NA
+Congo	Africa	NA
+Cook Islands	Oceania	NA
+Costa Rica	North America	NA
+Cote D'Ivoire	Africa	NA
+Cote dIvoire	Africa	NA
+Croatia	Europe	yes
+Cuba	North America	NA
+Cyprus	Asia	yes
+Czech Republic	Europe	yes
+Czechoslovakia	Europe	NA
+Democratic Republic of the Congo	Africa	NA
+Denmark	Europe	yes
+Djibouti	Africa	NA
+Dominica	North America	NA
+Dominican Republic	North America	NA
+Ecuador	South America	NA
+Egypt	Africa	NA
+El Salvador	North America	NA
+Equatorial Guinea	Africa	NA
+Eritrea	Africa	NA
+Estonia	Europe	yes
+Ethiopia	Africa	NA
+Falkland Islands	South America	NA
+Faroe Islands	Europe	NA
+Fiji	Oceania	NA
+Finland	Europe	yes
+France	Europe	yes
+French Guiana	South America	NA
+French Polynesia	Oceania	NA
+French Southern Territories	Antarctica	NA
+Gabon	Africa	NA
+Gambia	Africa	NA
+Gaza Strip	Asia	NA
+Georgia	Asia	yes
+Germany	Europe	yes
+Ghana	Africa	NA
+Gibraltar	Europe	NA
+Greece	Europe	yes
+Greenland	North America	NA
+Grenada	North America	NA
+Guadeloupe	North America	NA
+Guam	Oceania	NA
+Guatemala	North America	NA
+Guernsey	Europe	NA
+Guinea	Africa	NA
+Guinea-Bissau	Africa	NA
+Guyana	South America	NA
+Haiti	North America	NA
+Heard Island and McDonald Islands	Antarctica	NA
+Holy See	Europe	NA
+Honduras	North America	NA
+Hong Kong	Asia	NA
+Hungary	Europe	yes
+Iceland	Europe	yes
+India	Asia	NA
+Indonesia	Asia	NA
+Iran	Asia	NA
+Iraq	Asia	NA
+Ireland	Europe	yes
+Isle of Man	Europe	NA
+Israel	Asia	NA
+Italy	Europe	yes
+Jamaica	North America	NA
+Japan	Asia	yes
+Jersey	Europe	NA
+Jordan	Asia	NA
+Kazakhstan	Asia	NA
+Kenya	Africa	NA
+Kiribati	Oceania	NA
+Korea	Asia	NA
+Kuwait	Asia	NA
+Kyrgyzstan	Asia	NA
+Laos	Asia	NA
+Latvia	Europe	yes
+Lebanon	Asia	NA
+Lesotho	Africa	NA
+Liberia	Africa	NA
+Libya	Africa	NA
+Libyan Arab Jamahiriya	Africa	NA
+Liechtenstein	Europe	yes
+Lithuania	Europe	yes
+Luxembourg	Europe	yes
+Macau	Asia	NA
+Macedonia	Europe	yes
+Madagascar	Africa	NA
+Malawi	Africa	NA
+Malaysia	Asia	NA
+Maldives	Asia	NA
+Mali	Africa	NA
+Malta	Europe	yes
+Marshall Islands	Oceania	NA
+Martinique	North America	NA
+Mauritania	Africa	NA
+Mauritius	Africa	NA
+Mayotte	Africa	NA
+Mexico	North America	NA
+Micronesia	Oceania	NA
+Moldova	Europe	yes
+Monaco	Europe	yes
+Mongolia	Asia	yes
+Montenegro	Europe	yes
+Montserrat	North America	NA
+Morocco	Africa	NA
+Mozambique	Africa	NA
+Myanmar	Asia	NA
+Namibia	Africa	NA
+Nauru	Oceania	NA
+Nepal	Asia	NA
+Netherlands	Europe	yes
+Netherlands Antilles	North America	NA
+New Caledonia	Oceania	NA
+New Zealand	Oceania	NA
+Nicaragua	North America	NA
+Niger	Africa	NA
+Nigeria	Africa	NA
+Niue	Oceania	NA
+Norfolk Island	Oceania	NA
+North Korea	Asia	yes
+Northern Mariana Islands	Oceania	NA
+Norway	Europe	yes
+Oman	Asia	NA
+Pakistan	Asia	NA
+Palau	Oceania	NA
+Palestinian Territory	Asia	NA
+Panama	North America	NA
+Papua New Guinea	Oceania	NA
+Paraguay	South America	NA
+Peru	South America	NA
+Philippines	Asia	NA
+Pitcairn Islands	Oceania	NA
+Poland	Europe	yes
+Portugal	Europe	yes
+Puerto Rico	North America	NA
+Qatar	Asia	NA
+Reunion	Africa	NA
+Romania	Europe	yes
+Russia	Europe	yes
+Rwanda	Africa	NA
+Saint Barthelemy	North America	NA
+Saint Helena	Africa	NA
+Saint Kitts and Nevis	North America	NA
+Saint Lucia	North America	NA
+Saint Martin	North America	NA
+Saint Pierre and Miquelon	North America	NA
+Saint Vincent and the Grenadines	North America	NA
+Samoa	Oceania	NA
+San Marino	Europe	yes
+Sao Tome and Principe	Africa	NA
+Saudi Arabia	Asia	NA
+Senegal	Africa	NA
+Serbia	Europe	yes
+Serbia and Montenegro	Europe	NA
+Seychelles	Africa	NA
+Sierra Leone	Africa	NA
+Singapore	Asia	NA
+Slovakia	Europe	yes
+Slovenia	Europe	yes
+Solomon Islands	Oceania	NA
+Somalia	Africa	NA
+South Africa	Africa	NA
+South Georgia and the South Sandwich Islands	Antarctica	NA
+South Korea	Asia	yes
+Spain	Europe	yes
+Sri Lanka	Asia	NA
+Sudan	Africa	NA
+Suriname	South America	NA
+Svalbard & Jan Mayen Islands	Europe	NA
+Swaziland	Africa	NA
+Sweden	Europe	yes
+Switzerland	Europe	yes
+Syria	Asia	NA
+Syrian Arab Republic	Asia	NA
+Taiwan	Asia	NA
+Tajikistan	Asia	NA
+Tanzania	Africa	NA
+Thailand	Asia	NA
+Timor	Asia	NA
+Togo	Africa	NA
+Tokelau	Oceania	NA
+Tonga	Oceania	NA
+Trinidad and Tobago	North America	NA
+Tunisia	Africa	NA
+Turkey	Asia	NA
+Turkmenistan	Asia	NA
+Turks and Caicos Islands	North America	NA
+Tuvalu	Oceania	NA
+USA	North America	yes
+Uganda	Africa	NA
+Ukraine	Europe	yes
+United Arab Emirates	Asia	NA
+United Kingdom	Europe	yes
+United States Minor Outlying Islands	Oceania	NA
+United States Virgin Islands	North America	NA
+Uruguay	South America	NA
+Uzbekistan	Asia	NA
+Vanuatu	Oceania	NA
+Vatican City	Europe	yes
+Venezuela	South America	NA
+Venezuela	South America	NA
+Viet Nam	Asia	NA
+Wallis and Futuna	Oceania	NA
+West Bank	Asia	NA
+Western Sahara	Africa	NA
+Yemen	Asia	NA
+Zaire	Africa	NA
+Zambia	Africa	NA
+Zimbabwe	Africa	NA
