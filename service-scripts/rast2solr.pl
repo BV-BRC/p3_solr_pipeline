@@ -31,6 +31,7 @@ use JSON;
 use Data::Dumper;
 use Digest::MD5 qw(md5 md5_hex md5_base64);
 use Bio::SeqIO;
+use Bio::PrimarySeq;
 use Bio::SeqFeature::Generic;
 use Date::Parse;
 use XML::Simple;
@@ -141,15 +142,10 @@ getGenomeQuality();
 # Get additional genome metadata 
 getMetadataFromGenBankFile($genbank_file) if -f $genbank_file;
 
-if ($genome->{superkingdom} eq 'Viruses')
-{
-    print STDERR "Skipping bioproject for virus\n";
-}
-else
-{
-    getMetadataFromBioProject($genome->{bioproject_accession}) if $genome->{bioproject_accession};
-}
-getMetadataFromBioSample($genome->{biosample_accession}) if $genome->{biosample_accession};
+getMetadataFromBioSample($genome->{biosample_accession}) if $genome->{biosample_accession} && $genome->{superkingdom} ne "Viruses";
+
+# Auto curate genome metadata
+curateMetadata();
 
 # Get predicted AMR phenotypes 
 getAMRPhenotypes();
@@ -249,16 +245,15 @@ sub getGenomeInfo {
 	{
 	    my $rank = $taxon_lineage_ranks->[$i];
 	    my $name = $genome->{taxon_lineage_names}->[$i];
-	    if ($desired_ranks{lc($rank)})
-	    {
-		$genome->{$rank} = $name;
-	    }
+	    if ($desired_ranks{lc($rank)}){
+				$genome->{$rank} = $name;
+			}
 	}
 
 	foreach my $type (@{$genomeObj->{typing}}){
 		$genome->{mlst} .= "," if $genome->{mlst};
 		$genome->{mlst} .= $type->{typing_method}.".".$type->{database}.".".$type->{tag};
-	}	
+	}
 
 	foreach my $seqObj (@{$genomeObj->{contigs}}) {
 
@@ -268,15 +263,8 @@ sub getGenomeInfo {
 			foreach my $dblink (@{$seqObj->{genbank_locus}->{dblink}}){
 				$genome->{bioproject_accession} = $1 if $dblink=~/BioProject:\s*(.*)/;
 				$genome->{biosample_accession} = $1 if $dblink=~/BioSample:\s*(.*)/;
-			    }
-			if ($genome->{superkingdom} eq 'Viruses')
-			{
-			    print STDERR "Skipping assembly accession for virus\n";
 			}
-			else
-			{
-			    $genome->{assembly_accession} = getAssemblyAccession($seqObj->{genbank_locus}->{locus}) if $seqObj->{genbank_locus}->{locus};
-			}
+
 			foreach my $reference (@{$seqObj->{genbank_locus}->{references}}){
 				$genome->{publication} .= $reference->{PUBMED}."," unless $genome->{publication}=~/$reference->{PUBMED}/;
 			}
@@ -292,6 +280,9 @@ sub getGenomeInfo {
 
 	}
 	$genome->{genbank_accessions}=~s/,*$//g;
+	
+	$genome->{assembly_accession}=$1 if $genbank_file=~/(GCA_\d+|GCF_\d+)/;
+
 	
 }
 
@@ -310,7 +301,8 @@ sub getGenomeQuality {
 	$genome->{contig_l50} = $qc->{genome_metrics}->{L50};
 	$genome->{contig_n50} = $qc->{genome_metrics}->{N50};
 
-	$genome->{genome_status} = $qc->{genome_status}; 
+	$genome->{genome_status} = $qc->{genome_status};
+	$genome->{genome_status} = "Partial" if $genome->{superkingdom} eq "Viruses"; 
 
 	$genome->{trna} = $qc->{feature_summary}->{tRNA};
 	$genome->{rrna} = $qc->{feature_summary}->{rRNA};
@@ -406,13 +398,15 @@ sub getGenomeSequences {
 		$sequence->{sequence_type} = $1 if $sequence->{description}=~/(chromosome|plasmid|segment|contig|scaffold)/i;
 		$sequence->{sequence_status} = $1 if $sequence->{description}=~/(complete|partial)/i;
 
+		$genome->{genome_status} = "Complete" 
+			if $sequence->{description}=~/complete genome|complete segment|assembly|complete sequence/i && $genome->{superkingdom} eq "Viruses";
+
 		$sequence->{chromosome} = $1 if $sequence->{description}=~/chromosome (\S*)\s*,/i;
 		$sequence->{plasmid} = $1 if $sequence->{description}=~/plasmid (\S*)\s*,/i;
 		$sequence->{segment} = $1	if $seqObj->{description}=~/segment (\S*)\s*,/i;
 
 		$sequence->{gc_content} = sprintf("%.2f", ($seqObj->{dna}=~tr/GCgc//)*100/length($seqObj->{dna}));
 		$sequence->{length} = length($seqObj->{dna});
-		#$genome->{length} += length($seqObj->{dna});
 		$sequence->{sequence} = lc($seqObj->{dna});
 		$sequence->{sequence_md5} = md5_hex(lc $seqObj->{dna});
 	
@@ -456,7 +450,7 @@ sub getGenomeFeatures{
 
 	foreach my $featObj (@{$genomeObj->{features}}){
 			
-		my ($feature, $sequence, $pathways, $ecpathways);
+		my ($feature, $sequence, $aa_sequence, $pathways, $ecpathways);
 		my (@segments, @go, @ec_no, @ec, @pathways, @ecpathways, @spgenes, @uniprotkb_accns, @ids);
 
 		$feature->{owner} = $genome->{owner};
@@ -522,7 +516,16 @@ sub getGenomeFeatures{
 		}
 
 		if ($featObj->{protein_translation}){
-			my $aa_sequence = $featObj->{protein_translation}; 
+			$aa_sequence = $featObj->{protein_translation};
+		}elsif($feature->{feature_type} eq "mat_peptide"){
+			my $seqObj = Bio::PrimarySeq->new (-seq => $sequence);
+			my $translatedSeqObj = $seqObj->translate();
+			$aa_sequence = $translatedSeqObj->seq();	
+		}else{
+			# No AA sequence
+		}
+
+		if ($aa_sequence){
 			$feature->{aa_length} 	= length($aa_sequence);
 			$feature->{aa_sequence_md5} = md5_hex($aa_sequence);	
 			if ($md5{$feature->{aa_sequence_md5}} !=1){
@@ -783,10 +786,12 @@ sub getMetadataFromGenBankFile {
 
 	my $gb = join "", @gb;
 	
+	# parse metadata from genabnk comment 
 	$genome->{assembly_method} = $1 if $gb=~/Assembly Method\s*:: (.*)/;
 	$genome->{sequencing_depth} = $1 if $gb=~/Genome Coverage\s*:: (.*)/;
 	$genome->{sequencing_platform} = $1 if $gb=~/Sequencing Technology\s*:: (.*)/;
 
+	# Parse flu metadata from GenBank comment 
 	my $flu_data=$1 if $gb=~/##FluData-START##(.+?)##FluData-END##/s;
 	foreach my $entry (split /\n/, $flu_data){
 		next unless $entry=~/::/;
@@ -803,6 +808,8 @@ sub getMetadataFromGenBankFile {
 		}
 	} 
 
+
+	# Parse metadata from source feature 
 	$gb=~s/\n */ /g;
 	
 	my $strain = ""; 
@@ -810,235 +817,42 @@ sub getMetadataFromGenBankFile {
 		$strain = $1;
 	}elsif($gb=~/\/isolate="([^"]*)"/){
 		$strain = $1;
-	}else{}
+	}else{
+		# no strain or isolate
+	}
 
-	$strain=~s/\([A-Z][0-9][A-Z][0-9]\)$//;
+	$strain=~s/ *\([A-Z][0-9][A-Z][0-9]\)$//; # remove subtype for influenza 
 	$genome->{strain} = $strain unless $strain=~/^ *(-|missing|na|n\/a|not available|not provided|not determined|nd|unknown) *$/i;
 	
 	$genome->{genome_name} .= " $genome->{strain}" if ($genome->{strain} && (not $genome->{genome_name}=~/$genome->{strain}/i));
 	$genome->{genome_name}=~s/\($genome->{strain}\)/$genome->{strain}/;
 
+	$genome->{segment} = $1 if $gb=~/\/segment="([^"]*)"/;
+	
 	$genome->{serovar} = $1 if $gb=~/\/serotype="([^"]*)"/;
 
 	$genome->{geographic_location} = $1 if $gb=~/\/country="([^"]*)"/;
-	$genome->{isolation_country} = $1 if $genome->{geographic_location}=~/^([^:]*):.*/;
+	#$genome->{isolation_country} = $1 if $genome->{geographic_location}=~/^([^:]*):.*/;
 	
 	$genome->{host_name} = $1 if $gb=~/\/host="([^"]*)"/;
-	$genome->{host_name} = $1 if $gb=~/\/lab_host="([^"]*)"/;
+	$genome->{lab_host} = $1 if $gb=~/\/lab_host="([^"]*)"/;
+
+	if ($gb=~/\/note="(passage.details|passage.history) *: *([^"]*) *"/){
+		$genome->{passage} = $1;
+	}elsif($genome->{lab_host}=~/passage/i){
+		$genome->{passage} = $genome->{lab_host};
+	}else{
+		# No passage info
+	} 
 	
 	$genome->{isolation_source} = $1 if $gb=~/\/isolation_source="([^"]*)"/;
 	
 	$genome->{collection_date} = $1 if $gb=~/\/collection_date="([^"]*)"/;
-	$genome->{collection_year} = $1 if $genome->{collection_date}=~/(\d\d\d\d)/;
+	#$genome->{collection_year} = $1 if $genome->{collection_date}=~/(\d\d\d\d)/;
 
 	$genome->{culture_collection} = $1 if $gb=~/\/culture_collection="([^"]*)"/;
 
 }
-
-sub getAssemblyAccession {
-
-    my ($accn) = @_;
-
-    return undef;
-    
-    if ($lookup_client)
-    {
-	my $assembly_accession = $lookup_client->get_assembly_accession($accn);
-	return $assembly_accession;
-    }
-
-    my $xml = get_xml("https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=nuccore&term=$accn");
-    
-    $xml=~s/\n//;
-    my ($gi) = $xml=~/<Id>(\d+)<\/Id>/;
-    
-    my $xml = get_xml("https://eutils.ncbi.nlm.nih.gov/entrez/eutils/elink.fcgi?dbfrom=nuccore&db=assembly&id=$gi");
-    $xml=~s/\n//;
-    my ($assembly_id) = $xml=~/<Link>\s*<Id>(\d+)<\/Id>/;
-    
-    my $xml = get_xml("https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=assembly&id=$assembly_id");
-    my ($assembly_accession) = $xml=~/<Genbank>(\S*)<\/Genbank>/;
-    
-    return $assembly_accession;
-}
-
-sub getMetadataFromBioProject {
-	
-	my($bioproject_accn) = @_;
-
-	print "Getting genome metadata from BioProject: $bioproject_accn...\n";
-
-	my($bioproject_id, $bioproject_xml);
-
-	if ($lookup_client)
-	{
-	    ($bioproject_id, $bioproject_xml) = $lookup_client->get_metadata_from_bioproject($bioproject_accn);
-	}
-	else
-	{	
-	    my $url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=bioproject&term=$bioproject_accn";
-	    my $res = $user_agent->get($url);
-	    if (!$res->is_success)
-	    {
-		warn "Failure retrieving $url: " . $res->content;
-		return;
-	    }
-	    my $xml = $res->content;
-	    $xml=~s/\n//;
-	    ($bioproject_id) = $xml=~/<Id>(\d+)<\/Id>/;
-
-	    $bioproject_xml = get_xml("https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=bioproject&retmode=xml&id=$bioproject_id");
-	    
-	    return unless $bioproject_xml;
-	}
-	
-	my ($projID, $projDescription, $subgroup, $organism, $description, $var, $serovar, $biovar, $pathovar, $strain, $cultureCollection, $typeStrain);
-	my ($isolateComment, $source, $month, $year, $country, $method, $person, $epidemic, $location, $altitude, $depth);
-	my ($hostName, $hostGender, $hostAge, $hostHealth);
-	my ($publication, $taxonID, $epidemiology);
-
-	my $xml = XMLin($bioproject_xml, ForceArray => ["Organization"]);
-	my $root = $xml->{DocumentSummary};
-
-	# print Dumper $xml;
-	
-	$organism = $root->{Project}->{ProjectType}->{ProjectTypeSubmission}->{Target}->{Organism};
-
-	my $organization = $root->{Submission}->{Description}->{Organization};	
-	if (ref($organization->[0]->{Name}) eq "HASH"){
-		$genome->{sequencing_centers} = $organization->[0]->{Name}->{content};
-	}else{
-		$genome->{sequencing_centers} = $organization->[0]->{Name};
-	}
-
-	$genome->{strain} = $organism->{Strain} if $organism->{Strain} && not $genome->{strain};
-	$genome->{genome_name} .= " strain $genome->{strain}" if ($genome->{strain} && (not $genome->{genome_name}=~/$genome->{strain}/) );
-	
-	$genome->{disease} = $organism->{BiologicalProperties}->{Phenotype}->{Disease};
-	$genome->{temperature_range} = $1 if $organism->{BiologicalProperties}->{Environment}->{TemperatureRange}=~/^e*(.*)/;
-	$genome->{optimal_temperature} = $organism->{BiologicalProperties}->{Environment}->{OptimumTemperature};
-	$genome->{oxygen_requirement} = $1 if $organism->{BiologicalProperties}->{Environment}->{OxygenReq}=~/^e*(.*)/;
-	$genome->{habitat} = $1 if $organism->{BiologicalProperties}->{Environment}->{Habitat}=~/^e*(.*)/;	
-	$genome->{cell_shape} = $1 if $organism->{BiologicalProperties}->{Morphology}->{Shape}=~/^e*(.*)/;
-	$genome->{motility} = $1 if $organism->{BiologicalProperties}->{Morphology}->{Motility}=~/^e*(.*)/;
-	$genome->{gram_stain} = $1 if $organism->{BiologicalProperties}->{Morphology}->{Gram}=~/^e*(.*)/;
-
-	if (ref($root->{Project}->{ProjectDescr}->{Publication}->{id}) eq "HASH"){
-		foreach my $pmid (keys %{$root->{Project}->{ProjectDescr}->{Publication}}){
-			$genome->{publication} .= ",$pmid" unless $genome->{publication}=~/$pmid/; 
-		}
-	}else{
-		my $pmid = $root->{Project}->{ProjectDescr}->{Publication}->{id};
-	}
-	$genome->{publication}=~s/^,|,$//g;
-
-	$description = $root->{Project}->{ProjectDescr}->{Description};
-
-	$description=~s/&lt;\/*.&gt;|&#x0D;|<\/*.>//g;
-	$description=~s/&lt;.*?&gt;|<.*?>//g;
-	$description=~s/^ *| *$//g;
-	$description=~s/\t+/ /g;
-	$description=~s/Dr\.\s*/Dr /g;
-
-	$typeStrain="Yes" if($description=~/type str/i);
-		
-	my($var1, $var2) = "$organism $description"=~/(serovar|sv\.|sv|serotype|biovar|bv\.|bv|biotype|pathovar|pv\.|pv|pathotype)\s*([\w-]*)/i;
-	$var = "$var1 $var2" if($var2 && !($var2=~/^of|and$/i));
-	$var =~s/serovar|sv\.|sv|serotype/serovar/i;
-	$var =~s/biovar|bv\.|bv|biotype/biovar/i;
-	$var =~s/pathovar|pv\.|pv|pathotype/pathovar/i;
-	$var =~s/^\s*$//;
-	$serovar = $var if($var=~/serovar/);
-	$biovar = $var if($var=~/biovar/);
-	$pathovar = $var if($var=~/pathovar/);
-
-	my($cc1, $cc2) = $description=~/(ATCC|NCTC|CCUG|DSM|LMG|CIP|NCIB|BCCM|NRRL)\s*([\w-]*)/;
-	$cultureCollection = "$cc1 $cc2" if ($cc1 && $cc2);
-	
-	#($isolateComment) = $description=~/(isolated\s*.*?\S\S\.)/i;
-	my ($com1, $com2) = $description=~/(isolated|isolate from|isolate obtained from|derived|is from|was from|came from|recovered from)\s+(.*?\S\S\.)/i;
-	$isolateComment = "$com1 $com2";
-	$isolateComment =~s/\s*$|\s*\.$//;
-	$isolateComment =~s/&lt;|&gt;//g;
-
-	$source = $1 if $isolateComment=~/from\s*(.*)/;
-	$source =~s/^(a|an)\s+//;
-	$source =~s/( in | by | and will | and is | and is |\s*\.).*//g;
-	
-	($month, $year) = $isolateComment=~/in\s*([a-zA-Z]*)\s*,*\s+(\d\d\d\d)/;
-
-	($method) = $isolateComment=~/isolated by ([a-z].*)/;
-	$method =~s/ (from|in) .*//;
-
-	($person) = $isolateComment=~/isolated by ([A-Z].*)/;
-	$person =~s/ (at|in|during) .*//;
-
-	($epidemiology) = $isolateComment=~/(outbreak|epidemic|pandemic)/i;
-
-	$isolateComment=~/(^|\s)(in|in the|at|at the|near|near the)\s([A-Z]+.*)/;	
-	$location = $3;
-	$location =~s/\..*//;
-	
-	$location =~s/\W+/ /g;
-	$location =~s/^\s*|\s*$|\s\s//g;
-	$location =~s/ [a-z0-9]+.*//g;
-
-	my ($num, $unit);
-	if ($isolateComment=~/depth of/i){
-		($num, $unit) = $isolateComment=~/depth of (\d+\s*[\.\-to]*\s*\d*)\s*(\w+)/; 
-		$depth = "$num $unit";
-	}elsif($isolateComment=~/below the surface/i){
-		($num, $unit) = $isolateComment=~/(\d+\s*[\.\-to]*\s*\d*)\s*(\w+) below the surface/;
-		$depth = "$num $unit";
-		$depth =~s/\s$//;
-	}
-
-	$hostGender = $1 if $isolateComment=~/(male|female)/i;	# man|woman	
-	$hostAge = "$1 $2" if $isolateComment=~/(\d+).(year|years|month|months|day|days).old/; # month|months|day|days	
-
-	$hostHealth = $2 if $isolateComment=~/(patient with |suffering from )(.*)/i; # suffered|diagnosed with 
-	$hostHealth =~s/^(a|an)\s//;
-	$hostHealth =~s/\s+(and is|and will be|and has|and was|by|in|and contains)\s+.*//;
-
-	$hostName = $1 if $isolateComment=~/ (pig|sheep|goat|dog|cat |cattle|chicken|cow|mouse|rat|buffalo|tick|mosquito)/i;
-	$hostName ="Human, Homo sapiens" if ($isolateComment=~/ (human|man|woman|infant|child|patient|homo sapiens)/i);
-
-
-	# Organism Info
-
-	$genome->{serovar} = $serovar if $serovar && not $genome->{serovar};
-	$genome->{biovar} = $biovar if $biovar;
-	$genome->{pathovar} = $pathovar if $pathovar;
-	$genome->{type_strain} = $typeStrain if $typeStrain;
-	$genome->{culture_collection} = $cultureCollection if $cultureCollection;
-	push @{$genome->{comments}}, $description if $description;
-	$genome->{publication} = $publication if $publication;
-
-
-	# Isolate / Environmental Metadata
-	
-	#$genome->{isolation_site} = ""; #$source;
-	$genome->{isolation_source} = $source if $source && not $genome->{isolation_source};
-	$genome->{isolation_comments} = $isolateComment if $isolateComment && not $genome->{isolation_comments};
-	$genome->{collection_date} = $year if $year && not $genome->{collection_date};
-	#$genome->{isolation_country} = ""; #$location;
-	$genome->{geographic_location} = $location if $location && not $genome->{geographic_location};
-	#$genome->{latitude} = "";
-	#$genome->{longitude} = "";
-	#$genome->{altitude} = "";
-	#$genome->{depth} = $depth;
-
-	# Host Metadata
-	
-	$genome->{host_name} = $hostName if $hostName && not $genome->{host_name};
-	$genome->{host_gender} = $hostGender if $hostGender && not $genome->{host_gender};
-	$genome->{host_age} = $hostAge if $hostAge && not $genome->{host_age};
-	$genome->{host_health} = $hostHealth if $hostHealth && not $genome->{host_health};
-	#$genome->{body_sample_site} = "";
-	#$genome->{body_sample_substitute} = "";
-
-}
-
 
 
 sub getGenomeFeaturesFromGenBankFile {
@@ -1098,9 +912,6 @@ sub getGenomeFeaturesFromGenBankFile {
 			}
 			$feature->{segments} = \@segments;
 
-			#$feature->{pos_group} = "$feature->{sequence_id}:$feature->{end}:+" if $feature->{strand} eq '+';
-			#$feature->{pos_group} = "$feature->{sequence_id}:$feature->{start}:-" if $feature->{strand} eq '-';
-
 			$na_sequence = lc $featObj->spliced_seq->seq;
 
 			my $strand = ($feature->{strand} eq '+')? 'fwd':'rev';
@@ -1143,8 +954,6 @@ sub getGenomeFeaturesFromGenBankFile {
 
 			next if ($feature->{feature_type} eq 'gene' && (grep {$_=~/Bacteria|Archaea/} @{$genome->{taxon_lineage_names}}));
 
-			push @features, $feature;
-			
 			if ($na_sequence && $feature->{feature_type} ne "source"){
 				$feature->{na_length} = length($na_sequence);
 				$feature->{na_sequence_md5} = md5_hex(lc $na_sequence);
@@ -1152,6 +961,12 @@ sub getGenomeFeaturesFromGenBankFile {
 					$md5{$feature->{na_sequence_md5}} = 1;
 					push @feature_sequences, { "md5" => $feature->{na_sequence_md5}, "sequence_type" =>"NA", "sequence" => $na_sequence };				
 				}
+			}
+
+			if($feature->{feature_type} eq "mat_peptide" && not $aa_sequence){
+				my $seqObj = Bio::PrimarySeq->new (-seq => $na_sequence);
+				my $translatedSeqObj = $seqObj->translate();
+				$aa_sequence = $translatedSeqObj->seq();
 			}
 
 			if ($aa_sequence){
@@ -1162,6 +977,8 @@ sub getGenomeFeaturesFromGenBankFile {
 					push @feature_sequences, { "md5" => $feature->{aa_sequence_md5}, "sequence_type" =>"AA", "sequence" => $aa_sequence };
 				}
 			}					
+			
+			push @features, $feature;
 	
 			$genome->{lc($annotation).'_cds'}++ if $feature->{feature_type} eq 'CDS';	
 
@@ -1170,7 +987,6 @@ sub getGenomeFeaturesFromGenBankFile {
 	}
 
 	$genomeObj->close();
-
 
 }
 
@@ -1221,7 +1037,7 @@ sub getMetadataFromBioSample {
 			}elsif ($patric_attrib_name=~/comments/i){
 				push @{$genome->{$patric_attrib_name}}, $attrib_value;
 			}else{
-				$genome->{$patric_attrib_name} = $attrib_value;
+				$genome->{$patric_attrib_name} = $attrib_value unless $genome->{$patric_attrib_name}; # get metadata from biosample, only if not available from genbank file
 			} 
 		}
 
@@ -1267,6 +1083,155 @@ sub getMetadataFromBioSample {
 }
 
 
+sub curateMetadata {
+
+	print "Auto curate genome metadata\n";
+
+	my (%host_map, %country_map, %country_flu) = readMetadataRefs();
+	
+	# clean host name
+	my $host_name_orig = $genome->{host_name}; 
+	$genome->{host_name}=~s/^\s*|\s*$//g;
+	$genome->{host_name}=~s/.*, *//;
+	$genome->{host_name}=~s/^\s*|\s*$| *;.*|"//g;
+	$genome->{host_name} = ucfirst lc $genome->{host_name};
+	$genome->{host_name} = "Human" 
+		if $genome->{host_name}=~/\b(homosap\W+|homo|human|patient|boy|girl|man|woman)\b/ && not $genome->{host_name}=~/non[-\s]*human/;
+	
+	# host group and common name
+	if ($host_map{$genome->{host_name}}){ 
+		($genome->{host_common_name}, $genome->{host_group}) = split /\t/, $host_map{$genome->{host_name}};
+		$genome->{host_common_name} = "" if $genome->{host_common_name}=~/null/i; 
+		$genome->{host_group} = "" if $genome->{host_group}=~/null/i; 
+	}else{
+		#$host_common_name = "Unknown";
+		#$host_group = "Unknown";
+	} 
+
+	# host gender
+	if ($host_name_orig=~/\b(male|man|boy|M)\b/i){
+		$genome->{host_gender} = "male";
+	}elsif($host_name_orig=~/\b(female|woman|girl|F)\b/i){
+		$genome->{host_gender} = "female";
+	}else{
+		# no host gender  
+	}
+	
+	# host age 
+	if ($host_name_orig=~/([<>\d]+)[\s-]*(year|y)/i){
+		$genome->{host_age} = "$1 years";
+	}elsif($host_name_orig=~/([<>\d]+)[\s-]*(month|m)/i){
+		$genome->{host_age} = "$1 months";
+	}elsif($host_name_orig=~/([<>\d]+)[\s-]*(week|w)/i){
+		$genome->{host_age} = "$1 weeks";
+	}elsif($host_name_orig=~/([<>\d]+)[\s-]*(day|d)/i){
+		$genome->{host_age} = "$1 days";
+	}elsif($host_name_orig=~/age[\s]*([<>\d]+)$/i){
+		$genome->{host_age} = "$1 years";
+	}else{
+		# no host age 
+	}
+		
+	# lab host
+	if ($genome->{lab_host}){
+		#$genome->{host_common_name} = "Lab host";
+		#$genome->{host_group} = "Lab";
+	}elsif($host_name_orig=~/passage|clone|laboratory|culture|select|cell|mdck/i){
+		#$genome->{host_common_name} = "Lab host";
+		#$genome->{host_group} = "Lab";
+		#$genome->{lab_host} = $host_name_orig;
+		#$genome->{host_name} = "";
+	}else{
+		# No lab host
+	}
+
+	# lab reassortment
+	if ($genome->{genome_name}=~/recomb|reassort/i){
+		$genome->{host_common_name} = "Lab reassortment";
+		$genome->{host_group} = "Lab";
+		$genome->{lab_host} = $host_name_orig unless $genome->{lab_host};
+		$genome->{host_name} = "";
+	}
+	
+	# passage 
+	if ($genome->{passage}){
+		$genome->{passage}=~s/.*(passage.details|passage.history|passage level|passaged in)([ :]*)//ig;
+		$genome->{passage}=~s/.*passage: *//i;
+		$genome->{passage}=~s/ *passage$| *passage\(s\)$//ig;
+		$genome->{passage}=~s/ *\([0-9\-\/]*\)//;
+		$genome->{passage}=~s/;([^;]*)(antigenic|lineage|sensitive|resist)(.*)$//;
+		$genome->{passage}=~s/mdck\s*(\d+)/MDCK$1/i;
+		$genome->{passage}=~s/egg\s*(\d+)/Egg$1/i;
+		$genome->{passage}=~s/egg/Egg/i;
+		$genome->{passage}=~s/([A-Z]+)([- ]+)(\d+)/$1$3/g;
+	}
+	
+	# isolation country and geographic group
+	if ($genome->{geographic_location}){
+		my $country = $genome->{geographic_location};
+		$country=~s/"//g;
+		$country=~s/\s*[:,;].*//;
+		if ($country_map{$country}){
+			$genome->{isolation_country} = $country;
+			$genome->{geographic_group} = $country_map{$country};
+		}else{
+			# not on the country list
+		}
+	} 
+	
+	# collection year
+	if ($genome->{collection_date}=~/(\d\d\d\d).*(\d\d\d\d)/){
+		$genome->{collection_year} = $1 if $1 eq $2;
+	}elsif($genome->{collection_date}=~/(\d\d\d\d)/){
+		$genome->{collection_year} = $1;
+	}else{
+		# no collection year
+	}
+	
+	# flu season
+	my ($month, $year, $y1, $y2);
+	if ($genome->{genome_name}=~/Influenza/i && $country_flu{$genome->{isolation_country}}){	
+		if ($genome->{collection_date}=~/(\d\d)-([A-Za-z]+)-\d\d(\d\d)/){
+			$month = $2;
+			$year = $3;	
+		}elsif($genome->{collection_date}=~/\d\d(\d\d)-(\d\d)-(\d\d)/){
+			$month = $2;
+			$year = $1;
+		}else{
+			# unexpected date format
+		}
+
+		if ($month=~/oct|nov|dec|10|11|12/i){
+			$y1 = $year;
+			$y2 = $y1==99? "00": $y1+1;	
+		}elsif($month=~/jan|feb|mar|apr|may|01|02|03|04|05/i){
+			$y1 = $year=="00"? 99: $year-1;
+			$y2 = $y1==99? "00": $y1+1;	
+		}else{
+		}		
+
+		$genome->{season} = sprintf("%02d", $y1)."-".sprintf("%02d", $y2) if $y1 && $y2;			
+	}
+	
+	# serovar / serotype 
+	if ($genome->{genome_name}=~/Influenza/i){
+		if ($genome->{serovar}){
+			$genome->{subtype} = $genome->{serovar};
+		}elsif($genome->{genome_name}=~/(H\d+N\d+)/){
+			$genome->{subtype} = $1;
+		}else{
+		}	
+		$genome->{subtype}=~s/\(untyped\)|\?/x/g;
+  	$genome->{subtype}=~s/"|\(|\)//g;
+  	$genome->{subtype}= "" if $genome->{subtype}=~/^(unknown\|unidentified)$/i;
+  	$genome->{subtype} = "Mixed" if $genome->{subtype}==~/mixed/i;
+		($genome->{htype}, $genome->{ntype}) = $genome->{subtype}=~/H0*([\d]+)N0*([\d]+)/;
+	}
+
+
+}
+
+
 sub biosample2patricAttrib{
 
 	my ($attribute) = @_;
@@ -1296,7 +1261,7 @@ sub biosample2patricAttrib{
 		"identified_by" => "additional_metadata:identified_by",
 		"isolate" => "additional_metadata:isolate", 
 		"isolation_source" => "isolation_source", 
-		"lab_host" => "additional_metadata:lab_host", 
+		"lab_host" => "lab_host", 
 		"lat_lon" => "other_environmental:lat_lon", 
 		"mating_type" => "additional_metadata:mating_type", 
 		"organism" => "",
@@ -1360,3 +1325,32 @@ sub get_xml_to_file
     write_file($file, $xml);
 }
 
+sub readMetadataRefs {
+
+	# process host mappings
+	open FH, "$Bin/refs/host_mapping";
+	my %host_map = ();
+	while (my $entry = <FH>){
+		chomp $entry;
+		my ($host_name, $host_common_name, $host_group) = $entry=~/(.*)\t(.*)\t(.*)/;
+		$host_map{$host_name} = "$host_common_name\t$host_group";
+	}
+	close FH;
+
+	# process country mapping for flu season
+	open FH, "$Bin/refs/country_mapping";
+	my %country_map = ();
+	my %country_flu = ();
+	while (my $entry = <FH>){
+
+	chomp $entry;
+	my ($country, $geographic_group, $flu_season) = $entry=~/(.*)\t(.*)\t(.*)/;
+	$country_map{$country} = "$geographic_group";
+	$country_flu{$country} = 1 if $flu_season=~/yes/i;
+
+	}
+	close FH;
+
+	return %host_map, %country_map, %country_flu;
+
+}
