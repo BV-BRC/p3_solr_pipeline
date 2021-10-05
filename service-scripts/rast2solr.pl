@@ -1327,30 +1327,45 @@ sub get_xml_to_file
 
 sub readMetadataRefs {
 
-	# process host mappings
-	open FH, "$Bin/refs/host_mapping";
-	my %host_map = ();
+    my $refs_dir = "$ENV{KB_TOP}/lib/autocuration-metadata";
+    $refs_dir = "$Bin/refs" unless -d $refs_dir;
+
+    my(%host_map, %country_map, %country_flu);
+
+    # process host mappings
+    if (open FH, "$refs_dir/host_mapping")
+    {
+	%host_map = ();
 	while (my $entry = <FH>){
-		chomp $entry;
-		my ($host_name, $host_common_name, $host_group) = $entry=~/(.*)\t(.*)\t(.*)/;
-		$host_map{$host_name} = "$host_common_name\t$host_group";
+	    chomp $entry;
+	    my ($host_name, $host_common_name, $host_group) = $entry=~/(.*)\t(.*)\t(.*)/;
+	    $host_map{$host_name} = "$host_common_name\t$host_group";
 	}
 	close FH;
+    }
+    else
+    {
+	warn "Cannot open host mapping file $refs_dir/host_mapping: $!";
+    }
 
-	# process country mapping for flu season
-	open FH, "$Bin/refs/country_mapping";
-	my %country_map = ();
-	my %country_flu = ();
-	while (my $entry = <FH>){
-
-	chomp $entry;
-	my ($country, $geographic_group, $flu_season) = $entry=~/(.*)\t(.*)\t(.*)/;
-	$country_map{$country} = "$geographic_group";
-	$country_flu{$country} = 1 if $flu_season=~/yes/i;
-
+    # process country mapping for flu season
+    if (open FH, "$refs_dir/country_mapping")
+    {
+	%country_map = ();
+	%country_flu = ();
+	while (my $entry = <FH>) {
+	    
+	    chomp $entry;
+	    my ($country, $geographic_group, $flu_season) = $entry=~/(.*)\t(.*)\t(.*)/;
+	    $country_map{$country} = "$geographic_group";
+	    $country_flu{$country} = 1 if $flu_season=~/yes/i;
+	    
 	}
 	close FH;
-
-	return %host_map, %country_map, %country_flu;
-
+    }
+    else
+    {
+	warn "Cannot open country mapping file $refs_dir/country_mapping: $!";
+    }
+    return %host_map, %country_map, %country_flu;
 }

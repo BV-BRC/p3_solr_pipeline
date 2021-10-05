@@ -63,8 +63,12 @@ compile-typespec: Makefile
 
 deploy: deploy-all
 deploy-all: deploy-client 
-deploy-client: deploy-libs deploy-scripts deploy-docs
-deploy-service: deploy-libs deploy-scripts deploy-service-scripts
+deploy-client: deploy-libs deploy-scripts deploy-docs deploy-metadata
+deploy-service: deploy-libs deploy-scripts deploy-metadata deploy-service-scripts
+
+deploy-metadata:
+	mkdir -p $(TARGET)/lib/autocuration-metadata
+	cp -r service-scripts/refs/. $(TARGET)/lib/autocuration-metadata
 
 deploy-service-scripts:
 	export KB_TOP=$(TARGET); \
