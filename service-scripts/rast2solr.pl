@@ -1087,8 +1087,12 @@ sub curateMetadata {
 
 	print "Auto curate genome metadata\n";
 
-	my (%host_map, %country_map, %country_flu) = readMetadataRefs();
-	
+	my ($href1, $href2, $href3) = readMetadataRefs();
+
+	my %host_map = %{$href1};
+	my %country_map = %{$href2};
+	my %country_flu = %{$href3};
+
 	# clean host name
 	my $host_name_orig = $genome->{host_name}; 
 	$genome->{host_name}=~s/^\s*|\s*$//g;
@@ -1359,7 +1363,6 @@ sub readMetadataRefs {
 	    my ($country, $geographic_group, $flu_season) = $entry=~/(.*)\t(.*)\t(.*)/;
 	    $country_map{$country} = "$geographic_group";
 	    $country_flu{$country} = 1 if $flu_season=~/yes/i;
-	    
 	}
 	close FH;
     }
@@ -1367,5 +1370,5 @@ sub readMetadataRefs {
     {
 	warn "Cannot open country mapping file $refs_dir/country_mapping: $!";
     }
-    return %host_map, %country_map, %country_flu;
+    return (\%host_map, \%country_map, \%country_flu);
 }
