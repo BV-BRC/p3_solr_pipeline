@@ -1095,9 +1095,9 @@ sub curateMetadata {
 
 	# clean host name
 	my $host_name_orig = $genome->{host_name}; 
-	$genome->{host_name}=~s/^\s*|\s*$//g;
+	$genome->{host_name}=~s/^\s*|\s*$|"//g;
+	$genome->{host_name}=~s/ *;.*//g;
 	$genome->{host_name}=~s/.*, *//;
-	$genome->{host_name}=~s/^\s*|\s*$| *;.*|"//g;
 	$genome->{host_name} = ucfirst lc $genome->{host_name};
 	$genome->{host_name} = "Human" 
 		if $genome->{host_name}=~/\b(homosap\W+|homo|human|patient|boy|girl|man|woman)\b/ && not $genome->{host_name}=~/non[-\s]*human/;
