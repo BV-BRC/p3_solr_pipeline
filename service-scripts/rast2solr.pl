@@ -405,7 +405,10 @@ sub getGenomeSequences {
 		$sequence->{plasmid} = $1 if $sequence->{description}=~/plasmid (\S*)\s*,/i;
 		$sequence->{segment} = $1	if $seqObj->{description}=~/segment (\S*)\s*,/i;
 
-		$sequence->{gc_content} = sprintf("%.2f", ($seqObj->{dna}=~tr/GCgc//)*100/length($seqObj->{dna}));
+		if ($seqObj->{dna})
+		{
+		    $sequence->{gc_content} = sprintf("%.2f", ($seqObj->{dna}=~tr/GCgc//)*100/length($seqObj->{dna}));
+		}
 		$sequence->{length} = length($seqObj->{dna});
 		$sequence->{sequence} = lc($seqObj->{dna});
 		$sequence->{sequence_md5} = md5_hex(lc $seqObj->{dna});
@@ -781,11 +784,25 @@ sub getMetadataFromGenBankFile {
 	print "Getting genome metadata from genbank file: $genbank_file ...\n";
 
 	open GB, "<$genbank_file" || return "Can't open genbank file: $genbank_file\n";
-	my @gb = <GB>;
+	my $gb;
+	my $in_contig = 0;
+	while (<GB>)
+	{
+	    if ($in_contig)
+	    {
+		if (!/^\s*\d/)
+		{
+		    $in_contig = 0;
+		}
+	    }
+	    else
+	    {
+		$gb .= $_;
+		$in_contig = /^ORIGIN/;
+	    }
+	}
 	close GB;
 
-	my $gb = join "", @gb;
-	
 	# parse metadata from genabnk comment 
 	$genome->{assembly_method} = $1 if $gb=~/Assembly Method\s*:: (.*)/;
 	$genome->{sequencing_depth} = $1 if $gb=~/Genome Coverage\s*:: (.*)/;
