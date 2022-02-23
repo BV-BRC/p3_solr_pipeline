@@ -864,7 +864,7 @@ sub getMetadataFromGenBankFile {
 	if ($genome->{genome_name}=~/Influenza (A|B|C|D)/){	
 		if ($genome->{strain}=~/\s*\([HN0-9-x]*\)\s*$/){
 			$genome->{serovar}=$1;
-			$genome->{strain}=~s/\s*\([HN0-9-x]*\)\s*$//;;	
+			$genome->{strain}=~s/\s*\([HN0-9-x]*\)\s*$//;	
 		}
 		if ($strain=~/(A|B|C|D)\/(.*?)\/(.*?)\/(.*?)\/(.*)/){ # type/host/location/identifier/year
 			$genome->{host_name} = $2; #unless $host_name_orig;
