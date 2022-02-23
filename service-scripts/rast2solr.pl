@@ -821,21 +821,19 @@ sub getMetadataFromGenBankFile {
 		# no strain or isolate
 	}
 
-	$strain=~s/ *\([A-Z][0-9][A-Z][0-9]\)$//; # remove subtype for influenza 
 	$genome->{strain} = $strain unless $strain=~/^ *(-|missing|na|n\/a|not available|not provided|not determined|nd|unknown) *$/i;
 	
 	$genome->{genome_name} .= " $genome->{strain}" if ($genome->{strain} && (not $genome->{genome_name}=~/$genome->{strain}/i));
 	$genome->{genome_name}=~s/\($genome->{strain}\)/$genome->{strain}/;
 
-	$genome->{segment} = $1 if $gb=~/\/segment="([^"]*)"/;
-	
+	$genome->{segment} = $1 if $gb=~/\/segment="([^"]*)"/ && (grep {$_=~/Bunyavirales|Reoviridae|Orthomyxoviridae/} @{$genome->{taxon_lineage_names}});
 	$genome->{serovar} = $1 if $gb=~/\/serotype="([^"]*)"/;
-
 	$genome->{geographic_location} = $1 if $gb=~/\/country="([^"]*)"/;
-	#$genome->{isolation_country} = $1 if $genome->{geographic_location}=~/^([^:]*):.*/;
-	
 	$genome->{host_name} = $1 if $gb=~/\/host="([^"]*)"/;
 	$genome->{lab_host} = $1 if $gb=~/\/lab_host="([^"]*)"/;
+	$genome->{isolation_source} = $1 if $gb=~/\/isolation_source="([^"]*)"/;
+	$genome->{collection_date} = $1 if $gb=~/\/collection_date="([^"]*)"/;
+	$genome->{culture_collection} = $1 if $gb=~/\/culture_collection="([^"]*)"/;
 
 	if ($gb=~/\/note="(passage.details|passage.history) *: *([^"]*) *"/){
 		$genome->{passage} = $1;
@@ -844,13 +842,26 @@ sub getMetadataFromGenBankFile {
 	}else{
 		# No passage info
 	} 
-	
-	$genome->{isolation_source} = $1 if $gb=~/\/isolation_source="([^"]*)"/;
-	
-	$genome->{collection_date} = $1 if $gb=~/\/collection_date="([^"]*)"/;
-	#$genome->{collection_year} = $1 if $genome->{collection_date}=~/(\d\d\d\d)/;
 
-	$genome->{culture_collection} = $1 if $gb=~/\/culture_collection="([^"]*)"/;
+	# For Influenza, get missing metadata from strain name	
+	if ($genome->{genome_name}=~/Influenza (A|B|C|D)/){	
+		if ($genome->{strain}=~/\s*\([HN0-9-x]*\)\s*$/){
+			$genome->{serovar}=$1;
+			$genome->{strain}=~s/\s*\([HN0-9-x]*\)\s*$//;;	
+		}
+		if ($strain=~/(A|B|C|D)\/(.*?)\/(.*?)\/(.*?)\/(.*)/){ # type/host/location/identifier/year
+			$genome->{host_name} = $2; #unless $host_name_orig;
+			$genome->{geographic_location} = $3 unless $genome->{geographic_location};
+			$genome->{collection_date} = $5 unless $genome->{collection_date};
+		}elsif($strain=~/(A|B|C|D)\/(.*?)\/(.*?)\/(.*?)/){ # type/location/identifier/year
+			$genome->{host_name} = "Homo sapiens";
+			$genome->{geographic_location} = $2 unless $genome->{geographic_location};
+			$genome->{collection_date} = $4 unless $genome->{collection_date};	
+		}else{
+			# strain is not expected format
+		}
+	}
+
 
 }
 
@@ -1229,9 +1240,11 @@ sub curateMetadata {
   	$genome->{subtype}=~s/"|\(|\)//g;
   	$genome->{subtype}= "" if $genome->{subtype}=~/^(unknown\|unidentified)$/i;
   	$genome->{subtype} = "Mixed" if $genome->{subtype}==~/mixed/i;
-		($genome->{htype}, $genome->{ntype}) = $genome->{subtype}=~/H0*([\d]+)N0*([\d]+)/;
+		($genome->{h_type}, $genome->{n_type}) = $genome->{subtype}=~/H0*([\d]+)N0*([\d]+)/;
+		
+		my %segment_alias = qw (1 PB2 2 PB1 3 PA 4 HA 5 NP 6 NA 7 MP 8 NS);
+		$genome->{segment} = $segment_alias{$genome->{segment}} if $segment_alias{$genome->{segment}};
 	}
-
 
 }
 
@@ -1263,7 +1276,6 @@ sub biosample2patricAttrib{
 		"host_subject_id" => "other_clinical:host_subject_id", 
 		"host_tissue_sampled" => "isolation_source",
 		"identified_by" => "additional_metadata:identified_by",
-		"isolate" => "additional_metadata:isolate", 
 		"isolation_source" => "isolation_source", 
 		"lab_host" => "lab_host", 
 		"lat_lon" => "other_environmental:lat_lon", 
