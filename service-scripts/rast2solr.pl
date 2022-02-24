@@ -405,10 +405,7 @@ sub getGenomeSequences {
 		$sequence->{plasmid} = $1 if $sequence->{description}=~/plasmid (\S*)\s*,/i;
 		$sequence->{segment} = $1	if $seqObj->{description}=~/segment (\S*)\s*,/i;
 
-		if ($seqObj->{dna})
-		{
-		    $sequence->{gc_content} = sprintf("%.2f", ($seqObj->{dna}=~tr/GCgc//)*100/length($seqObj->{dna}));
-		}
+		$sequence->{gc_content} = sprintf("%.2f", ($seqObj->{dna}=~tr/GCgc//)*100/length($seqObj->{dna})) if $seqObj->{dna};
 		$sequence->{length} = length($seqObj->{dna});
 		$sequence->{sequence} = lc($seqObj->{dna});
 		$sequence->{sequence_md5} = md5_hex(lc $seqObj->{dna});
@@ -786,22 +783,19 @@ sub getMetadataFromGenBankFile {
 	open GB, "<$genbank_file" || return "Can't open genbank file: $genbank_file\n";
 	my $gb;
 	my $in_contig = 0;
-	while (<GB>)
-	{
-	    if ($in_contig)
-	    {
-		if (!/^\s*\d/)
-		{
+	while (<GB>){
+		if ($in_contig){
+			if (!/^\s*\d/){
 		    $in_contig = 0;
-		}
-	    }
-	    else
-	    {
-		$gb .= $_;
-		$in_contig = /^ORIGIN/;
-	    }
+			}
+		}else{
+			$gb .= $_;
+			$in_contig = /^ORIGIN/;
+	  }
 	}
 	close GB;
+	
+	$genome->{host_name} = "Patent" if $gb=~/LOCUS.*PAT/;
 
 	# parse metadata from genabnk comment 
 	$genome->{assembly_method} = $1 if $gb=~/Assembly Method\s*:: (.*)/;
@@ -862,16 +856,16 @@ sub getMetadataFromGenBankFile {
 
 	# For Influenza, get missing metadata from strain name	
 	if ($genome->{genome_name}=~/Influenza (A|B|C|D)/){	
-		if ($genome->{strain}=~/\s*\([HN0-9-x]*\)\s*$/){
+		if ($genome->{strain}=~/\s*\(([HN0-9-x]*)\)\s*$/){
 			$genome->{serovar}=$1;
-			$genome->{strain}=~s/\s*\([HN0-9-x]*\)\s*$//;	
+			$genome->{strain}=~s/\s*\([HN0-9-x]*\)\s*$//;
 		}
-		if ($strain=~/(A|B|C|D)\/(.*?)\/(.*?)\/(.*?)\/(.*)/){ # type/host/location/identifier/year
-			$genome->{host_name} = $2; #unless $host_name_orig;
+		if ($genome->{strain}=~/(A|B|C|D)\/(.*?)\/(.*?)\/(.*?)\/(.*)/){ # type/host/location/identifier/year
+			$genome->{host_name} = $2 unless $genome->{host_name};
 			$genome->{geographic_location} = $3 unless $genome->{geographic_location};
 			$genome->{collection_date} = $5 unless $genome->{collection_date};
-		}elsif($strain=~/(A|B|C|D)\/(.*?)\/(.*?)\/(.*?)/){ # type/location/identifier/year
-			$genome->{host_name} = "Homo sapiens";
+		}elsif($genome->{strain}=~/(A|B|C|D)\/(.*?)\/(.*?)\/(.*?)/){ # type/location/identifier/year
+			$genome->{host_name} = "Homo sapiens" unless $genome->{host_name};
 			$genome->{geographic_location} = $2 unless $genome->{geographic_location};
 			$genome->{collection_date} = $4 unless $genome->{collection_date};	
 		}else{
@@ -1258,9 +1252,18 @@ sub curateMetadata {
   	$genome->{subtype}= "" if $genome->{subtype}=~/^(unknown\|unidentified)$/i;
   	$genome->{subtype} = "Mixed" if $genome->{subtype}==~/mixed/i;
 		($genome->{h_type}, $genome->{n_type}) = $genome->{subtype}=~/H0*([\d]+)N0*([\d]+)/;
-		
-		my %segment_alias = qw (1 PB2 2 PB1 3 PA 4 HA 5 NP 6 NA 7 MP 8 NS);
-		$genome->{segment} = $segment_alias{$genome->{segment}} if $segment_alias{$genome->{segment}};
+	}
+
+	# Segments labels for segmented viruses
+	$genome->{segment}=~s/^(segment|rna)\s*//i;
+	if (grep {$_=~/Influenza/} @{$genome->{taxon_lineage_names}}){		
+		#
+	}elsif(grep {$_=~/Bunyavirales/} @{$genome->{taxon_lineage_names}}){
+		#	
+	}elsif(grep {$_=~/Reoviridae/} @{$genome->{taxon_lineage_names}}){
+		#
+	}else{
+
 	}
 
 }

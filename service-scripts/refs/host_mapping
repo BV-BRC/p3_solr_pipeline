@@ -1702,7 +1702,6 @@ Swi	Pig	Nonhuman Mammal
 Swift tern	Tern	Avian
 Swiftlet	Swiftlet	Avian
 Swine	Pig	Nonhuman Mammal
-Swine, human		
 Syncerus caffer	African buffalo	Nonhuman Mammal
 Syncerus_caffer	African buffalo	Nonhuman Mammal
 Syrrhaptes paradoxus	Sandgrouse	Avian
@@ -1872,3 +1871,4 @@ Zea mays	Maize	Plant
 Zea mays subsp. mays	Maize	Plant
 Zebrafish	Zebrafish	Fish
 Zygodontomys brevicauda	Mouse	Nonhuman Mammal
+Patent	Patent	Lab
