@@ -1376,6 +1376,8 @@ sub readMetadataRefs {
 	    chomp $entry;
 	    my ($host_name, $host_common_name, $host_group) = $entry=~/(.*)\t(.*)\t(.*)/;
 	    $host_map{$host_name} = "$host_common_name\t$host_group";
+			$host_map{lc $host_name} = "$host_common_name\t$host_group";
+			$host_map{ucfirst lc $host_name} = "$host_common_name\t$host_group";
 	}
 	close FH;
     }
