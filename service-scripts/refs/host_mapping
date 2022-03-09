@@ -1,24 +1,58 @@
 HOST_NAME	HOST_COMMON_NAME	HOST_GROUP
+Aborted fetus (yili horse)	Horse	Nonhuman Mammal
 Accipiter gentilis	Goshawk	Avian
 Accipiter gentilis (goshawk)	Goshawk	Avian
 Accipiter gentilis schvedowi	Goshawk	Avian
 Acinonyx jubatus	Cheeta	Nonhuman Mammal
+Acridotheres fuscus	Jungle myna	Avian
+Acrocephalus scirpaceus 	Eurasian reed warbler 	Avian
+Acrocephalus scirpaceus (reed warbler)	Eurasian reed warbler 	Avian
+Actinidia	Eudicots	Plant
 Actinidia deliciosa	Kiwifruit	Plant
+Actinidia sp.	Eudicots	Plant
 Adelie penguin	Penguin	Avian
+Aedeomyia (ochler) taeniorhynchus 	Mosquito	Insect
+Aedeomyia squamipennis	Mosquito	Insect
+Aedes abnormalis	Mosquito	Insect
 Aedes aegypti	Yellow fever mosquito	Insect
+Aedes aegypti adult 	Yellow fever mosquito	Insect
+Aedes aegypti larvae 	Yellow fever mosquito	Insect
 Aedes africanus	Mosquito	Insect
+Aedes albifasciatus	Mosquito	Insect
 Aedes albopictus	Asian tiger mosquito	Insect
+Aedes canadensis 	Mosquito	Insect
+Aedes cantans	Mosquito	Insect
+Aedes cantans (mosquito) 	Mosquito	Insect
+Aedes caspius	Mosquito	Insect
+Aedes caspius (mosquito) 	Mosquito	Insect
+Aedes cataphylla 	Mosquito	Insect
+Aedes cf. mcintoshi/circumluteolus 	Mosquito	Insect
+Aedes cinereus 	Mosquito	Insect
+Aedes circumluteolus	Mosquito	Insect
+Aedes communis 	Mosquito	Insect
+Aedes communis (mosquito) 	Mosquito	Insect
+Aedes communis (punctor mosquito) 	Mosquito	Insect
+Aedes cumminsii 	Mosquito	Insect
+Aedes curtipes 	Mosquito	Insect
+Aedes cyprius (mosquito) 	Mosquito	Insect
 Aedes dalzieli	Mosquito	Insect
+Aedes dorsalis 	Mosquito	Insect
+Aedes durbanensis 	Mosquito	Insect
+Aedes excrucians (mosquito) 	Mosquito	Insect
+Aedes flavescens (mosquito) 	Mosquito	Insect
+Aedes fulvus 	Mosquito	Insect
 Aedes luteocephalus	Mosquito	Insect
 Aedes sp.	Mosquito	Insect
 Aedes sp. (mosquito)	Mosquito	Insect
 Aedes triseriatus	Mosquito	Insect
 Aedes triseriatus (mosquito)	Mosquito	Insect
 Aedes vexans	Mosquito	Insect
+Aedes vexans (mosquito)	Mosquito	Insect
 African oystercatcher	Oystercatcher	Avian
 African penguin	Penguin	Avian
 African starling	African Starling	Avian
 African stonechat	African Stonechat	Avian
+Agaricus bisporus	Mushroom	Fungi
 Air	Environment	Environment
 Aix galericulata	Duck	Avian
 Akodon azurae	Mouse	Nonhuman Mammal
@@ -32,10 +66,18 @@ Allium cepa (onion)	Onion	Plant
 Alopochen aegyptiaca	Egyptian Goose	Avian
 Alopochen aegyptiacus	Egyptian Goose	Avian
 Alouatta sp.	Monkey	Nonhuman Mammal
+Alveonasus lahorensis	Tick	Tick
+Alveonasus lahorensis (tick)	Tick	Tick
+Alviniconcha marisindica	Deep water sea snail	Gastropod
 Amazona albifrons	Parrot	Avian
 Amazona oratrix	Parrot	Avian
 Amblyomma (Theileriella) variegatum/Hipposideros jonesi (roundleaf bat)	Bat	Nonhuman Mammal
+Amblyomma americanum	Lone Star tick 	Tick
 Amblyomma gemma	Tick	Tick
+Amblyomma gemma (tick)	Tick	Tick
+Amblyomma lepidum	Tick	Tick
+Amblyomma testudinarium	Tick	Tick
+Amblyomma variegatum	Tropical bont tick 	Tick
 American bison	American Bison	Nonhuman Mammal
 American black duck	American Black Duck	Avian
 American coot	Coot	Avian
@@ -117,8 +159,12 @@ Anguilla anguilla	Eel	Fish
 Anopheles (ceilia) funestus	Mosquito	Insect
 Anopheles annulipes	Mosquito	Insect
 Anopheles barbirostris	Mosquito	Insect
+Anopheles funestus	African malaria mosquito	Insect
+Anopheles maculipennis (mosquito)	Mosquito	Insect
 Anopheles sinensis	Mosquito	insect
 Anopheles subpictus	Mosquito	Insect
+Anourosorex squamipes	Mole shrew 	Nonhuman Mammal
+Anourosorex yamashinai	Chinese mole shrew	Nonhuman Mammal
 Anous tenuirostris	Noddy	Avian
 Anser albifrons	Goose	Avian
 Anser albifrons (greater white-fronted goose)	Goose	Avian
@@ -137,20 +183,25 @@ Anseriformes sp.	Waterfowl	Avian
 Anthropoides virgo	Crane	Avian
 Antropoides virgo	Crane	Avian
 Apis mellifera	Honey Bee	Insect
+Aplysina aerophoba	Sponge	Sponge
 Apodemus	Mouse	Nonhuman Mammal
 Apodemus agrarius	Mouse	Nonhuman Mammal
 Apodemus chevrieri	Mouse	Nonhuman Mammal
 Apodemus flavicollis	Mouse	Nonhuman Mammal
 Apodemus peninsulae	Mouse	Nonhuman Mammal
 Apodemus sylvaticus	Mouse	Nonhuman Mammal
+apple	Apple	Plant
 Aquatic bird	Aquatic Bird	Avian
 Aquila chrysaetos (golden eagle)	Eagle	Avian
 Arabidopsis	Thale Cress	Plant
 Arabidopsis thaliana	Thale Cress	Plant
 Arachis hypogaea	Peanut	Plant
+Arachis hypogaea 'Gregory'	Peanut 	Plant
 Arachis hypogaea 'nc12c'	Peanut	Plant
+Arachis hypogaea 'Perry'	Peanut 	Plant
 Arachis hypogaea gregory	Peanut	Plant
 Arachis hypogaea nc12c	Peanut	Plant
+Arachis hypogaea NCV11	Peanut 	Plant
 Arachis hypogaea perry	Peanut	Plant
 Arbian camel	Arabian Camel	Nonhuman Mammal
 Arctic fox	Fox	Nonhuman Mammal
@@ -160,12 +211,18 @@ Ardeidae sp.	Heron	Avian
 Ardeola bacchus	Chinese Pond-Heron	Avian
 Arenaria interpres	Ruddy Turnstone	Avian
 Arenaria interpres (ruddy turnstone)	Ruddy Turnstone	Avian
+Argas hermanni	Tick	Tick
+Argas reflexus 	Tick	Tick
+Argas robertsi 	Tick	Tick
+Argas sp.	Tick	Tick
 Armenian gull	Armenian Gull	Avian
+Arthrobacter sp. ATCC 21022	Arthrobacter	Bacteria
 Artibeus lituratus	Bat	Nonhuman Mammal
 Artibeus lituratus (great fruit-eating bat)	Bat	Nonhuman Mammal
 Artibeus obscurus	Bat	Nonhuman Mammal
 Artibeus planirostris	Bat	Nonhuman Mammal
 Artibeus planirostris (bat)	Bat	Nonhuman Mammal
+Arvicola amphibius	Eurasian water vole 	Nonhuman Mammal
 Aselliscus stoliczkanus (Stoliczka's Asian trident bat)	Bat	Nonhuman Mammal
 Athene noctua	Owl	Avian
 Atlantic awning clam	Atlantic Awning Clam	Molluscs
@@ -211,11 +268,14 @@ Bat	Bat	Nonhuman Mammal
 bat BF_258I	Bat	Nonhuman Mammal
 bat BF_506I	Bat	Nonhuman Mammal
 bat ectoparasite	Bat	Nonhuman Mammal
-bat fly	Bat	Nonhuman Mammal
+bat fly	Bat fly	Insect
 bat(unknown species)	Bat	Nonhuman Mammal
+Bathymodiolus brooksi	Mussel	Bivalve
+Bathymodiolus mussel	Mussel	Bivalve
 Bean goose	Goose	Avian
 Bean goose(anser fabalis)	Goose	Avian
 Bean, phaseolus vulgaris	Kidney Bean	Plant
+beef cattle	Cattle	Nonhuman Mammal
 Bengal tiger in zoo	Tiger	Nonhuman Mammal
 Bewick's swan	Bewick's Swan	Avian
 Bewick's wren	Wren	Avian
@@ -225,6 +285,7 @@ big brown bat	Bat	Nonhuman Mammal
 Bikini ducks	Duck	Avian
 Bird	Bird	Avian
 Birds	Bird	Avian
+bison	Cattle	Nonhuman Mammal
 Black bellied whistling duck	Duck	Avian
 Black bulbul	Black Bulbul	Avian
 Black chicken	Chicken	Avian
@@ -243,8 +304,6 @@ Black-billed magpie	Black-Billed Magpie	Avian
 Black-crowned night heron	Heron	Avian
 Black-headed goose	Goose	Avian
 Black-headed gull	Black-Headed Gull	Avian
-Black-headed gull	Gull	Avian
-Black-legged kittiwake	Gull	Avian
 Black-legged kittywake	Black-Legged Kittiwake	Avian
 Black-legged tick	Black-Legged Tick	Tick
 Black-neck crane	Crane	Avian
@@ -276,11 +335,15 @@ Bok-choy	Bok-Choy	Plant
 Bolomys obscurus	Mouse	Nonhuman Mammal
 Bombycilla cedrorum	Waxwing	Avian
 Bombyx mori	Domestic Silkworm	Insect
+Boophilus annulatus 	Cattle tick	Tick
 Boriler	Chicken	Avian
+Bos grunniens	Domestic yak	Nonhuman Mammal
+Bos indicus	Zebu cattle	Nonhuman Mammal
 Bos primigenius	Cattlle	Nonhuman Mammal
 Bos taurus	Cow	Nonhuman Mammal
 Bos taurus (cattle)	Catttle	Nonhuman Mammal
 Bos taurus (cow)	Cattle	Nonhuman Mammal
+Bos taurus plasma	Cattle 	Nonhuman Mammal
 Bos taurus, calf	Cow	Nonhuman Mammal
 Bottlenose dolphin	Bottlenose Dolphin	Sea Mammal
 Bottlenose dolphin, tursiops truncatus	Bottlenose Dolphin	Sea Mammal
@@ -288,6 +351,7 @@ Bovine	Cow	Nonhuman Mammal
 Bovine calf	Cattle	Nonhuman Mammal
 Bovine fetus	Cattle	Nonhuman Mammal
 Boy	Human	Human
+Bradypus tridactylus	Pale-throated sloth	Nonhuman Mammal
 Brambling	Finch	Avian
 Brant	Goose	Avian
 Brant goose	Goose	Avian
@@ -298,6 +362,7 @@ Branta canadensis (canada goose)	Goose	Avian
 Branta hutchinsii	Goose	Avian
 Branta hutchinsii (cackling goose)	Goose	Avian
 Branta leucopsis	Goose	Avian
+Brassica napus	Rape	Plant
 Bread wheat	Bread Wheat	Plant
 Breeder chicken	Chicken	Avian
 Breeder duck	Duck	Avian
@@ -336,7 +401,8 @@ C6/36	Lab host	Lab
 Cackling goose	Goose	Avian
 Cairina moschata	Muscovy Duck	Avian
 Cairina moschata, muscovy duck	Muscovy Duck	Avian
-Cajanus cajan (pigeonpea)	Pigeon Pea	Plant
+Cajanus cajan	Pigeon pea 	Plant
+Cajanus cajan (pigeonpea)	Pigeon pea 	Plant
 Calf	Cattle	Plant
 Calidris alba	Sanderling	Avian
 Calidris alpina	Dunlin	Avian
@@ -352,10 +418,14 @@ California scrub-jay	Scrub Jay	Avian
 Callithrix jacchus	White-Tufted-Ear Marmoset	Nonhuman Mammal
 Callithrix jacchus (marmoset)	Marmoset	Nonhuman Mammal
 Callonetta leucophrys	Duck	Avian
+Calomys callosus	Large vesper mouse 	Nonhuman Mammal
 Calomys sp.	Rat	Nonhuman Mammal
 Calomys tener	Mouse	Nonhuman Mammal
 Camel	Camel	Nonhuman Mammal
+Camellia japonica	Japanese camellia 	Plant
+Camels 	Camel	Nonhuman Mammal
 Camelus dromedarius	Camel	Nonhuman Mammal
+Campylobacter jejuni	Campylobacter	Bacteria
 Campylorhamphus pucherani	Greater Scythebill	Avian
 Canada goose	Goose	Avian
 Canadian goose	Goose	Avian
@@ -371,20 +441,27 @@ Canis lupus famaliaris	Dog	Nonhuman Mammal
 Canis lupus familiaris	Dog	Nonhuman Mammal
 Canis lupus familiaris (dog)	Dog	Nonhuman Mammal
 Canis lupus familiaris breed miniature schnauzer	Dog	Nonhuman Mammal
+Canis mesomelas	Black-backed jackal	Nonhuman Mammal
 Canvasback	Canvasback	Avian
 Canvasback duck	Canvasback	Avian
 Cape cormorant	Cormorant	Avian
 Cape shoveller	Duck	Avian
 Cape teal	Cape Teal	Avian
 Cape teal/cape shoveller	Duck	Avian
+Capra aegagrus hircus	Goat	Nonhuman Mammal
 Capra hircus	Goat	Nonhuman Mammal
 Caprine	Goat	Nonhuman Mammal
 Capsicum annuum	Pepper	Plant
+Capsicum annuum (sweet pepper)	Pepper	Plant
+Capsicum sp.	Pepper	Plant
 Cardioderma cor (bat)	Bat	Nonhuman Mammal
+Carios pusillus 	Tick	Tick
+Carios vespertilionis 	Tick	Tick
 Carollia perspicillata	Bat	Nonhuman Mammal
 Carollia perspicillata (bat)	Bat	Nonhuman Mammal
 Caspian seal	Seal	Sea Mammal
 Cassava	Cassava	Plant
+Cassava, Manihot esculenta	Cassava	Plant
 Cat	Cat	Nonhuman Mammal
 Catfish	Catfish	Fish
 Catharus fuscescens	Veery	Avian
@@ -397,6 +474,7 @@ Catus	Cat	Nonhuman Mammal
 Cebus apella	Monkey	Nonhuman Mammal
 Cedar waxwing	Waxwing	Avian
 Celery	Celery	Plant
+Cercis canadensis	Eastern redbud	Plant
 Cercopithecus aethiops	Monkey	Nonhuman Mammal
 Cerdocyon thous	Fox	Nonhuman Mammal
 Chaerephon plicata (bat)	Bat	Nonhuman Mammal
@@ -452,13 +530,19 @@ Chlorocebus pygerythrus	Monkey	Nonhuman Mammal
 Chlorocebus sp.	Monkey	Nonhuman Mammal
 Chroicocephalus cirrocephalus	Gull	Avian
 Chroicocephalus maculipennis	Gull	Avian
+Chroicocephalus novaehollandiae	Silver gull 	Avian
 Chroicocephalus ridibundus	Gull	Avian
+chrysanthemum	Chrysanthemum	Plant
 Chuckar	Chukar	Avian
 Chukar	Chukar	Avian
 Chukka	Chukar	Avian
 Chukkar	Chukar	Avian
 Cicer arietinum	Chickpea	Plant
 Cinnamon teal	Cinnamon Teal	Avian
+Citrullus lanatus	Watermelon 	Plant
+Citrullus lanatus (watermelon)	Watermelon 	Plant
+Citrus sinensis	Sweet orange	Citrus sinensis
+Citrus sinensis cv. delta valencia	Orange	Plant
 Civet	Civet	Nonhuman Mammal
 Civet cat	Civet Cat	Nonhuman Mammal
 Clams (meretrix meretrix)	Clam	Molluscs
@@ -469,6 +553,7 @@ Clethrionomys rufocanus	Rodent	Nonhuman Mammal
 Cloacal swab_ece1	Mallard	Avian
 Clouded leopard	Leopard	Nonhuman Mammal
 Cockatoo	Cockatoo	Avian
+Coffea arabica	Coffee	Plant
 Coffee	Coffee	Plant
 Columba livia	Dove	Avian
 Columba livia (domestic pigeon)	Pigeon  	Avian
@@ -519,6 +604,7 @@ Corn	Maize	Plant
 Corn, zea mays	Maize	Plant
 Corn, zea mays subsp. mays	Maize	Plant
 Cornish cross	Chicken	Avian
+Cornitermes sp.	Termite	Insect
 Corvus brachyrhynchos	Crow	Avian
 Corvus brachyrynchos	Crow	Avian
 Corvus frugilegus	Rook	Avian
@@ -547,9 +633,13 @@ Crested goshawk	Goshawk	Avian
 Crested myna	Crested Myna	Avian
 Cricetulus griseus	Rodent	Nonhuman Mammal
 Crocidura lasiura	Shrew	Nonhuman Mammal
+Crocidura russula 	White-toothed shrew 	Nonhuman Mammal
+Crocidura shantungensis	Asian lesser white-toothed shrew 	Nonhuman Mammal
+Crocidura sp. 	White-toothed shrew	Nonhuman Mammal
 Crocuta crocuta	Hyena	Nonhuman Mammal
 Crow	Crow	Avian
 Crowned cormorant	Cormorant	Avian
+Ctenopharyngodon idella	Grass carp	Fish
 Ctenopharyngodon idellus	Cucumber	Plant
 Cucumber	Cucumber	Plant
 Cucumis sativus	Cucumber	Plant
@@ -559,6 +649,7 @@ Culex pipiens	Northern House Mosquito	Insect
 Culex pipiens (mosquito)	Northern House Mosquito	Insect
 Culex pipiens group	Mosquito	Insect
 Culex pipiens pallens	Mosquito	Insect
+Culex poicilipes	Mosquito	Insect
 Culex pseudovishnui	Mosquito	Insect
 Culex quinquefasciatus	Southern House Mosquito	Insect
 Culex restuans	Mosquito	Insect
@@ -566,8 +657,13 @@ Culex sp.	Mosquito	Insect
 Culex tarsalis	Mosquito	Insect
 Culex theileri	Mosquito	Insect
 Culex tritaeniorhynchus	Mosquito	Insect
+Culicidae	Mosquito	Insect
 Culicoides brevitarsis	Mosquito	Insect
+Culicoides imicola	Midge	Insect
+Culicoides obsoletus	Midge	Insect
+Culicoides oxystoma	Midge	Insect
 Culicoides sp.	Mosquito	Insect
+Culiseta inornata	Winter marsh mosquito 	Insect
 Culiseta melanura	Mosquito	Insect
 Curlew	Curlew	Avian
 Curlew sandpiper	Curlew Sandpiper	Avian
@@ -585,7 +681,8 @@ Cygnus olor	Mute Swan	Avian
 Cygnus olor (mute swan)	Mute Swan	Avian
 Cygnus sp.	Swan	Avian
 Cynopterus sphinx	Bat	Nonhuman Mammal
-Cyprinus carpio	Bat	Nonhuman Mammal
+Cyprinus carpio	Common carp	Fish
+Cyprinus carpio (common carp)	Common carp	Fish
 Dabbling duck	Duck	Avian
 Dairy cattle	Cow	Nonhuman Mammal
 Dairy cow	Cow	Nonhuman Mammal
@@ -603,11 +700,17 @@ Delphinapterus leucas (beluga whale)	Beluga Whale	Sea Mammal
 Dendrocygna javanica	Duck	Avian
 Dendrocygna viduata	White-Faced Whistling-Duck	Avian
 Dermacentor andersoni	Rocky Mountain wood tick	Tick
+Dermacentor marginatus	Tick	Tick
+Dermacentor marginatus (tick) 	Tick	Tick
+Dermacentor nuttalli	Tick	Tick
+Dermacentor occidentalis	Tick	Tick
+Dermacentor reticulatus	Tick	Tick
+Dermacentor silvarum 	Tick	Tick
 Deshi chicken(gallus gallus domesticus)	Chicken	Avian
 Desmodus rotundus	Bat	Nonhuman Mammal
 Desmodus rotundus (common vampire bat)	Bat	Nonhuman Mammal
 Desmodus rotundus (vampire bat)	Bat	Nonhuman Mammal
-Desmodus rotundus (vampire bat)	Bat	Nonhuman Mammal
+Diaphorina citri	Asian citrus psyllid 	Insect
 Diseased pig	Pig	Nonhuman Mammal
 Dog	Dog	Nonhuman Mammal
 Dolphin	Bottlenose Dolphin	Sea Mammal
@@ -655,7 +758,9 @@ Eagle owl	Eagle Owl	Avian
 Eastern buzzard	Eastern Buzzard	Avian
 Eastern cottonwood, populus deltoides	Cottonwood Poplar	Plant
 Eastern oyster	Eastern Oyster	Molluscs
+Ectocarpus subulatus	Brown algae	Algae
 Eg	Egret	Avian
+egg laying hen	Chicken	Avian
 Egret	Egret	Avian
 Egretta garzetta	Little Egret	Avian
 Egyptian goose	Goose	Avian
@@ -667,6 +772,7 @@ Elegant tern	Tern	Avian
 Elephant seal	Seal	Sea Mammal
 Elephas maximus	Elephant	Nonhuman Mammal
 Elk	Elk	Nonhuman Mammal
+Embiratermes neotenicus	Termite	Insect
 Embryonated chicken egg	Lab host	Lab
 Embryonated chicken eggs	Lab host	Lab
 Embryonated egg	Lab host	Lab
@@ -689,6 +795,8 @@ Environmental fecal	Environment	Environment
 Environmental waters	Environment	Environment
 Eonycteris spelaea	Bat	Nonhuman Mammal
 Eonycteris spelaea (Bat)	Bat	Nonhuman Mammal
+Eothenomys cachinus	Kachin red-backed vole 	Nonhuman Mammal
+Eothenomys regulus	Korean red-backed vole 	Nonhuman Mammal
 Epomophorus labiatus (bat)	Bat	Nonhuman Mammal
 Epomophorus wahlbergi (Lagos bat)	Bat	Nonhuman Mammal
 Eptatretus burgeri	Hagfish	Fish
@@ -696,7 +804,6 @@ Eptesicus diminutus (bat)	Bat	Nonhuman Mammal
 Eptesicus furinalis	Bat	Nonhuman Mammal
 Eptesicus furinalis (bat)	Bat	Nonhuman Mammal
 Eptesicus fuscus	Bat	Nonhuman Mammal
-Eptesicus fuscus (big brown bat)	Bat	Nonhuman Mammal
 Eptesicus fuscus (big brown bat)	Bat	Nonhuman Mammal
 Eptesicus nilssoni (northern bat)	Bat	Nonhuman Mammal
 Eptesicus nilssonii (bat)	Bat	Nonhuman Mammal
@@ -706,6 +813,7 @@ Eptesicus serotinus (serotine bat)	Bat	Nonhuman Mammal
 Eq	Horse	Nonhuman Mammal
 Equine	Horse	Nonhuman Mammal
 Equus	Horse	Nonhuman Mammal
+Equus asinus breed pantesco	Ass	Nonhuman Mammal
 Equus caballus	Horse	Nonhuman Mammal
 Equus caballus (horse)	Horse	Nonhuman Mammal
 Equus caballus ferus	Horse	Nonhuman Mammal
@@ -714,6 +822,8 @@ Equus sp.	Horse	Nonhuman Mammal
 Erinaceus europaeus	Hedgehog	Nonhuman Mammal
 Erythrocebus patas	Monkey	Nonhuman Mammal
 Escherichia coli	Escherichia coli	Bacteria
+Escherichia coli C	Escherichia	Bacteria
+Escherichia coli K-12 MG1655	Escherichia	Bacteria
 Eurasian coot	Eurasian Coot	Avian
 Eurasian curlew	Curlew	Avian
 Eurasian eagel owl	Eurasian Eagle-Owl	Avian
@@ -742,8 +852,10 @@ Feces	Environment	Environment
 Feline	Cat	Nonhuman Mammal
 Felis catus	Cat	Nonhuman Mammal
 Felis catus (cat)	Cat	Nonhuman Mammal
+Felis catus (domestic cat)	Cat	Nonhuman Mammal
 Felis domesticus	Cat	Nonhuman Mammal
 Felis sp.	Cat	Nonhuman Mammal
+Female	Human	Human
 Feral duck	Duck	Avian
 Feral migratory ducks	Duck	Avian
 Feral pigeon	Feral Pigeon	Avian
@@ -755,11 +867,14 @@ Ferruginous pochard	Pochard	Avian
 Ficus carica	Fig tree	Plant
 Fighting bird	Bird	Avian
 Finch	Finch	Avian
+fish	Fish	Fish
 Fish, nile tilapia	Tilapia	Fish
 Fish, tilapia	Tilapia	Fish
 Fish, tilapia, oreochromis niloticus	Tilapia	Fish
 Flamingo	Flamingo	Avian
 Flat-faced bat	Bat	Nonhuman Mammal
+Flavobacterium columnare	Flavobacterium	Bacteria
+Flavobacterium sp. BAL314	Flavobacterium	Bacteria
 Foal	Horse	Nonhuman Mammal
 Forest musk deer	Musk Deer	Nonhuman Mammal
 Fowl	Fowl	Avian
@@ -769,9 +884,11 @@ Fox squirrel	Fox Squirrel	Nonhuman Mammal
 Fpv	Fowl Plague Virus	Avian
 Franklin seagull	Gull	Avian
 Franklin's seagull	Gull	Avian
+Frankliniella occidentalis	Western flower thrips	Insect
 Free-living	Null	Null
 French bean	Kidney Bean	Plant
 French bean, phaseolus vulgaris	Kidney Bean	Plant
+freshwater atyid shrimp	Freshwater atyid shrimp	Crustaceans
 Fringilla montifringilla	Finch	Avian
 Frog	Frog	Amphibian
 Frugivorous bat	Bat	Nonhuman Mammal
@@ -794,6 +911,7 @@ Gallus gallus (broiler)	Chicken	Avian
 Gallus gallus (chicken)	Chicken	Avian
 Gallus gallus breed broiler	Chicken	Avian
 Gallus gallus domesticus	Chicken	Avian
+Gallus gallus domesticus (broiler)	Chicken	Avian
 Gallus gallus domesticus (chicken)	Chicken	Avian
 Gallus gallus domesticus, chicken	Chicken	Avian
 Gallus gallus embryo	Chicken	Avian
@@ -832,9 +950,11 @@ Golden-crowned kinglet	Kinglet	Avian
 Goldeneye duck	Common Goldeneye	Avian
 Goosander	Common Merganser	Avian
 Goose	Goose	Avian
+Gordonia terrae 3612	Gordonia	Bacteria
 Gorilla	Gorilla	Nonhuman Mammal
 Gorilla beringei beringei	Gorilla	Nonhuman Mammal
 Gorilla gorilla	Gorilla	Nonhuman Mammal
+Gorilla gorilla gorilla	Gorilla	Nonhuman Mammal
 Goshawk	Goshawk	Avian
 Grallina cyanoleuca	Magpie-Lark	Avian
 Grape	Grape	Plant
@@ -901,11 +1021,22 @@ Gull	Gull	Avian
 Guniea fowl	Guineafowl	Avian
 Gunnisons prairie dog	Prairie Dog	Nonhuman Mammal
 Gyrfalcon	Falcon	Avian
+Haemaphysalis concinna 	Tick	Tick
+Haemaphysalis doenitzi 	Tick	Tick
 Haemaphysalis flava	Tick	Tick
-Haemaphysalis longicornis	Asian longhorned tick	Tick
+Haemaphysalis flava (Tick) 	Tick	Tick
+Haemaphysalis formsensis 	Tick	Tick
+Haemaphysalis hystricis 	Tick	Tick
+Haemaphysalis intermedia	Tick	Tick
+Haemaphysalis longicornis	Longhorned tick 	Tick
+Haemaphysalis parva 	Tick	Tick
+Haemaphysalis parva (tick)	Tick	Tick
+Haemaphysalis punctata (tick)	Tick	Tick
+Haemaphysalis sulcata	Tick	Tick
 Haematopus ater	Oystercatcher	Avian
 Haematopus ostralegus (eurasian oystercatcher)	Oystercatcher	Avian
 Haematopus palliatus	Oystercatcher	Avian
+Halophytophthora sp. 04	Marine Oomycete	Protist
 Hamster	Hamster	Nonhuman Mammal
 Harbor seal	Seal	Sea Mammal
 Harbour seal	Seal	Sea Mammal
@@ -915,6 +1046,8 @@ Harrier	Dog	Nonhuman Mammal
 Hartlaubs gull	Gull	Avian
 Hawk	Hawk	Avian
 Hazelnut	Hazelnut	Plant
+Healthy pig	Pig	Nonhuman Mammal
+healthy pig	Pig	Nonhuman Mammal
 Helmeted guineafowl	Guineafowl	Avian
 Hep-2	Lab host	Lab
 Hermit thrush	Thrush	Avian
@@ -939,7 +1072,9 @@ Home sapiens	Human	Human
 Homo	Human	Human
 Homo sapien	Human	Human
 Homo sapiens	Human	Human
+Homo sapiens sapiens	Human	Human
 Honey bee	Honey Bee	Insect
+honeybee	Honeybee	Insect
 Hooded crane	Crane	Avian
 Hooded merganser	Hooded Merganser	Avian
 Hooded vulture	Hooded Vulture	Avian
@@ -964,24 +1099,58 @@ Household turkey	Turkey	Avian
 Human	Human	Human
 Human (homo sapiens)	Human	Human
 Human (infant)	Human	Human
+Human sapiens	Human	Human
 Human, homo sapiens	Human	Human
+Hyalomma aegyptium	Tick	Tick
+Hyalomma anatolicum	Tick	Tick
 Hyalomma asiaticum	Tick	Tick
 Hyalomma asiaticum (tick)	Tick	Tick
+Hyalomma asiaticum asiaticum 	Tick	Tick
+Hyalomma detritum	Tick	Tick
+Hyalomma detritum ticks from cattle	Tick	Tick
+Hyalomma dromedarii	Tick	Tick
+Hyalomma excavatum	Tick	Tick
+Hyalomma impeltatum	Tick	Tick
+Hyalomma intermedia	Tick	Tick
+Hyalomma lusitanicum	Tick	Tick
 Hyalomma marginatum	Tick	Tick
+Hyalomma marginatum (tick)	Tick	Tick
+Hyalomma marginatum (ticks)	Tick	Tick
+Hyalomma marginatum marginatum	Tick	Tick
+Hyalomma marginatum marginatum (tick)	Tick	Tick
+Hyalomma marginatum marginatum ticks from cattle 	Tick	Tick
+Hyalomma marginatum margintum ticks from cattle 	Tick	Tick
+Hyalomma marginatum rufipes 	Tick	Tick
+Hyalomma rufipes 	Tick	Tick
+Hyalomma scupense 	Tick	Tick
+Hyalomma sp.	Tick	Tick
+Hyalomma sp. (tick)	Tick	Tick
+Hyalomma truncatum	Small smooth bont-legged tick 	Tick
+Hydrochoerus hydrochaeris	Capybara	Nonhuman Mammal
 Hylomyscus simus	Mouse	Nonhuman Mammal
+Hymenocallis littoralis Salisb.	Beach spider lily 	Plant
 Iceland gull	Iceland Gull	Avian
 Ichthyaetus melanocephalus	Gull	Avian
 Icteria virens	Chat	Avian
 Indian peafowl	Peafowl	Avian
 Infant	Human	Human
+Insect	Insect	Insect
 insectivorous bat	Bat	Nonhuman Mammal
 Isabelline wheatear	Wheatear	Avian
+Ixodes (Ceratixodes) putus	Tick	Tick
+Ixodes (Ceratixodes) uriae	Tick	Tick
 Ixodes pavlovskyi	Tick	Tick
 Ixodes persulcatus	Taiga Tick	Tick
+Ixodes persulcatus tick	Taiga tick	Tick
+Ixodes redikorzevi 	Tick	Tick
 Ixodes ricinus	Castor bean tick	Tick
+Ixodes ricinus (male) tick	Castor bean tick	Tick
 Ixodes ricinus (tick)	Castor bean tick	Tick
+Ixodes ricinus tick	Castor bean tick	Tick
 Ixodes scapularis	Black-Legged Tick	Tick
+Ixodes signatus (tick)	Tick	Tick
 Ixodes uriae	Seabird tick	Tick
+Ixodes uriae (tick)	Tick	Tick
 Ixodida sp.	Tick	Tick
 Jackal	Jackal	Nonhuman Mammal
 Jackal buzzard	Hawk	Avian
@@ -989,6 +1158,7 @@ Jackdraw	Jackdaw	Avian
 Jaguar	Jaguar	Nonhuman Mammal
 Japanese quail	Japanese Quail	Avian
 Japanese white-eye	Japanese White-Eye	Avian
+Jujube	Red date	Plant
 Junco hyemalis oregonus	Junco	Avian
 Jungle crow	Crow	Avian
 Juvenile swan	Swan	Avian
@@ -1000,22 +1170,28 @@ Kestelfalcon	Falcon	Avian
 Khaki campbell duck	Duck	Avian
 Kiwi	Kiwifruit	Plant
 Kiwifruit	Kiwifruit	Plant
+Klebsiella pneumoniae	Klebsiella	Bacteria
 Knot	Knot	Avian
 Koi	Carp	Fish
 Korean native chicken	Chicken	Avian
 Korean_native_chicken	Chicken	Avian
 L20b	Lab host	Lab
+Labiotermes labralis	Termites	Insect
 Laboratory-derived	Lab host	Lab
+Lactating dairy cow	Cattle	Nonhuman Mammal
+Lactococcus lactis	Lactococcus	Bacteria
 Lactuca sativa	Lettuce	Plant
 Lagurus lagurus	Mouse	Nonhuman Mammal
 Lama glama	Llama	Nonhuman Mammal
 Lamb	Sheep	Nonhuman Mammal
 Laodelphax striatellus	Planthopper	Insect
 Large billed crow	Crow	Avian
+large pool of wild-caught Drosophila (mixed D. ananassae, D. melanogaster, D. malerkotliana, and Scaptodrosophila latifasciaeformis)	Fly	Insect
 Large-billed crow	Large-Billed Crow	Avian
 Laridae sp.	Gull	Avian
 Larus argentatus	European Herring Gull	Avian
 Larus argentatus (herring gull)	European Herring Gull	Avian
+Larus argentatus (seagull)	European herring gull 	Avian
 Larus canus	Mew Gull	Avian
 Larus dominicanus	Kelp Gull	Avian
 Larus fuscus	Gull	Avian
@@ -1043,7 +1219,9 @@ Layer hen	Chicken	Avian
 Layers	Chicken	Avian
 Laying duck	Duck	Avian
 Least sandpiper	Least Sandpiper	Avian
+Lens culinaris	Lentil	Plant
 Leopard	Leopard	Nonhuman Mammal
+Leptonychotes weddellii	Weddell seal 	Nonhuman Mammal
 Lepus europaeus	Rabbit	Nonhuman Mammal
 Lesser black-backed gull	Gull	Avian
 Lesser kestrel	Lesser Kestrel	Avian
@@ -1082,6 +1260,8 @@ Lophodytes cucullatus	Hooded Merganser	Avian
 Loriidae sp. (loriinae subfamily)	Parrot	Avian
 Loxodonta africana	Elephant	Nonhuman Mammal
 Lttle grebe	Lttle Grebe	Avian
+Lutzomyia sp.	Sand fly	Insect
+Lycopersicon esculentum	Tomato	Plant
 Ma104	Lab host	Lab
 Macaca fascicularis	Macaque	Nonhuman Mammal
 Macaca fuscata	Macaque	Nonhuman Mammal
@@ -1097,6 +1277,7 @@ Magpie robin	Magpie Robin	Avian
 Magpie-robin	Magpie Robin	Avian
 Maize	Maize	Plant
 Maize, zea mays	Maize	Plant
+Male	Human	Human
 Mallard	Mallard	Avian
 Mallard (anas platyrhynchos)	Mallard	Avian
 Mallard and american black duck hybrid	Mallard	Avian
@@ -1105,6 +1286,8 @@ Mallard duck, anas platyrhynchos	Mallard	Avian
 Mallard x black duck	Mallard-Black Duck Hybrid	Avian
 Mallard-black duck hybrid	Mallard-Black Duck Hybrid	Avian
 Mallard(anas platyrhynchos)	Mallard	Avian
+malus	Apple	Plant
+Malus domestica	Apple	Plant
 Man	Human	Human
 Mandarin duck	Duck	Avian
 Mandrillus sphinx	Mandrill	Nonhuman Mammal
@@ -1119,6 +1302,7 @@ Mareca strepera	Gadwall	Avian
 Marine sponge	Marine Sponge	Other
 Market	Environment	Environment
 Marmoset, callithrix jacchus	White-Tufted-Ear Marmoset	Nonhuman Mammal
+marmot	Marmot	Nonhuman Mammal
 Marmota	Marmot	Nonhuman Mammal
 Marsh harrier	Harrier	Avian
 Mastomys	Rat	Nonhuman Mammal
@@ -1131,6 +1315,7 @@ Mdck	Lab host	Lab
 Meat	Null	Null
 Meat duck	Duck	Avian
 Medicago sativa	Alfalfa	Plant
+Medicago truncatula	Barrel medic	Plant
 Mediterranean gull	Gull	Avian
 Meerkat	Meerkat	Nonhuman Mammal
 Melanitta americana	Black Scoter	Avian
@@ -1143,6 +1328,7 @@ Meleagris gallopavo	Turkey	Avian
 Meleagris gallopavo (turkey)	Turkey	Avian
 Melogale moschata (chinese ferret badger)	Ferret	Nonhuman Mammal
 Melogale moschata (Ferret badger)	Ferret	Nonhuman Mammal
+melon	Melon	Plant
 Melospiza melodia	Sparrow	Avian
 Mephitis mephitis	Skunk	Nonhuman Mammal
 Mergus albellus	Smew	Avian
@@ -1153,6 +1339,7 @@ Mesocricetus auratus (Syrian hamster)	Golden Hamster	Nonhuman Mammal
 Mesocricetus auratus (Syrian hamster) strain Z3	Golden Hamster	Nonhuman Mammal
 Mew gull	Mew Gull	Avian
 Mexican duck	Duck	Avian
+Micaelamys namaquensis	Namaqua Micaelamys 	Nonhuman Mammal
 Mice,	Mouse	Nonhuman Mammal
 Microcarbo niger	Cormorant	Avian
 Microchiroptera	Bat	Nonhuman Mammal
@@ -1161,10 +1348,16 @@ Microeca fascinans	Flycatcher	Avian
 Micropteropus pusillus	Bat	Nonhuman Mammal
 Microtus agrestis	Vole	Nonhuman Mammal
 Microtus arvalis	Vole	Nonhuman Mammal
+Microtus fortis	Reed vole	Nonhuman Mammal
+Microtus majori	Major's pine vole 	Nonhuman Mammal
 Microtus maximowiczii	Vole	Nonhuman Mammal
+midges	Midges	Insect
 Migratory bird	Bird	Avian
+Migratory birds	Migratory birds	Avian
 Migratory duck	Duck	Avian
 Migratory waterfowl	Waterfowl	Avian
+millipede	Millipedes	Insect
+millipedes	Millipedes	Insect
 Miniopterus africanus (bat)	Bat	Nonhuman Mammal
 Miniopterus fuliginosus	Bat	Nonhuman Mammal
 Miniopterus inflatus (bat)	Bat	Nonhuman Mammal
@@ -1176,21 +1369,26 @@ Miniopterus schreibersii (bat)	Bat	Nonhuman Mammal
 Mink	Mink	Nonhuman Mammal
 Mirounga angustirostris	Seal	Sea Mammal
 Mirounga angustirostris (northern elephant seal)	Seal	Sea Mammal
+Mirounga leonina	Southern elephant seal 	Nonhuman Mammal
 Misc	Null	Null
 Misc.	Null	Null
+mixed pool of mosquitoes	Mosquito	Insect
 Molossus molossus (bat)	Bat	Nonhuman Mammal
 Mongolian gerbil	Mongolian Gerbil	Avian
 Mongolian gull	Gull	Avian
 Mongoose	Mongoose	Nonhuman Mammal
 Monkey	Monkey	Nonhuman Mammal
+monkey (Callithrix sp.)	Primates	Nonhuman Mammal
 Moorhen	Moorhen	Avian
 Moscovy duck	Duck	Avian
+mosqiuto pool	Mosquito	Insect
 Mosquito	Mosquito	Insect
 Mottled duck	Duck	Avian
 Mountain hawk-eagle	Eagle	Avian
 Mourning dove	Dove	Avian
 Mouse	Mouse	Nonhuman Mammal
 Mulard duck	Duck	Avian
+mulberry	Mulberry	Plant
 Mule	Mule	Nonhuman Mammal
 Mule deer	Mule Deer	Nonhuman Mammal
 Mule duck	Duck	Avian
@@ -1198,22 +1396,26 @@ Munia	Munia	Avian
 Murre	Murre	Avian
 Mus musculoides	Mouse	Nonhuman Mammal
 Mus musculus	Mouse	Nonhuman Mammal
+Mus musculus domesticus	Mouse	Nonhuman Mammal
 Muscovy duck	Muscovy Duck	Avian
 Muscovy duck embryonic fibroblasts	Lab host	Lab
 Muskrat	Rat	Nonhuman Mammal
 Mustela putorius (ferret)	Ferret	Nonhuman Mammal
 Mustela putorius furo	Ferret	Nonhuman Mammal
 Mustela putorius furo (ferret)	Ferret	Nonhuman Mammal
-Mustela putorius furo (Ferret)	Ferret	Nonhuman Mammal
 Mustela sp.	Weasel	Nonhuman Mammal
 Mustela vison	Ferret	Nonhuman Mammal
 Mute swan	Mute Swan	Avian
+Mycale hentscheli	Sponge	Sponge
+Mycobacterium smegmatis mc2 155	Mycobacterium	Bacteria
 Myiopsitta monachus	Parrot	Avian
 Myna	Myna	Avian
 Mynah	Myna	Avian
 Mynas	Myna	Avian
 Mynnah	Myna	Avian
 Myodes glareolus	Vole	Nonhuman Mammal
+Myodes rufocanus	Grey red-backed vole	Nonhuman Mammal
+Myodes rufocanus bedfordiae	Grey red-backed vole 	Nonhuman Mammal
 Myotis blythii (bat)	Bat	Nonhuman Mammal
 Myotis blythii (lesser mouse-eared bat)	Bat	Nonhuman Mammal
 Myotis chinensis (mouse-eared bat)	Bat	Nonhuman Mammal
@@ -1224,6 +1426,7 @@ Myotis daubentonii (bat)	Bat	Nonhuman Mammal
 Myotis emarginatus (Geoffroy's bat)	Bat	Nonhuman Mammal
 Myotis lucifugus	Bat	Nonhuman Mammal
 Myotis myotis (greater mouse-eared bat)	Bat	Nonhuman Mammal
+Myotis mystacinus	Whiskered bat 	Nonhuman Mammal
 Myotis nigricans	Bat	Nonhuman Mammal
 Myotis ricketti	Bat	Nonhuman Mammal
 Myotis sp.	Bat	Nonhuman Mammal
@@ -1237,15 +1440,21 @@ Natrix natrix	Snake	Reptile
 Natural	Null	Null
 Necrosyrtes monachus	Hooded Vulture	Avian
 Nematode	Nematode	Nematode
+Neocapritermes taracua	Termites	Insect
+Neoporphyra haitanensis	Seaweed	Plant
 Neoromicia capensis	Bat	Nonhuman Mammal
+Neoscona nautica	Brown sailor spider 	Insect
 Neotoma albigula	Rat	Nonhuman Mammal
 Neotoma cinerea	Rat	Nonhuman Mammal
 Neotoma leucodon	Rat	Nonhuman Mammal
+Neotoma micropus	Southern Plains woodrat 	Nonhuman Mammal
 neotropical bat	Bat	Nonhuman Mammal
 Neovison vison	Mink	Nonhuman Mammal
 Neovison vison (mink)	Mink	Nonhuman Mammal
 Neurotrichus gibbsii	Mole	Nonhuman Mammal
 Nicotiana benthamiana	Benth	Plant
+Nicotiana tabacum	Tobacco	Plant
+Nicotiana tabacum (tobacco)	Tobacco	Plant
 Night heron	Heron	Avian
 Nightingale	Common Nightingale	Avian
 Nile tilapia	Tilapia	Fish
@@ -1256,6 +1465,7 @@ Noddy	Noddy	Avian
 non-hematophagous bat	Bat	Nonhuman Mammal
 Non-psittacine	Loriinae	Avian
 None	Null	Null
+nonhuman primate	nonhuman primate	Nonhuman Mammal
 Northen pintail	Northern Pintail	Avian
 Northern goshawk	Goshawk	Avian
 Northern lapwing	Plover	Avian
@@ -1265,7 +1475,9 @@ Northern waterthrush	Thrush	Avian
 Northern_shoveler	Northern Shoveler	Avian
 Norway rat, rattus norvegicus	Rat	Nonhuman Mammal
 Not applicable	Null	Null
+not applicable	Null	Null
 Not available	Environment	Environment
+not available: not collected	Null	Null
 Not available: to be reported later	Null	Null
 Not collected	Null	Null
 Not known	Null	Null
@@ -1282,15 +1494,20 @@ Oats	Oat	Plant
 Ob/ob mouse	Mouse	Nonhuman Mammal
 Obscured	Null	Null
 Ochlerotatus camptorhynchus	Mosquito	Insect
+Ochlerotatus caspius	Mosquito	Insect
+Ochlerotatus scapularis	Mosquito	Insect
 Ochlerotatus sticticus	Mosquito	Insect
 Ochlerotatus taeniorhynchus	Mosquito	Insect
 Ochlerotatus triseriatus	Mosquito	Insect
 Ochlerotatus trivittatus	Mosquito	Insect
+Ocimum basilicum	Sweet basil	Plant
 Odocoileus virginianus	White-Tailed Deer	Nonhuman Mammal
 Oeciacus vicarius	Swallow Bug	Insect
 Oeciacus vicarius (swallow bug)	Swallow Bug	Insect
 Ogol chicken	Chicken	Avian
 Old layer	Bird	Avian
+Oligoryzomys costaricensis	Rat	Nonhuman Mammal
+Oligoryzomys flavescens	Rat	Nonhuman Mammal
 Oligoryzomys fornesi	Mouse	Nonhuman Mammal
 Oligoryzomys fulvescens (fulvous pygmy rice rat)	Rat	Nonhuman Mammal
 Oligoryzomys longicaudatus	Rat	Nonhuman Mammal
@@ -1313,19 +1530,39 @@ Oporornis tolmiei	Warbler	Avian
 Opossum	Opossum	Nonhuman Mammal
 Orchard grass	Orchard Grass	Plant
 Oregon junco	Junco	Avian
+Oreochromis niloticus	Nile tilapia 	Fish
 Oriental magpie robin	Magpie Robin	Avian
 Oriental white stork	Stork	Avian
+Ornithodoros alactagalis (tick)	Tick	Tick
+Ornithodoros amblus	Tick	Tick
+Ornithodoros asperus (tick)	Tick	Tick
+Ornithodoros capensis	Tick	Tick
+Ornithodoros capensis and/or O. denmarki (ticks)	Tick	Tick
+Ornithodoros capensis group	Tick	Tick
+Ornithodoros denmarki	Tick	Tick
+Ornithodoros erraticus	Tick	Tick
+Ornithodoros erraticus (tick)	Tick	Tick
+Ornithodoros maritimus	Tick	Tick
+Ornithodoros sp.	Tick	Tick
+Ornithodoros sp. (tick)	Tick	Tick
+Ornithodoros tadaridae	Tick	Tick
+Ornithodoros tartakovskyi (tick)	Tick	Tick
+Ornithodoros verrucosus (Tick)	Tick	Tick
 Ornithodorus porcinus porcinus (tick)	Tick	Tick
 Ortalis vetula	Chachalaca	Avian
 Oryctolagus cuniculus	Rabbit	Nonhuman Mammal
 Oryctolagus cuniculus algirus	Rabbit	Nonhuman Mammal
 Oryza sativa	Rice	Plant
+Oryza sativa (rice)	Rice	Plant
+Oryza sativa japonica	Rice	Plant
 Ostrich	Ostrich	Avian
+Other	Null	Null
 Otocyon megalotis (bat-eared fox)	Fox	Nonhuman Mammal
 Otomops martiensseni (bat)	Bat	Nonhuman Mammal
 Ovibos moschatus	Muskox	Nonhuman Mammal
 Ovine	Sheep	Nonhuman Mammal
 Ovis aries	Sheep	Nonhuman Mammal
+Ovis orientalis aries	Mouflon	Nonhuman Mammal
 Owl	Owl	Avian
 Owston's civet	Civet	Nonhuman Mammal
 Oyster	Oyster 	Molluscs
@@ -1348,14 +1585,17 @@ Pan troglodytes troglodytes	Chimpanzee	Nonhuman Mammal
 Pan troglodytes verus	Chimpanzee	Nonhuman Mammal
 Panamanian leafcutter ant	Panamanian Leafcutter Ant	Insect
 Panda	Panda	Nonhuman Mammal
+Panthera leo	Lion	Nonhuman Mammal
 Papio cynocephalus	Baboon	Nonhuman Mammal
 Parakeet	Parakeet	Avian
 Pararge aegeria	Butterfly	Insect
+Paratemnopteryx couloniana	Red goblin roach	Insect
 Parrot	Parrot	Avian
 Partridge	Partridge	Avian
 Passer domesticus	Sparrow	Avian
 Passer montanus	Sparrow	Avian
 Passerella iliaca	Sparrow	Avian
+Patent	Patent	Lab
 Patient	Human	Human
 Pavo cristatus	Peafowl	Avian
 Pea	Pea	Plant
@@ -1378,13 +1618,18 @@ Peregrine	Peregrine Falcon	Avian
 Peregrine falcon	Peregrine Falcon	Avian
 Perennial ryegrass	Perennial Ryegrass	Plant
 Peromyscus beatae	Mouse	Nonhuman Mammal
+Peromyscus eremicus	Cactus mouse 	Nonhuman Mammal
+Peromyscus leucopus	White-footed mouse 	Nonhuman Mammal
 Peromyscus maniculatus	Mouse	Nonhuman Mammal
 Pet bird	Bird	Avian
 Pet dog	Dog	Nonhuman Mammal
 Ph	Common Pheasant	Avian
+Phascolarctos cinereus	Koala	Nonhuman Mammal
 Phaseolus vulgaris	Kidney Bean	Plant
 Phasianus colchicus	Pheasant	Avian
 Pheasant	Pheasant	Avian
+Phlebotominae sp.	Sand fly	Insect
+Phlebotomus perfiliewi	Sand fly	Insect
 Phlebotomus perniciosus	Fly 	Insect
 Phlebotomus sp.	Fly 	Insect
 Phoca vitulina	Harbor Seal	Sea Mammal
@@ -1414,8 +1659,12 @@ Pipistrellus kuhlii (bat)	Bat	Nonhuman Mammal
 Pipistrellus pipistrellus	Bat	Nonhuman Mammal
 Pipistrellus pipistrellus (bat)	Bat	Nonhuman Mammal
 Piranga ludoviciana	Tanager	Avian
+Pistacia vera	Pistachio	Plant
+Pisum sativum	Pea	Plant
+plankton	Plankton	Plankton
 Plant	Plant	Plant
 Plateau pika	Pika	Nonhuman Mammal
+Platygyra acuta	Stony corals	Coral
 Plegadis falcinellus	Ibis	Avian
 Plum	Plum	Plant
 Pluvialis fulva (pacific golden plover)	Plover	Avian
@@ -1426,15 +1675,25 @@ Poecile atricapilla	Chikadee	Avian
 Poephila personata	Finch	Avian
 Poison ivy	Eastern Poison Ivy	Plant
 Polysticta stelleri (steller's eider)	Steller's Eider	Avian
+pond heron	Heron	Avian
 Pond sediment	Environment	Environment
+Pongo pygmaeus	Bornean orangutan 	Nonhuman Mammal
+pool of mosquitos (Aedes comminis, Aedes punctor, Aedes excrucians)	Mosquito	Insect
+pool of mosquitos (Aedes nigripes, Aedes mercurator)	Mosquito	Insect
+Populus alba	White poplar 	Plant
 Porcine	Pig	Nonhuman Mammal
 Potato	Potato	Plant
 Potato, solanum tuberosum var. felsina	Potato	Plant
 Poultry	Poultry	Avian
+Primate	Primate	Nonhuman Mammal
 Procyon lotor	Raccoon	Nonhuman Mammal
 Procyon lotor (raccoon)	Raccoon	Nonhuman Mammal
+Propionibacterium acnes	Propionibacterium	Bacteria
 Proteles cristata	Aardwolf	Nonhuman Mammal
+Prunus avium	Sweet cherry	Plant
 Przewalski's horse	Horse	Nonhuman Mammal
+Pseudomonas aeruginosa	Pseudomonas	Bacteria
+Pseudomonas aeruginosa PAO1	Pseudomonas	Bacteria
 Psittacine	Parrot	Avian
 Pteronotus davyi (bat)	Bat	Nonhuman Mammal
 Pteronotus parnellii	Bat	Nonhuman Mammal
@@ -1442,6 +1701,7 @@ pteropid bat	Bat	Nonhuman Mammal
 Pteropus alecto	Bat	Nonhuman Mammal
 Pteropus giganteus	Bat	Nonhuman Mammal
 Pteropus giganteus (bat)	Bat	Nonhuman Mammal
+Pteropus livingstonii	Comoro flying fox 	Nonhuman Mammal
 Pteropus lylei	Bat	Nonhuman Mammal
 Pteropus sp.	Bat	Nonhuman Mammal
 Pteropus sp. (bat)	Bat	Nonhuman Mammal
@@ -1463,10 +1723,13 @@ Raspberries	Raspberry	Plant
 Rat	Rat	Nonhuman Mammal
 Rattus argentiventer	Rat	Nonhuman Mammal
 Rattus exulans	Rat	Nonhuman Mammal
+Rattus flabipectus	Yellow-breasted rat 	Nonhuman Mammal
 Rattus flavipectus	Rat	Nonhuman Mammal
 Rattus norvegicus	Rat	Nonhuman Mammal
 Rattus rattus	Rat	Nonhuman Mammal
+Rattus rattus (black rat)	Black rat	Nonhuman Mammal
 Rattus rattus (wild rat)	Rat	Nonhuman Mammal
+Rattus rattus strain sprague dawley	Black rat	Nonhuman Mammal
 Rattus tanezumi	Rat	Nonhuman Mammal
 Raven	Raven	Avian
 Reassortant	Lab host	Lab
@@ -1492,9 +1755,11 @@ Redhead duck	Redhead Duck	Avian
 Redheaded duck	Redhead Duck	Avian
 Redknot	Red Knot	Avian
 Regulus satrapa	Kinglet	Avian
+Reithrodontomys megalotis	Western harvest mouse 	Nonhuman Mammal
 Reptile	Reptile	Reptile
 Reverse genetic	Lab host	Lab
 Rhea	Rhea	Avian
+Rheinheimera sp. BAL341	Rheinheimera 	Bacteria
 Rhesus macaque	Rhesus macaque	Nonhuman Mammal
 Rhesus monkey	Rhesus macaque	Nonhuman Mammal
 Rhinolophus affinis	Bat	Nonhuman Mammal
@@ -1509,8 +1774,19 @@ Rhinolophus sinicus	Bat	Nonhuman Mammal
 Rhinolophus sp.	Bat	Nonhuman Mammal
 Rhinolophus sp. (bat)	Bat	Nonhuman Mammal
 Rhipicephalus bursa	Tick	Tick
+Rhipicephalus bursa on Ovis orientalis anatolica	Tick	Tick
+Rhipicephalus bursa voucher GR-57	Tick	Tick
+Rhipicephalus decoloratus	Tick	Tick
+Rhipicephalus decoloratus (tick)	Tick	Tick
 Rhipicephalus microplus	Asian blue tick	Tick
+Rhipicephalus pulchellus	Tick	Tick
 Rhipicephalus sanguineus	Brown dog tick	Tick
+Rhipicephalus sanguineus complex	Brown dog tick 	Tick
+Rhipicephalus sanguineus sensu lato	Tick	Tick
+Rhipicephalus sp.	Tick	Tick
+Rhipicephalus sp. (tick)	Tick	Tick
+Rhipicephalus spp.	Tick	Tick
+Rhipicephalus turanicus	Tick	Tick
 Rhizomys pruinosus	Bamboo Rat	Nonhuman Mammal
 Rice	Rice	Plant
 Rice leafhopper	Rice Leafhopper	Insect
@@ -1524,9 +1800,11 @@ Rissa tridactyla	Gull	Avian
 Robin	Robin	Avian
 Rock dove	Dove	Avian
 Rodent	Rodent	Nonhuman Mammal
+Rodentia	Rodents	Nonhuman Mammal
 Rollers	Roller	Avian
 Rook	Rook	Avian
 Rooster	Chicken	Avian
+Rosa multiflora	Rose	Plant
 Rosa sp.	Rose	Plant
 Ross's goose	Goose	Avian
 Rosy-billed pochard	Pochard	Avian
@@ -1541,6 +1819,9 @@ Rousettus leschenaulti (bat)	Bat	Nonhuman Mammal
 Rousettus leschenaultii (bat)	Bat	Nonhuman Mammal
 Rousettus leschenaultii (fruit bat)	Bat	Nonhuman Mammal
 Rousettus sp.	Bat	Nonhuman Mammal
+Rubus idaeus	European red raspberry 	Plant
+Rubus idaeus L. cultivar Glen Ample	European red raspberry 	Plant
+Rubus idaeus L. cultivar Willamette	European red raspberry 	Plant
 Ruddy duck	Ruddy Duck	Avian
 Ruddy sheldrake	Ruddy Duck	Avian
 Ruddy shelduck	Ruddy Duck	Avian
@@ -1550,12 +1831,15 @@ Ruddyturnstone	Ruddy Turnstone	Avian
 Rufous-necked stint	Red-Necked Stint	Avian
 Rynchops niger	Skimmer	Avian
 Sabines gull	Sabine'S Gull	Avian
+sable antelope	Sable antelope 	Nonhuman Mammal
 Sacred ibis	Ibis	Avian
 Saguinus labiatus t1059	Tamarin	Nonhuman Mammal
 Saker falcon	Saker Falcon	Avian
 Salmo salar	Atlantic Salmon	Fish
 Salmo salar (farmed salmon)	Atlantic Salmon	Fish
 Salmon, salmo salar	Atlantic Salmon	Fish
+Salmonella enterica	Salmonella	Bacteria
+sand fly	Sand fly	Insect
 Sanderling	Sanderling	Avian
 Sandfly	Fly 	Insect
 Sandpiper	Sandpiper	Avian
@@ -1574,9 +1858,9 @@ Seiurus noveboracensis	Warbler	Avian
 Semi-palmated sandpiper	Semipalmated Sandpiper	Avian
 Semi-palmated-sandpiper	Semipalmated Sandpiper	Avian
 Semipalmated sandpiper	Semipalmated Sandpiper	Avian
-Semipalmated sandpiper	Stint	Avian
 Sentinel duck	Duck	Avian
 Sentinel hamster	Hamster	Nonhuman Mammal
+sentinel mice	Mouse	Nonhuman Mammal
 Sentinel mouse	Mouse	Nonhuman Mammal
 Serotine bat	Bat	Nonhuman Mammal
 Sharp-tailed sandpiper	Sharp-Tailed Sandpiper	Avian
@@ -1590,9 +1874,11 @@ Shorebird	Shorebird	Avian
 short-nosed fruit bat	Bat	Nonhuman Mammal
 Shoveler	Shoveler	Avian
 Shoveller duck	Shoveller	Avian
+Shrew	Shrew	Nonhuman Mammal
 Shrike	Shrike	Avian
 Shrimp, litopenaeus vannamei	Pacific White Shrimp	Crustaceans
 Shrimps	Shrimp	Crustaceans
+Sigmodon alstoni	Alston's cotton rat 	Nonhuman Mammal
 Sigmodon alstoni (alston's cotton rat)	Rat	Nonhuman Mammal
 Silk worm, bombyx mori	Domestic Silkworm	Insect
 Silkie chicken	Silky Chicken	Avian
@@ -1603,6 +1889,7 @@ Silver gull	Gull	Avian
 Silver pheasant	Pheasant	Avian
 Silver teal	Duck	Avian
 Silver-eared mesia	Silver-Eared Mesia	Avian
+Skeletonema costatum	Diatoms	Diatoms
 Skunk	Skunk	Nonhuman Mammal
 Slaty-backed gull	Slaty-Backed Gull	Avian
 Slender-billed gull	Slender-Billed Gull	Avian
@@ -1615,16 +1902,20 @@ Softbill	Softbill	Avian
 Soil	Null	Null
 Solanum lycopersicum	Tomato	Plant
 Solanum lycopersicum (tomato)	Tomato	Plant
+Solanum melongena	Eggplant	Plant
 Solanum tuberosum	Potato	Plant
 Somateria fischeri (spectacled eider)	Duck	Avian
 Somateria spectabilis (king eider)	Duck	Avian
 Song sparrow	Sparrow	Avian
 Sooty tern	Sooty Tern	Avian
 Sorbus aucuparia	Rowan	Plant
+Sorbus aucuparia L.	Rowan	Plant
 Sorex araneus	Shrew	Nonhuman Mammal
 Sorex caecutiens	Shrew	Nonhuman Mammal
 Sorex cylindricauda	Shrew	Nonhuman Mammal
 Sorex daphaenodon	Shrew	Nonhuman Mammal
+Sorex minutus	Eurasian pygmy shrew 	Nonhuman Mammal
+Sorex monticolus	Montane shrew 	Nonhuman Mammal
 Sorex roboratus	Shrew	Nonhuman Mammal
 Sorex tundrensis	Shrew	Nonhuman Mammal
 South American insectivorous bat	Bat	Nonhuman Mammal
@@ -1639,7 +1930,6 @@ Sparrow	Sparrow	Avian
 Spatula discors	Duck	Avian
 Speckled pigeon	Pigeon	Avian
 Spectacled eider	Duck	Avian
-Spectacled eider	Spectacled Eider	Avian
 Spf embryonated chicken eggs	Lab host	Lab
 Spizaetus nipalensis	Mountain Hawk-Eagle	Avian
 Spot-billed duck	Duck	Avian
@@ -1650,6 +1940,7 @@ Spotted dove	Dove	Avian
 Spur-winged goose	Goose	Avian
 Spur-winged goose (plectropterus gambensis)	Spur-Winged Goose	Avian
 Spur-winged lapwing	Plover	Avian
+Staphylococcus aureus	Staphylococcus 	Bacteria
 Starling	Starling	Avian
 Steer	Cow	Nonhuman Mammal
 Steller's eider	Steller's Eider	Avian
@@ -1661,10 +1952,13 @@ Sterna elegans	Tern	Avian
 Sterna hirundo	Common Tern	Avian
 Stone curlew	Curlew	Avian
 Stone marten	Marten	Nonhuman Mammal
+stool	Null	Null
 Stork	Stork	Avian
 Straw-coloured fruit bat	Bat	Nonhuman Mammal
+Streptococcus thermophilus	Streptococcus 	Bacteria
 Streptopelia chinensis	Dove	Avian
 Streptopelia decaocto	Dove	Avian
+Streptopelia turtur	European turtle dove 	Avian
 Striated heron	Heron	Avian
 Striped sea bass	Striped Sea Bass	Fish
 Striped skunk	Skunk	Nonhuman Mammal
@@ -1674,6 +1968,9 @@ Struthio	Struthio	Avian
 Struthio camelus	Ostrich	Avian
 Struthio camelus (ostrich)	Ostrich	Avian
 Sturnira lilium	Bat	Nonhuman Mammal
+suckling mice	Mouse	Nonhuman Mammal
+suckling mouse	Mouse	Nonhuman Mammal
+suckling mouse brain	Mouse	Nonhuman Mammal
 Sugarcane	Sugarcane	Plant
 Suidae	Pig	Nonhuman Mammal
 Suncus murinus	Shrew	Nonhuman Mammal
@@ -1684,6 +1981,7 @@ Sus	Pig	Nonhuman Mammal
 Sus domesticus	Pig	Nonhuman Mammal
 Sus scrofa	Pig	Nonhuman Mammal
 Sus scrofa (domestic pig)	Pig	Nonhuman Mammal
+Sus scrofa (pig)	Pig	Nonhuman Mammal
 Sus scrofa (wild boar)	Pig	Nonhuman Mammal
 Sus scrofa domestica	Pig	Nonhuman Mammal
 Sus scrofa domesticus	Pig	Nonhuman Mammal
@@ -1704,11 +2002,13 @@ Swiftlet	Swiftlet	Avian
 Swine	Pig	Nonhuman Mammal
 Syncerus caffer	African buffalo	Nonhuman Mammal
 Syncerus_caffer	African buffalo	Nonhuman Mammal
+Synechococcus	Synechococcus	Bacteria
 Syrrhaptes paradoxus	Sandgrouse	Avian
 Tachybaptus ruficollis	Little Grebe	Avian
 Tadarida brasiliensis	Bat	Nonhuman Mammal
 Tadarida brasiliensis (bat)	Bat	Nonhuman Mammal
 Tadarida brasiliensis bat	Bat	Nonhuman Mammal
+Tadarida sp.	Free-tailed bats	Nonhuman Mammal
 Tadorna ferruginea	Ruddy Duck	Avian
 Tadorna tadorna	Shelduck	Avian
 Taiga bean goose	Goose	Avian
@@ -1718,24 +2018,30 @@ Taphozous mauritianus bat	Bat	Nonhuman Mammal
 Taphozous melanopogon (Black-bearded tomb bat)	Bat	Nonhuman Mammal
 Teal	Teal	Avian
 Teal duck	Teal	Avian
+Termes hospes	Termites	Insect
 Tern	Common Tern	Avian
+Testudo graeca	Turtles	Nonhuman Mammal
 Thale cress, arabidopsis thaliana	Thale cress	Plant
 Thick-billed murre	Murre	Avian
 Thrush	Thrush	Avian
 Tibetan snowfinch	Tibetan Snowfinch	Avian
 Tick	Tick	Tick
+Tick pool	Tick	Tick
 Tick, ixodes persulcatus	Taiga Tick	Tick
 Tick, ixodes scapularis	Black-Legged Tick	Tick
 Ticks	Tick	Tick
 Tiger	Tiger	Nonhuman Mammal
 Tilapia	Tilapia	Fish
+Tilapia, Oreochromis niloticus	Nile tilapia	Fish
 Tilapia, oreochromis sp.	Tilapia	Fish
+Tique	Tick	Tick
 Tk	Turkey	Avian
 Tobacco	Common Tobacco	Plant
 Tobacco, nicotiana tabacum	Common Tobacco	Plant
 Tomato	Tomato	Plant
 Tree sparrow	Tree Sparrow	Avian
 Triaenops persicus	Bat	Nonhuman Mammal
+Trifolium repens	White clover	Plant
 Tringa semipalmata	Sandpiper	Avian
 Triticum aestivum	Bread Wheat	Plant
 Tufted duck	Tufted Duck	Avian
@@ -1754,8 +2060,12 @@ Ty	Turkey	Avian
 Tylonycteris pachypus	Bat	Nonhuman Mammal
 Tyrkey	Turkey	Avian
 unidentified bat	Bat	Nonhuman Mammal
+unidentified Chrysopidae	Green lacewings	Insect
+unidentified Hippoboscoidea	Fly	Insect
 unidentified insectivorous bat	Bat	Nonhuman Mammal
 unidentified insectivorous bat 2	Bat	Nonhuman Mammal
+unidentified Phoridae	Fly	Insect
+unidentified Polydesmidae	Millipedes	Insect
 Unidentified wild bird	Avian	Avian
 Unknown	Null	Null
 unknown bat	Bat	Nonhuman Mammal
@@ -1764,9 +2074,11 @@ Upland goose	Goose	Avian
 Uria aalge (common murre)	Murre	Avian
 Uria lomvia	Murre	Avian
 Uria lomvia (thick-billed murre)	Murre	Avian
+Urocitellus undulatus	Long-tailed ground squirrel	Nonhuman Mammal
 vampire bat	Bat	Nonhuman Mammal
 vampire bat V11	Bat	Nonhuman Mammal
 vampire bat V3	Bat	Nonhuman Mammal
+Vazella pourtalesii	Sponge	Sponge
 Veery	Veery	Avian
 Velvet scoter	Velvet Scoter	Avian
 Vero	Lab host	Lab
@@ -1775,8 +2087,11 @@ Vero/h slam	Lab host	Lab
 Vero/slam	Lab host	Lab
 Vespertilio murinus (particoloured bat)	Bat	Nonhuman Mammal
 Vespertilio sinensis	Bat	Nonhuman Mammal
+Vibrio cholerae	Vibrio	Bacteria
+Vibrio lentus	Vibrio	Bacteria
 Vicugna pacos	Alpaca	Nonhuman Mammal
 Village chicken	Chicken	Avian
+Vitis vinifera	Wine grape 	Plant
 Von schrenck's bittern	Bittern	Avian
 Vulpes vulpes	Fox	Nonhuman Mammal
 Vulpes vulpes (red fox)	Fox	Nonhuman Mammal
@@ -1791,6 +2106,7 @@ Waterfowl	Waterfowl	Avian
 Watermelon	Watermelon	Plant
 Wdk	Wild Duck	Avian
 Wedge-tailed shearwater	Wedge-Tailed Shearwater	Avian
+Weed	Weed	Plant
 Western grebe	Grebe	Avian
 Western tanager	Tanager	Avian
 Western wood-pewee	Flycatcher	Avian
@@ -1808,6 +2124,7 @@ White headed duck	Duck	Avian
 White peafowl	White Peafowl	Avian
 White peckin duck	Duck	Avian
 White rat	Rat	Nonhuman Mammal
+white rhinocerus 	White rhinocerus 	Nonhuman Mammal
 White stork	Stork	Avian
 White wagtail	White Wagtail	Avian
 White_winged_black_tern	Tern	Avian
@@ -1842,12 +2159,14 @@ Wild chicken	Wild Chicken	Avian
 Wild duck	Duck	Avian
 Wild goose	Goose	Avian
 Wild pigeon	Pigeon	Avian
+wild rodents	Rodent	Nonhuman Mammal
 Wild swan	Swan	Avian
 Wild turkey	Turkey	Avian
 Wild waterfowl	Waterfowl	Avian
 Wildfowl	Fowl	Avian
 Willet	Sandpiper	Avian
 Wingless bat flies	Bat	Nonhuman Mammal
+winter wheat	Wheat	Plant
 Wolf	Wolf	Nonhuman Mammal
 Woman	Human	Human
 Wood duck	Wood Duck	Avian
@@ -1871,4 +2190,6 @@ Zea mays	Maize	Plant
 Zea mays subsp. mays	Maize	Plant
 Zebrafish	Zebrafish	Fish
 Zygodontomys brevicauda	Mouse	Nonhuman Mammal
-Patent	Patent	Lab
+Ornithodoros faini	Tick	Tick
+Antricola delacruzi	Tick	Tick
+unidentified Gerridae	Water strider	Insect
