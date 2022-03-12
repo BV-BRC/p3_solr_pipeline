@@ -286,11 +286,11 @@ sub genomeQuality
     push @{$qc->{genome_quality_flags}}, "Genome too long" if $qc->{genome_length} > 15000000;
     push @{$qc->{genome_quality_flags}}, "Genome too short" if $qc->{genome_length} < 300000;
 
-    push @{$qc->{genome_quality_flags}}, "Low CheckM completeness score" 
-			if $qc->{checkm_data}->{Completeness} && $qc->{checkm_data}->{Completeness} < 80;
-    push @{$qc->{genome_quality_flags}}, "High CheckM contamination score" 
-			if $qc->{checkm_data}->{Contamination} && $qc->{checkm_data}->{Contamination} > 10;
-    push @{$qc->{genome_quality_flags}}, "Low Fine consistency score" 
+    push @{$qc->{genome_quality_flags}}, "Low completeness score" 
+			if $qc->{completeness} && $qc->{completeness} < 80;
+    push @{$qc->{genome_quality_flags}}, "High contamination score" 
+			if $qc->{contamination} && $qc->{contamination} > 10;
+    push @{$qc->{genome_quality_flags}}, "Low fine consistency score" 
 			if $qc->{fine_consistency} && $qc->{fine_consistency} < 85;
     
     # Genome quality flags based on annotation quality
