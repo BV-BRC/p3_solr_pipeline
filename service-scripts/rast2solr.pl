@@ -318,8 +318,10 @@ sub getGenomeQuality {
 
 	$genome->{coarse_consistency} = $qc->{coarse_consistency};
 	$genome->{fine_consistency} = $qc->{fine_consistency};
-	$genome->{checkm_completeness} = $qc->{checkm_data}->{Completeness};
-	$genome->{checkm_contamination} = $qc->{checkm_data}->{Contamination};
+	$genome->{checkm_completeness} = $qc->{completeness};
+	$genome->{checkm_contamination} = $qc->{contamination};
+	#$genome->{checkm_completeness} = $qc->{checkm_data}->{Completeness};
+	#$genome->{checkm_contamination} = $qc->{checkm_data}->{Contamination};
 
 	$genome->{genome_quality_flags} = $qc->{genome_quality_flags};
 	$genome->{genome_quality} = $qc->{genome_quality};
@@ -560,7 +562,8 @@ sub getGenomeFeatures{
 		}
 
 		@ec_no = $feature->{product}=~/\( *EC[: ]([\d-\.]+) *\)/g if $feature->{product}=~/EC[: ]/;
-
+		push @{$feature->{property}}, "EC number" if scalar @ec_no > 0;
+		
 		foreach my $ec_number (@ec_no){
 
 			my $ec_description = $ecRef->{$ec_number}->{ec_description};
@@ -581,6 +584,7 @@ sub getGenomeFeatures{
 
 		$feature->{go} = \@go if scalar @go;
 		push @pathwaymap, preparePathways($feature, \@ecpathways);
+		push @{$feature->{property}}, "Pathway" if scalar @ecpathways > 0;
 
 		@spgenes = @{$featObj->{similarity_associations}} if $featObj->{similarity_associations};			
 		push @spgenemap, prepareSpGene($feature, $_) foreach(@spgenes);
@@ -588,6 +592,7 @@ sub getGenomeFeatures{
 		# Prepare PATRIC AMR genes for matching functions 
 		push @spgenemap, prepareSpGene($feature, ()) if $spgeneRef->{$feature->{product}};
 
+		push @{$feature->{property}}, "Subsystem" if ref $subsystem_assignments{$feature->{patric_id}} eq "ARRAY";	
 		foreach my $subsystem_assignment (@{$subsystem_assignments{$feature->{patric_id}}}){
 			my @values = split /\t/, $subsystem_assignment;
 			my $subsystem_name = $values[2];
@@ -796,6 +801,14 @@ sub getMetadataFromGenBankFile {
 	close GB;
 	
 	$genome->{host_name} = "Patent" if $gb=~/LOCUS.*PAT/;
+	if($gb=~/JOURNAL\s+Patent: *(.*)\s(\S+);/){
+		my $patent_number = $1;
+		my $patent_date = $2;
+		$patent_number=~s/ (\d+)$/\/$1/;
+	
+		push @{$genome->{additional_metadata}}, "Patent Number: $patent_number";
+		push @{$genome->{additional_metadata}}, "Patent Date: $patent_date";
+	}
 
 	# parse metadata from genabnk comment 
 	$genome->{assembly_method} = $1 if $gb=~/Assembly Method\s*:: (.*)/;
