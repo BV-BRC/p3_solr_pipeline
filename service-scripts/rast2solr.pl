@@ -241,13 +241,14 @@ sub getGenomeInfo {
 	prepareTaxonomy($genome->{taxon_lineage_ids}) if $public;
 
 	my %desired_ranks = map { $_ => 1 } qw(superkingdom kingdom phylum class order family genus species);
-	for (my $i = 0; $i < @$taxon_lineage_ranks; $i++)
-	{
-	    my $rank = $taxon_lineage_ranks->[$i];
-	    my $name = $genome->{taxon_lineage_names}->[$i];
-	    if ($desired_ranks{lc($rank)}){
+	if (ref $taxon_lineage_ranks eq "ARRAY"){
+		for (my $i = 0; $i < @$taxon_lineage_ranks; $i++){
+			my $rank = $taxon_lineage_ranks->[$i];
+			my $name = $genome->{taxon_lineage_names}->[$i];
+			if ($desired_ranks{lc($rank)}){
 				$genome->{$rank} = $name;
 			}
+		}
 	}
 
 	foreach my $type (@{$genomeObj->{typing}}){
