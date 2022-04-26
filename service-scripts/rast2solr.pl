@@ -346,10 +346,10 @@ sub getAMRPhenotypes {
 		$amr->{antibiotic} = lc $amr1->{name}; 	
 		$amr->{resistant_phenotype} = ucfirst $amr1->{sensitivity};
 		$amr->{resistant_phenotype} = "Susceptible" if $amr->{resistant_phenotype}=~/sensitive/i;	
-		$amr->{laboratory_typing_method} = "Computational Prediction"; 	
-		$amr->{laboratory_typing_platform} = "AdaBoost Classifier"; 	
+		$amr->{evidence} = "Computational Prediction"; 	
+		$amr->{computational_method} = "AdaBoost Classifier"; 	
+		$amr->{computational_method_performance} = "Accuracy:$amr1->{accuracy}, F1 score:$amr1->{f1_score}, AUC:$amr1->{area_under_roc_curve}";
 		$amr->{vendor} = "PATRIC"; 	
-		$amr->{laboratory_typing_method_version} = "Accuracy:$amr1->{accuracy}, F1 score:$amr1->{f1_score}, AUC:$amr1->{area_under_roc_curve}";
 
 		push @{$genome->{antimicrobial_resistance}}, ucfirst $amr->{resistant_phenotype} unless (grep {$_ eq ucfirst $amr->{resistant_phenotype}} @{$genome->{antimicrobial_resistance}});
 		$genome->{antimicrobial_resistance_evidence} = "Computational Prediction";
