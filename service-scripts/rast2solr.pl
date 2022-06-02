@@ -273,8 +273,9 @@ sub getGenomeInfo {
 			$genome->{completion_date} = strftime "%Y-%m-%dT%H:%M:%SZ", localtime str2time($seqObj->{genbank_locus}->{date}) if $seqObj->{genbank_locus}->{date};
 		}
 
-		if ($seqObj->{genbank_locus}->{accession}[1]=~/^([A-Z]{4})\d+00000$/){ # wgs, capture only master accession
+		if ($seqObj->{genbank_locus}->{accession}[1]=~/^([A-Z]+)\d+00000$/){ # wgs, capture only master accession
 			$genome->{genbank_accessions} = $seqObj->{genbank_locus}->{accession}[1];
+			$genome->{genbank_accessions}=~s/01000000/00000000/;
 		}else{
 			$genome->{genbank_accessions} .= $seqObj->{genbank_locus}->{accession}[0]."," unless length($genome->{genbank_accessions}) > 100 ;
 		}
@@ -282,7 +283,7 @@ sub getGenomeInfo {
 	}
 	$genome->{genbank_accessions}=~s/,*$//g;
 	
-	$genome->{assembly_accession}=$1 if $genbank_file=~/(GCA_\d+|GCF_\d+)/;
+	$genome->{assembly_accession}=$1 if $genbank_file=~/(GCA_\d+\.\d+|GCF_\d+\.\d+)/;
 
 	
 }
@@ -346,13 +347,13 @@ sub getAMRPhenotypes {
 		$amr->{antibiotic} = lc $amr1->{name}; 	
 		$amr->{resistant_phenotype} = ucfirst $amr1->{sensitivity};
 		$amr->{resistant_phenotype} = "Susceptible" if $amr->{resistant_phenotype}=~/sensitive/i;	
-		$amr->{evidence} = "Computational Prediction"; 	
+		$amr->{evidence} = "Computational Method"; 	
 		$amr->{computational_method} = "AdaBoost Classifier"; 	
 		$amr->{computational_method_performance} = "Accuracy:$amr1->{accuracy}, F1 score:$amr1->{f1_score}, AUC:$amr1->{area_under_roc_curve}";
 		$amr->{vendor} = "PATRIC"; 	
 
 		push @{$genome->{antimicrobial_resistance}}, ucfirst $amr->{resistant_phenotype} unless (grep {$_ eq ucfirst $amr->{resistant_phenotype}} @{$genome->{antimicrobial_resistance}});
-		$genome->{antimicrobial_resistance_evidence} = "Computational Prediction";
+		$genome->{antimicrobial_resistance_evidence} = "Computational Method";
 
 		push @genome_amr, $amr;
 
