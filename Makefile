@@ -70,18 +70,6 @@ deploy-metadata:
 	mkdir -p $(TARGET)/lib/autocuration-metadata
 	cp -r service-scripts/refs/. $(TARGET)/lib/autocuration-metadata
 
-deploy-service-scripts:
-	export KB_TOP=$(TARGET); \
-	export KB_RUNTIME=$(DEPLOY_RUNTIME); \
-	export KB_PERL_PATH=$(TARGET)/lib ; \
-	for src in $(SRC_SERVICE_PERL) ; do \
-	        basefile=`basename $$src`; \
-	        base=`basename $$src .pl`; \
-	        echo install $$src $$base ; \
-	        cp $$src $(TARGET)/plbin ; \
-	        $(WRAP_PERL_SCRIPT) "$(TARGET)/plbin/$$basefile" $(TARGET)/bin/$$base ; \
-	done
-
 
 deploy-dir:
 	if [ ! -d $(SERVICE_DIR) ] ; then mkdir $(SERVICE_DIR) ; fi
@@ -92,11 +80,5 @@ deploy-docs:
 
 clean:
 
-
-$(BIN_DIR)/%: service-scripts/%.pl $(TOP_DIR)/user-env.sh
-	$(WRAP_PERL_SCRIPT) '$$KB_TOP/modules/$(CURRENT_DIR)/$<' $@
-
-$(BIN_DIR)/%: service-scripts/%.py $(TOP_DIR)/user-env.sh
-	$(WRAP_PYTHON_SCRIPT) '$$KB_TOP/modules/$(CURRENT_DIR)/$<' $@
 
 include $(TOP_DIR)/tools/Makefile.common.rules
