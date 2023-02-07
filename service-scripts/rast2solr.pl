@@ -274,8 +274,8 @@ sub getGenomeInfo {
 		}
 
 		if ($seqObj->{genbank_locus}->{accession}[1]=~/^([A-Z]+)\d+00000$/){ # wgs, capture only master accession
-			$genome->{genbank_accessions} = $seqObj->{genbank_locus}->{accession}[1];
-			$genome->{genbank_accessions}=~s/01000000/00000000/;
+			$genome->{genbank_accessions} = $seqObj->{genbank_locus}->{accession}[1].",";
+			$genome->{genbank_accessions}=~s/0[1-9]000000/00000000/;
 		}else{
 			$genome->{genbank_accessions} .= $seqObj->{genbank_locus}->{accession}[0]."," unless length($genome->{genbank_accessions}) > 100 ;
 		}
