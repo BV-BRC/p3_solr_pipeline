@@ -282,7 +282,7 @@ sub getGenomeInfo {
 
 	}
 	$genome->{genbank_accessions}=~s/,*$//g;
-	
+
 	$genome->{assembly_accession}=$1 if $genbank_file=~/(GCA_\d+\.\d+|GCF_\d+\.\d+)/;
 
 	
@@ -333,7 +333,8 @@ sub getGenomeQuality {
 
 sub getAMRPhenotypes {
 
-	foreach my $amr1 (@{$genomeObj->{classifications}}){
+	#foreach my $amr1 (@{$genomeObj->{classifications}}){
+	foreach my $amr1 (@{$genomeObj->{amr_assertions}}){
 	
 		my $amr;
 		next if $amr1->{name}=~/combined/;
@@ -343,17 +344,21 @@ sub getAMRPhenotypes {
 		$amr->{genome_id} = $genome->{genome_id};
 		$amr->{genome_name} = $genome->{genome_name};
 		$amr->{taxon_id} = $genome->{taxon_id};
+		
+		$amr->{antibiotic} = lc $amr1->{antibiotic_name}; 	
+		$amr->{resistant_phenotype} = ucfirst $amr1->{resistant_phenotype};
+		
+		$amr->{measurement} = $amr1->{measurement};
+		$amr->{measurement_sign} = $amr1->{measurement_sign};
+		$amr->{measurement_value} = $amr1->{measurement_value};
+		$amr->{measurement_unit} = $amr1->{measurement_unit};
+		
 
-		$amr->{antibiotic} = lc $amr1->{name}; 	
-		$amr->{resistant_phenotype} = ucfirst $amr1->{sensitivity};
-		$amr->{resistant_phenotype} = "Susceptible" if $amr->{resistant_phenotype}=~/sensitive/i;	
-		$amr->{evidence} = "Computational Method"; 	
-		$amr->{computational_method} = "AdaBoost Classifier"; 	
-		$amr->{computational_method_performance} = "Accuracy:$amr1->{accuracy}, F1 score:$amr1->{f1_score}, AUC:$amr1->{area_under_roc_curve}";
-		$amr->{vendor} = "PATRIC"; 	
-
-		push @{$genome->{antimicrobial_resistance}}, ucfirst $amr->{resistant_phenotype} unless (grep {$_ eq ucfirst $amr->{resistant_phenotype}} @{$genome->{antimicrobial_resistance}});
-		$genome->{antimicrobial_resistance_evidence} = "Computational Method";
+		$amr->{evidence} = $amr1->{evidence}; 	
+		$amr->{computational_method} = $amr1->{computational_method}; 	
+		$amr->{computational_method_version} = $amr1->{computational_method_version}; 	
+		$amr->{computational_method_performance} = $amr1->{computational_method_performance};
+		$amr->{vendor} = "BVBRC"; 	
 
 		push @genome_amr, $amr;
 
@@ -508,7 +513,9 @@ sub getGenomeFeatures{
 		$sequence = reverse($sequence) if $feature->{strand} eq "-";
 
 		$feature->{segments} = \@segments;
-		$feature->{location} = $feature->{strand} eq "+"? join(",", @segments): "complement(".join(",", @segments).")"; 
+		#$feature->{location} = $feature->{strand} eq "+"? join(",", @segments): "complement(".join(",", @segments).")"; 
+		$feature->{location} = scalar @segments > 1 ? "join(".join(",", @segments).")" : $segments[0];
+		$feature->{location} = "complement(".$feature->{location}.")" if $feature->{strand} eq "-"; 
 
 		if ($sequence && $feature->{feature_type} ne "source"){
 			$feature->{na_length} = length($sequence);
@@ -618,20 +625,23 @@ sub prepareSpGene {
 
 		my $spgene;
 		my ($property, $gene_name, $locus_tag, $organism, $function, $classification, $antibiotics_class, $antibiotics, $pmid, $assertion); 
-		my ($source, $source_id, $qcov, $scov, $identity, $evalue);
+		my ($source, $source_id, $qcov, $scov, $identity, $evalue, $attribs);
 
 		if($spgene_match){ # All specialty genes from external sources
-			($source, $source_id, $qcov, $scov, $identity, $evalue) = @$spgene_match;
+			($source, $source_id, $qcov, $scov, $identity, $evalue, $attribs) = @$spgene_match;
 			$source_id=~s/^\S*\|//;
+			($source, $attribs->{method}) = $source=~/(NDARO):\((.*)\)/ if $source=~/NDARO/; 
 			($property, $gene_name, $locus_tag, $organism, $function, $classification, $antibiotics_class, $antibiotics, $pmid, $assertion) 
 			= split /\t/, $spgeneRef->{$source.'_'.$source_id} if ($source && $source_id);
 		}elsif($spgeneRef->{$feature->{product}}){ # PATRIC AMR genes, match by functional role
 			($property, $gene_name, $locus_tag, $organism, $function, $classification, $antibiotics_class, $antibiotics, $pmid, $assertion) 
 			= split /\t/, $spgeneRef->{$feature->{product}};
-			$source = "PATRIC";	
+			$source = "PATRIC";
 		}
 
 		return unless $property && $source;
+
+		#print "$attribs->{property}\t$attribs->{source}\t$attribs->{tool}\t$attribs->{source_id}\t$attribs->{product}\n";
 
 		my ($qgenus) = $feature->{genome_name}=~/^(\S+)/;
 		my ($qspecies) = $feature->{genome_name}=~/^(\S+ +\S+)/;
@@ -644,7 +654,19 @@ sub prepareSpGene {
 		$same_species = 1 if ($qspecies eq $sspecies && $sspecies ne ""); 
 		$same_genome = 1 if ($feature->{genome} eq $organism && $organism ne "") ;
 
-		$evidence = ($source && $source_id)? 'BLAT' : "K-mer Search";
+		if($source eq "CARD"){
+			$evidence = "RGI: $attribs->{model_type}";
+		}elsif($source eq "NDARO"){
+			$evidence = "AMRFinderPlus: $attribs->{method}";
+		}elsif($attribs->{tool}=~/(diamond|blat)/i){
+			$evidence = uc $1;
+		}elsif($property eq "Antibiotic Resistance" && $source eq "PATRIC"){
+			$evidence = "K-mer Search";		
+		}else{
+
+		}
+
+		#$evidence = ($source && $source_id)? 'BLAT' : "K-mer Search";
 
 		$spgene->{owner} = $feature->{owner};
 		$spgene->{public} = $public;
@@ -854,7 +876,7 @@ sub getMetadataFromGenBankFile {
 
 	$genome->{segment} = $1 if $gb=~/\/segment="([^"]*)"/ && (grep {$_=~/Bunyavirales|Reoviridae|Orthomyxoviridae/} @{$genome->{taxon_lineage_names}});
 	$genome->{serovar} = $1 if $gb=~/\/serotype="([^"]*)"/;
-	$genome->{geographic_location} = $1 if $gb=~/\/country="([^"]*)"/;
+	$genome->{geographic_location} = $1 if $gb=~/\/geo_loc_name="([^"]*)"/;
 	$genome->{host_name} = $1 if $gb=~/\/host="([^"]*)"/;
 	$genome->{lab_host} = $1 if $gb=~/\/lab_host="([^"]*)"/;
 	$genome->{isolation_source} = $1 if $gb=~/\/isolation_source="([^"]*)"/;
@@ -1035,20 +1057,15 @@ sub getMetadataFromBioSample {
 
 	my($biosample_id, $biosample_xml);
 
-	if ($lookup_client)
-	{
-	    ($biosample_id, $biosample_xml) = $lookup_client->get_metadata_from_biosample($biosample_accn);
-	}
-	else
-	{	
+	if ($lookup_client){
+		($biosample_id, $biosample_xml) = $lookup_client->get_metadata_from_biosample($biosample_accn);
+	}else{	
 
-	    my $xml = get_xml("https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=biosample&term=$biosample_accn");
-	    $xml =~ s/\n//;
-	    ($biosample_id) = $xml=~/<Id>(\d+)<\/Id>/;
-
-	    $biosample_xml = get_xml("https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=biosample&retmode=xml&id=$biosample_id");
-
-	    return unless $biosample_xml;
+		my $xml = get_xml("https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=biosample&term=$biosample_accn");
+		$xml =~ s/\n//;
+		($biosample_id) = $xml=~/<Id>(\d+)<\/Id>/;
+		$biosample_xml = get_xml("https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=biosample&retmode=xml&id=$biosample_id");
+		return unless $biosample_xml;
 	}
 	
 	my $xml = XMLin($biosample_xml, ForceArray => ["Row"]);
@@ -1384,40 +1401,33 @@ sub readMetadataRefs {
     my(%host_map, %country_map, %country_flu);
 
     # process host mappings
-    if (open FH, "$refs_dir/host_mapping")
-    {
-	%host_map = ();
-	while (my $entry = <FH>){
-	    chomp $entry;
-	    my ($host_name, $host_common_name, $host_group) = $entry=~/(.*)\t(.*)\t(.*)/;
-	    $host_map{$host_name} = "$host_common_name\t$host_group";
-			$host_map{lc $host_name} = "$host_common_name\t$host_group";
-			$host_map{ucfirst lc $host_name} = "$host_common_name\t$host_group";
-	}
-	close FH;
-    }
-    else
-    {
-	warn "Cannot open host mapping file $refs_dir/host_mapping: $!";
-    }
+    if (open FH, "$refs_dir/host_mapping"){
+			%host_map = ();
+			while (my $entry = <FH>){
+	    	chomp $entry;
+	    	my ($host_name, $host_common_name, $host_group) = $entry=~/(.*)\t(.*)\t(.*)/;
+	    	$host_map{$host_name} = "$host_common_name\t$host_group";
+				$host_map{lc $host_name} = "$host_common_name\t$host_group";
+				$host_map{ucfirst lc $host_name} = "$host_common_name\t$host_group";
+		}
+		close FH;
+   }else{
+		warn "Cannot open host mapping file $refs_dir/host_mapping: $!";
+   }
 
-    # process country mapping for flu season
-    if (open FH, "$refs_dir/country_mapping")
-    {
-	%country_map = ();
-	%country_flu = ();
-	while (my $entry = <FH>) {
-	    
-	    chomp $entry;
-	    my ($country, $geographic_group, $flu_season) = $entry=~/(.*)\t(.*)\t(.*)/;
-	    $country_map{$country} = "$geographic_group";
-	    $country_flu{$country} = 1 if $flu_season=~/yes/i;
+	# process country mapping for flu season
+  if (open FH, "$refs_dir/country_mapping"){
+		%country_map = ();
+		%country_flu = ();
+		while (my $entry = <FH>) {
+			chomp $entry;
+			my ($country, $geographic_group, $flu_season) = $entry=~/(.*)\t(.*)\t(.*)/;
+			$country_map{$country} = "$geographic_group";
+			$country_flu{$country} = 1 if $flu_season=~/yes/i;
+		}
+		close FH;
+	}else{
+		warn "Cannot open country mapping file $refs_dir/country_mapping: $!";
 	}
-	close FH;
-    }
-    else
-    {
-	warn "Cannot open country mapping file $refs_dir/country_mapping: $!";
-    }
     return (\%host_map, \%country_map, \%country_flu);
 }

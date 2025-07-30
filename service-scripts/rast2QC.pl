@@ -92,8 +92,8 @@ sub genomeQuality
 	    push(@$glin, [$lineage_names->[$i], $lineage_ids->[$i], $lineage_ranks->[$i]]);
 	    if ($lineage_ranks->[$i] =~ /species/i)
 	    {
-		$genomeObj->{ncbi_species} = $lineage_names->[$i];
-		$species = $solrh->getSpeciesInfo($lineage_ids->[$i]);
+			$genomeObj->{ncbi_species} = $lineage_names->[$i];
+			$species = $solrh->getSpeciesInfo($lineage_ids->[$i]);
 	    }
 	    $genomeObj->{ncbi_genus} = $lineage_names->[$i] if $lineage_ranks->[$i] =~ /genus/i;
 	    $genomeObj->{ncbi_superkingdom} = $lineage_names->[$i] if $lineage_ranks->[$i] =~ /superkingdom/i;
@@ -305,39 +305,39 @@ sub genomeQuality
    
     # Genome quality flags based on comparison with species stats
 
-	if ($species && $species->{genome_count} > 5){
+		if ($species && $species->{genome_count} > 5){
 
-    push @{$qc->{genome_quality_flags}}, "Genome too short"
-	if $qc->{genome_length} < $species->{genome_length_mean} - 3*$species->{genome_length_sd};
-    push @{$qc->{genome_quality_flags}}, "Genome too long"
-	if $qc->{genome_length} > $species->{genome_length_mean} + 3*$species->{genome_length_sd};
+    	push @{$qc->{genome_quality_flags}}, "Genome too short"
+				if $qc->{genome_length} < $species->{genome_length_mean} - 3*$species->{genome_length_sd};
+			push @{$qc->{genome_quality_flags}}, "Genome too long"
+				if $qc->{genome_length} > $species->{genome_length_mean} + 3*$species->{genome_length_sd};
     
-    push @{$qc->{genome_quality_flags}}, "Low CDS count"
-	if $qc->{feature_summary}->{cds} < $species->{cds_mean} - 3*$species->{cds_sd};
-    push @{$qc->{genome_quality_flags}}, "High CDS count"
-	if $qc->{feature_summary}->{cds} > $species->{cds_mean} + 3*$species->{cds_sd};
+			push @{$qc->{genome_quality_flags}}, "Low CDS count"
+				if $qc->{feature_summary}->{cds} < $species->{cds_mean} - 3*$species->{cds_sd};
+			push @{$qc->{genome_quality_flags}}, "High CDS count"
+				if $qc->{feature_summary}->{cds} > $species->{cds_mean} + 3*$species->{cds_sd};
     
-    push @{$qc->{genome_quality_flags}}, "Too many hypothetical CDS" 
-	if $qc->{hypothetical_cds_ratio} > $species->{hypothetical_cds_ratio_mean} + 3*$species->{hypothetical_cds_ratio_sd};
+			push @{$qc->{genome_quality_flags}}, "Too many hypothetical CDS" 
+				if $qc->{hypothetical_cds_ratio} > $species->{hypothetical_cds_ratio_mean} + 3*$species->{hypothetical_cds_ratio_sd};
     
-    push @{$qc->{genome_quality_flags}}, "Low PLfam CDS ratio" 
-	if $qc->{plfam_cds_ratio} < $species->{plfam_cds_ratio_mean} - 3*$species->{plfam_cds_ratio_sd} && $qc->{plfam_cds_ratio} < 0.8;
+			push @{$qc->{genome_quality_flags}}, "Low PLfam CDS ratio" 
+				if $qc->{plfam_cds_ratio} < $species->{plfam_cds_ratio_mean} - 3*$species->{plfam_cds_ratio_sd} && $qc->{plfam_cds_ratio} < 0.8;
 
-	}
+		}
 
     # Overall genome quality 
-    if (scalar @{$qc->{genome_quality_flags}}){
-	$qc->{genome_quality} = "Poor";
-    } else {
-	$qc->{genome_quality} = "Good";
-    }
+		if (scalar @{$qc->{genome_quality_flags}}){
+			$qc->{genome_quality} = "Poor";
+		}else{
+			$qc->{genome_quality} = "Good";
+		}
 
-	}
-	else # Not a microbial genome
-	{ 
+	}else{ # Not a microbial genome
+	
 	}
     
-    # Update the genome quality measure obj in the GTO
-    $genomeObj->{quality} = $qc;
+	# Update the genome quality measure obj in the GTO
+	$genomeObj->{quality} = $qc;
+
 }
 
