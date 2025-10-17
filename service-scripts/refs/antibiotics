@@ -1,0 +1,310 @@
+Antibiotic	Corrected Antibiotic
+amikazin	amikacin
+amikicin	amikacin
+aminogycosides	aminogycosides
+amipicillin-sulbactam	amipicillin/sulbactam
+amipicillin-sulbactam	ampicillin/sulbactam
+amoxicillin	amoxicillin
+amoxicillin_clavulanate	amoxicillin/clavulanic acid
+amoxicillin_clavulanic_acid	amoxicillin/clavulanic acid
+amoxicillin_clavulinic_acid	amoxicillin/clavulanic acid
+amoxicillin-clavulanate	amoxicillin/clavulanic acid
+amoxicillin-clavulanic acid	amoxicillin/clavulanic acid
+amoxicillin-clavulanic_acid	amoxicillin/clavulanic acid
+amoxicillin/clavulanate	amoxicillin/clavulanic acid
+amoxicillin/clavulanic	amoxicillin/clavulanic acid
+amoxicillin/clavulanic acid	amoxicillin/clavulanic acid
+amoxicillin/clavulanic_acid	amoxicillin/clavulanic acid
+ampicilin	ampicillin
+ampicillin	ampicillin
+ampicillin_sulbactam	ampicillin/sulbactam
+ampicillin-amoxicillin	ampicillin/amoxicillin
+ampicillin-sulbactam	ampicillin/sulbactam
+ampicillin/amoxicillin	ampicillin/amoxicillin
+ampicillin/sulbactam	ampicillin/sulbactam
+ampicillin/sulbactem	ampicillin/sulbactam
+apramycin	apramycin
+arbekacin	arbekacin
+augmentin	amoxicillin/clavulanic acid
+avilamycin	avilamycin
+azidothymidine	azidothymidine
+azithromycin	azithromycin
+aztreom	aztreonam
+Aztreonam	aztreonam
+aztreonam_avibactam	aztreonam/avibactam
+aztreonam/avibactam	aztreonam/avibactam
+bacitracin	bacitracin
+bedaquili	bedaquiline
+benzylpenicillin	benzylpenicillin
+Beta-lactam	beta-lactam
+beta-lactams	beta-lactam
+biapenem	biapenem
+Capreomycin	capreomycin
+Carbapenem	carbapenem
+carbenicillin	carbenicillin
+cefaclor	cefaclor
+cefalexin	cefalexin
+cefalotin	cefalotin
+cefamandole	cefamandole
+cefazolin	cefazolin
+cefazoline	cefazolin
+cefdinir	cefdinir
+cefepim	cefepime
+Cefepime	cefepime
+cefiderocol	cefiderocol
+cefixime	cefixime
+cefoperazone	cefoperazone
+cefoperazone_sulbactam	cefoperazone/sulbactam
+cefoperazone/sulbactam	cefoperazone/sulbactam
+cefotaxim	cefotaxime
+cefotaxime	cefotaxime
+cefotaxime_clavulanate	cefotaxime/clavulanic acid
+cefotaxime_clavulanic_acid	cefotaxime/clavulanic acid
+cefotaxime-clavulanic acid	cefotaxime/clavulanic acid
+cefotaxime-clavulanic_acid	cefotaxime/clavulanic acid
+cefotaxime/clavulanic acid	cefotaxime/clavulanic acid
+cefotaxime/clavulanic acid?|	cefotaxime/clavulanic acid
+cefotaxime/clavulanic acid.	cefotaxime/clavulanic acid
+cefotaxime/clavulanic acid¬†	cefotaxime/clavulanic acid
+cefotaxime/clavulanic_acid	cefotaxime/clavulanic acid
+cefotetan	cefotetan
+Cefoxitin	cefoxitin
+cefperazone	cefoperazone
+cefpirome	cefpirome
+cefpodoxim	cefpodoxime
+cefpodoxime	cefpodoxime
+cefpodoxime proxetil	cefpodoxime
+cefquinome	cefquinome
+ceftaroline	ceftaroline
+ceftazidim	ceftazidime
+ceftazidime	ceftazidime
+ceftazidime_avibactam	ceftazidime/avibactam
+ceftazidime_clavulanate	ceftazidime/clavulanic acid
+ceftazidime_clavulanic_acid	ceftazidime/clavulanic acid
+ceftazidime-avibactam	ceftazidime/avibactam
+ceftazidime-clavulanic acid	ceftazidime/clavulanic acid
+ceftazidime-clavulanic_acid	ceftazidime/clavulanic acid
+ceftazidime/avibactam	ceftazidime/avibactam
+ceftazidime/clavulanic acid	ceftazidime/clavulanic acid
+ceftazidime/clavulanic_acid	ceftazidime/clavulanic acid
+ceftazidine	ceftazidime
+ceftazidme	ceftazidime
+ceftazime	ceftazidime
+ceftiofur	ceftiofur
+ceftolozane_tazobactam	ceftolozane/tazobactam
+ceftolozane_tazobactam_4	ceftolozane/tazobactam
+ceftolozane-tazobactam	ceftolozane/tazobactam
+ceftolozane/tazobactam	ceftolozane/tazobactam
+ceftriaxon	ceftriaxone
+Ceftriaxone	ceftriaxone
+ceftriaxone_cefpodoxime	ceftriaxone/cefpodoxime
+ceftriaxone/cefpodoxime	ceftriaxone/cefpodoxime
+Ceftriazone	ceftriazone
+ceftriazone	ceftriaxone
+cefuroxim	cefuroxime
+cefuroxim.	cefuroxim
+cefuroxime	cefuroxime
+cefuroxime_axetil	cefuroxime
+cefuroxime_sodium	cefuroxime
+cefuroxime/sodium	cefuroxime
+cephalexin	cephalexin
+cephalosporins	cephalosporin
+cephalothin	cephalothin
+cephalotin	cephalothin
+cetotaxime	cefotaxime
+cetotaxime	cetotaxime
+chloram	chloramphenicol
+chloramphenico	chloramphenicol
+Chloramphenicol	chloramphenicol
+chlorhexidine_gluconate	chlorhexidine gluconate
+chlortetracycline	chlortetracycline
+ciproflox	ciprofloxacin
+Ciprofloxacin	ciprofloxacin
+ciprofoxacin	ciprofloxacin
+clarithromycin	clarithromycin
+Clindamycin	clindamycin
+clofazimine	clofazimine
+clofazinamine	clofazimine
+co-trimoxazole	trimethoprim/sulfamethoxazole
+colistin	colistin
+colomycin	colomycin
+cotrimoxazole	trimethoprim/sulfamethoxazole
+cycloseri	cycloserine
+cycloserine	cycloserine
+dalbavancin	dalbavancin
+danofloxacin	danofloxacin
+daptomycin	daptomycin
+delafloxacin	delafloxacin
+delamanid	delamanid
+dicloxacillin	dicloxacillin
+doripenem	doripenem
+doxycycline	doxycycline
+enrofloxacin	enrofloxacin
+enrofloxamin	enrofloxacin
+eravacycline	eravacycline
+Ertapenem	ertapenem
+erythromicyn	erythromycin
+erythromyacin	erythromycin
+Erythromycin	erythromycin
+Ethambutol	ethambutol
+ethiomide	ethionamide
+ethionamide	ethionamide
+extended_spectrum_beta_lactamase	extended spectrum beta lactamase
+fidaxomicin	fidaxomicin
+florfenicol	florfenicol
+florifenicol	florfenicol
+fluoroquinolone	fluoroquinolones
+fluoroquinolones	fluoroquinolones
+fosfomycin	fosfomycin
+fosfomycin-glucose-6-phosphate	fosfomycin
+fosfomycin/glucose6phosphate	fosfomycin
+furazolidone	furazolidone
+fusidic acid	fusidic acid
+fusidic_acid	fusidic acid
+gatifloxacin	gatifloxacin
+geamycin	geamycin
+gemifloxacin	gemifloxacin
+Gentamicin	gentamicin
+gentamycin	gentamicin
+imepenem	imipenem
+Imipenem	imipenem
+imipenem_relebactam	imipenem/relebactam
+imipenem-relebactam	imipenem/relebactam
+Isoniazid	isoniazid
+kamycin	kanamycin
+Kanamycin	kanamycin
+kanamycin_a	kanamycin
+Levofloxacin	levofloxacin
+levofloxacn	levofloxacin
+lincomycin	lincomycin
+linezolid	linezolid
+linizolid	linezolid
+lizolid	linezolid
+macrolides	macrolides
+Meropenem	meropenem
+meropenem_vaborbactam	meropenem/vaborbactam
+meropenem-vaborbactam	meropenem/vaborbactam
+meropenem/vaborbactam	meropenem/vaborbactam
+Methicillin	methicillin
+metronidazole	metronidazole
+minocycline	minocycline
+minocyline	minocycline
+moxifloxacin	moxifloxacin
+mupirocin	mupirocin
+nafcillin	nafcillin
+nalidix_acid	nalidixic acid
+nalidixate	nalidixic acid
+nalidixic	nalidixic acid
+nalidixic acid	nalidixic acid
+nalidixic_acid	nalidixic acid
+neomycin	neomycin
+netilmicin	netilmicin
+netilmycin	netilmicin
+nicotinamide	nicotinamide
+nitrofurantoin	nitrofurantoin
+nitrofurantonin	nitrofurantoin
+norfloxacin	norfloxacin
+Ofloxacin	ofloxacin
+omadacycline	omadacycline
+oxacillin	oxacillin
+oxacillin_sulbactam	oxacillin/sulbactam
+oxacilllin	oxacillin
+oxytetracycline	oxytetracycline
+para-aminosalicylic acid	para-aminosalicylic acid
+para-aminosalicylic_acid	para-aminosalicylic acid
+para-aminosalisylic_acid	para-aminosalicylic acid
+para-aminosalycilic_acid	para-aminosalicylic acid
+pefloxacin	pefloxacin
+Penicillin	penicillin
+Penicillin G	penicillin
+penicillin_g	penicillin
+penicillin/novobiocin	penicillin/novobiocin
+piperacillin	piperacillin
+Piperacillin_Tazobactam	piperacillin/tazobactam
+piperacillin-tazobactam	piperacillin/tazobactam
+piperacillin/tazobactam	piperacillin/tazobactam
+pipercillin_tazobactam	piperacillin/tazobactam
+pipericillin_tazobactam	piperacillin/tazobactam
+pirlimycin	pirlimycin
+plazomicin	plazomicin
+polymyxin	polymyxin B
+polymyxin b	polymyxin B
+polymyxin_b	polymyxin B
+pristimycin	pristimycin
+prothionamide	prothionamide
+pyrazimide	pyrazinamide
+pyrazinamide	pyrazinamide
+quinupristin_dalfopristin	quinupristin/dalfopristin
+quinupristin-dalfopristin	quinupristin/dalfopristin
+quinupristin/dalfopristin	quinupristin/dalfopristin
+rifabutin	rifabutin
+rifampicin	rifampin
+Rifampin	rifampin
+rifaximin	rifaximin
+sparfloxacin	sparfloxacin
+spectinomycin	spectinomycin
+spiramycin	spiramycin
+streptomicin	streptomycin
+Streptomycin	streptomycin
+sulbactam	sulbactam
+sulfadimethoxine	sulfadimethoxine
+sulfamethoxazol	sulfamethoxazole
+sulfamethoxazole	sulfamethoxazole
+sulfamethoxazole_trimethoprim	sulfamethoxazole/trimethoprim
+sulfamethoxazole-trimethoprim	sulfamethoxazole/trimethoprim
+sulfamethoxazole/trimethoprim	sulfamethoxazole/trimethoprim
+sulfasoxazole	sulfisoxazole
+sulfisoxazole	sulfisoxazole
+sulfisoxisole	sulfisoxazole
+sulfixazole	sulfisoxazole
+sulfomide	sulfonamides
+sulfonamide	sulfonamides
+sulfonamides	sulfonamides
+sulphadimethoxine	sulphadimethoxine
+sulphamethoxazole/trimethoprim	sulphamethoxazole/trimethoprim
+sulphonamide	sulfonamides
+sulphonamides	sulfonamides
+surotomycin	surotomycin
+synercid	synercid
+tazobactam_piperacillin	tazobactam/piperacillin
+tedizolid	tedizolid
+teicoplanin	teicoplanin
+telithromycin	telithromycin
+temocillin	temocillin
+tetracyclin	tetracycline
+Tetracycline	tetracycline
+tiamulin	tiamulin
+ticarcillin	ticarcillin
+ticarcillin_clavulanate	ticarcillin/clavulanic acid
+ticarcillin_clavulanic_acid	ticarcillin/clavulanic acid
+ticarcillin-clavulanic acid	ticarcillin/clavulanic acid
+ticarcillin/clavulanic acid	ticarcillin/clavulanic acid
+ticarcillin/clavulanic_acid	ticarcillin/clavulanic acid
+tigecycline	tigecycline
+tilmicosin	tilmicosin
+timentin	timentin
+tms	trimethoprim/sulfamethoxazole
+Tobramycin	tobramycin
+trimethopri_sulfamethoxazole	trimethoprim/sulfamethoxazole
+trimethoprim	trimethoprim
+trimethoprim_sulfamethoxazol	trimethoprim/sulfamethoxazole
+Trimethoprim_Sulfamethoxazole	trimethoprim/sulfamethoxazole
+trimethoprim_sulfametoxazole	trimethoprim/sulfamethoxazole
+trimethoprim_sulphamethoxazole	trimethoprim/sulfamethoxazole
+trimethoprim_sulphonamide	trimethoprim_sulfonamide
+trimethoprim-sulfamethoxazole	trimethoprim/sulfamethoxazole
+trimethoprim-sulfamethoxazone	trimethoprim/sulfamethoxazole
+trimethoprim-sulfobactam	trimethoprim/sulfobactam
+trimethoprim-sulfonamide	trimethoprim/sulfonamide
+trimethoprim/sulfamethoxazole	trimethoprim/sulfamethoxazole
+trimethoprim/sulphamethoxazole	trimethoprim/sulfamethoxazole
+trimetroprim_sulfametoxazol	trimethoprim/sulfamethoxazole
+trimetroprim/sulfamethoxazole	trimethoprim/sulfamethoxazole
+trimotheprim	trimotheprim
+trovafloxacin	trovafloxacin
+tulathromycin	tulathromycin
+tylosin	tylosin
+tylosin tartrate	tylosin
+tylosin_tartrate	tylosin tartrate
+vancomcyin	vancomycin
+vancomycin	vancomycin
