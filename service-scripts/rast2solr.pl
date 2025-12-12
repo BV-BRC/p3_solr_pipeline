@@ -231,6 +231,7 @@ sub getGenomeInfo {
 
 	$genome->{genome_id} = $genomeObj->{id};
 	$genome->{genome_name} = $genomeObj->{scientific_name};
+	$genome->{genome_name}=~s/^\s*|\s*$//g;
 	$genome->{common_name} = $genomeObj->{scientific_name};
 	$genome->{common_name}=~s/\W+/_/g;
 	$genome->{common_name}=~s/_*$//g;
