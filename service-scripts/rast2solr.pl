@@ -240,7 +240,7 @@ sub getGenomeInfo {
 
 	prepareTaxonomy($genome->{taxon_lineage_ids}) if $public;
 
-	my %desired_ranks = map { $_ => 1 } qw(superkingdom kingdom phylum class order family genus species);
+	my %desired_ranks = map { $_ => 1 } qw(kingdom phylum class order family genus species);
 	if (ref $taxon_lineage_ranks eq "ARRAY"){
 		for (my $i = 0; $i < @$taxon_lineage_ranks; $i++){
 			my $rank = $taxon_lineage_ranks->[$i];
@@ -248,6 +248,7 @@ sub getGenomeInfo {
 			if ($desired_ranks{lc($rank)}){
 				$genome->{$rank} = $name;
 			}
+			$genome->{superkingdom} = $1 if $name=~/^(Archaea|Bacteria|Eukaryotes|Viruses)$/;
 		}
 	}
 
