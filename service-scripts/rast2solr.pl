@@ -122,6 +122,7 @@ my $spgeneRef = $solrh->getSpGeneRef();
 # Initialize global arrays to hold genome data
 my %seq=();
 my $genome;
+my $genome_type;
 my @sequences = ();
 my @features = ();
 my @feature_sequences = ();
@@ -133,7 +134,6 @@ my @genome_amr = ();
 my $featureIndex;
 my %subsystem_assignments=();
 my %md5=();
-
 
 # Process GenomeObj
 getGenomeInfo();
@@ -149,6 +149,9 @@ curateMetadata();
 
 # Get predicted AMR phenotypes 
 getAMRPhenotypes();
+
+# Get genome typing / cgMLST data
+getGenomeTyping();
 
 # Get genome sequences
 getGenomeSequences();
@@ -181,6 +184,7 @@ sub writeJson {
 	my $spgenemap_json = $json->pretty->encode(\@spgenemap);
 	my $taxonomy_json = $json->pretty->encode(\@taxonomy);
 	my $genome_amr_json = $json->pretty->encode(\@genome_amr);
+	my $genome_type_json = $json->pretty->encode($genome_type);
 	
 	open FH, ">genome.json" or die "Cannot write genome.json: $!"; 
 	print FH "[".$genome_json."]";
@@ -216,6 +220,10 @@ sub writeJson {
 
 	open FH, ">genome_amr.json" or die "Cannot write genome_amr.json: $!"; 
 	print FH $genome_amr_json;
+	close FH;
+	
+	open FH, ">genome_typing.json" or die "Cannot write genome_type.json: $!"; 
+	print FH "[".$genome_type_json."]";
 	close FH;
 
 }
@@ -256,6 +264,13 @@ sub getGenomeInfo {
 	foreach my $type (@{$genomeObj->{typing}}){
 		$genome->{mlst} .= "," if $genome->{mlst};
 		$genome->{mlst} .= $type->{typing_method}.".".$type->{database}.".".$type->{tag};
+	}
+
+	foreach my $st (@{$genomeObj->{sequence_types}}){
+		my $hc = $st->{cgmlst_hc};
+		foreach my $level (sort keys %$hc) {
+			$genome->{$level} = $hc->{$level};
+		}
 	}
 
 	foreach my $seqObj (@{$genomeObj->{contigs}}) {
@@ -620,6 +635,36 @@ sub getGenomeFeatures{
 
 }
 
+sub getGenomeTyping {
+	
+	my $st = @{$genomeObj->{sequence_types}}[0];
+
+	$genome_type->{genome_id} = $genome->{genome_id};
+	$genome_type->{genome_name} = $genome->{genome_name};
+	$genome_type->{taxon_id} = $genome->{taxon_id};
+	$genome_type->{public} = $genome->{public};
+	$genome_type->{owner} = $genome->{owner};
+
+	$genome_type->{method} = "cgMLST" ;
+	#$genome_type->{scheme_id} = ;
+	$genome_type->{scheme_name} = $st->{schema_name};
+	$genome_type->{scheme_source} = "cgmlst.org";
+	$genome_type->{scheme_version} = $st->{schema_version};
+	$genome_type->{sequence_type} = $st->{cgmlst_hc}->{cgmlst_hc0};
+	
+	#$genome_type->{loci} = ;
+	$genome_type->{allele_profile} = $st->{allele_profile};
+	
+	$genome_type->{loci_total} = $st->{loci_total};
+	$genome_type->{loci_called} = $st->{loci_called};
+	$genome_type->{loci_missing} = $st->{loci_missing};
+	$genome_type->{pct_called} = sprintf("%.2f", $st->{pct_called});
+	$genome_type->{qc} = $st->{qc};
+
+	return $genome_type;	
+
+}
+
 
 sub prepareSpGene {
 
@@ -842,7 +887,7 @@ sub getMetadataFromGenBankFile {
 	$genome->{sequencing_platform} = $1 if $gb=~/Sequencing Technology\s*:: (.*)/;
 
 	# Parse flu metadata from GenBank comment 
-	my $flu_data=$1 if $gb=~/##FluData-START##(.+?)##FluData-END##/s;
+	my $flu_data=$1 if $gb=~/##\w+FluData-START##(.+?)##\w+FluData-END##/is;
 	foreach my $entry (split /\n/, $flu_data){
 		next unless $entry=~/::/;
 		my ($attrib,$value) = $entry=~/^\s*(\S+)\s+::\s+(.*)\s*$/;
@@ -876,7 +921,15 @@ sub getMetadataFromGenBankFile {
 	$genome->{genome_name} .= " $genome->{strain}" if ($genome->{strain} && (not $genome->{genome_name}=~/$genome->{strain}/i));
 	$genome->{genome_name}=~s/\($genome->{strain}\)/$genome->{strain}/;
 
-	$genome->{segment} = $1 if $gb=~/\/segment="([^"]*)"/ && (grep {$_=~/Bunyavirales|Reoviridae|Orthomyxoviridae/} @{$genome->{taxon_lineage_names}});
+	#$genome->{segment} = $1 if $gb=~/\/segment="([^"]*)"/; && (grep {$_=~/Bunyavirales|Reoviridae|Orthomyxoviridae/} @{$genome->{taxon_lineage_names}});
+	$genome->{segment} = $1 if $gb=~/\/segment="([^"]*)"/ && (grep {$_=~/Viruses/} @{$genome->{taxon_lineage_names}});
+
+	my @segments = ($gb =~ /\/segment="([^"]*)"/g);
+	#$genome->{segments} = \@segments if @segments;
+	$genome->{segment}  = join(",", sort @segments) if @segments;
+
+	print "SEGMENT = $1" if $gb=~/\/segment="([^"]*)"/;
+	
 	$genome->{serovar} = $1 if $gb=~/\/serotype="([^"]*)"/;
 	$genome->{geographic_location} = $1 if $gb=~/\/geo_loc_name="([^"]*)"/;
 	$genome->{host_name} = $1 if $gb=~/\/host="([^"]*)"/;
@@ -928,12 +981,13 @@ sub getGenomeFeaturesFromGenBankFile {
 
 	while (my $seqObj = $genomeObj->next_seq){
 
-		my ($accession, $sequence_id);
-
+		my ($accession, $sequence_id, $sequence_index);
+	
 		$accession = $seqObj->accession_number;
 
 		for (my $i=0; $i < scalar @sequences; $i++){
 			next unless $sequences[$i]->{accession} eq $accession;
+			$sequence_index = $i;
 			$sequence_id = $sequences[$i]->{sequence_id}; 
 			last;	
 		}
@@ -981,8 +1035,10 @@ sub getGenomeFeaturesFromGenBankFile {
 			
 			for my $tag ($featObj->get_all_tags){
 
-				for my $value ($featObj->get_tag_values($tag)){
-					
+				for my $value ($featObj->get_tag_values($tag)){	
+
+					$sequences[$sequence_index]->{segment} = $value if $tag eq 'segment' && $feature->{feature_type} eq 'source';
+
 					$feature->{codon_start} = $value if $tag eq 'codon_start';
 
 					$feature->{feature_type} 	= 'pseudogene' if ($tag eq 'pseudo' && $feature->{feature_type} eq 'gene');
@@ -1237,7 +1293,46 @@ sub curateMetadata {
 		}else{
 			# not on the country list
 		}
-	} 
+	}
+
+	# format collection date
+	my %months = qw (jan 01 feb 02 mar 03 apr 04 may 05 jun 06 jul 07 aug 08 sep 09 oct 10 nov 11 dec 12);
+	my $current_yy = sprintf("%02d", (localtime)[5] % 100);
+	my $current_yyyy = 1900 + (localtime)[5];
+	my ($day, $month, $year, $month_clean, $date_clean);
+	
+	if($genome->{collection_date} =~ /^(?:(\d{1,2})-)?([A-Z]+)-(\d+)$/i){
+    ($day, $month, $year) = ($1, $2, $3);
+		$year = $year <= $current_yy ? "20$year" : "19$year" if $year =~ /^\d\d$/;
+		$month_clean = $months{ lc substr($month, 0, 3) };
+		$day = sprintf("%02d", $day) if defined $day;
+		$date_clean = defined $day? "$year-$month_clean-$day" : "$year-$month_clean";
+	}elsif($genome->{collection_date}=~/^(\d{4})[-\/](\d{4})$/){
+		$date_clean = $2>=$1 ? "$1-$2" : "$2-$1";
+	}else{
+		# unexpected date format
+	}
+	$genome->{collection_date} = $date_clean if $date_clean;
+
+	# Set collection_date_dr
+	my $date = $genome->{collection_date};
+	my $date_dr = "";
+	my ($to, $from);
+
+	if ($date =~ /^(\d{4}-\d{2}-\d{2}|\d{4}-\d{2}|\d{4})$/) {
+		$date_dr = $date unless $date =~ /-00(?:-|$)/;
+	}elsif ($date =~ /^(\d{4})[-\/](\d{4})$/) {
+		$date_dr = $2>=$1 ? "[$1 TO $2]" : "[$2 TO $1]";
+	}elsif ($date =~ /^(\d{4}-\d{2})\/(\d{4}-\d{2})$/) {
+		$date_dr = $2 ge $1 ? "[$1 TO $2]" : "[$2 TO $1]";
+	}elsif ($date =~ /^(\d{4}-\d{2}-\d{2})\/(\d{4}-\d{2}-\d{2})$/) {
+		$date_dr = $2 ge $1 ? "[$1 TO $2]" : "[$2 TO $1]";
+	}elsif ($date =~ /^(\d{3})0s$/) {
+		$date_dr = "[$1"."0 TO $1"."9]";
+	}else{
+		# unexpected date format
+	}
+	$genome->{collection_date_dr} = $date_dr if $date_dr;	 
 	
 	# collection year
 	if ($genome->{collection_date}=~/(\d\d\d\d).*(\d\d\d\d)/){
