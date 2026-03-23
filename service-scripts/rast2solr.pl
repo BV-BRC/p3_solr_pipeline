@@ -928,8 +928,6 @@ sub getMetadataFromGenBankFile {
 	#$genome->{segments} = \@segments if @segments;
 	$genome->{segment}  = join(",", sort @segments) if @segments;
 
-	print "SEGMENT = $1" if $gb=~/\/segment="([^"]*)"/;
-	
 	$genome->{serovar} = $1 if $gb=~/\/serotype="([^"]*)"/;
 	$genome->{geographic_location} = $1 if $gb=~/\/geo_loc_name="([^"]*)"/;
 	$genome->{host_name} = $1 if $gb=~/\/host="([^"]*)"/;
