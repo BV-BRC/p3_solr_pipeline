@@ -273,12 +273,10 @@ sub getGenomeInfo {
 		}
 	}
 
-	foreach my $genotype (@{$genomeObj->{genotype_annotation} || []}) {
-  	while (my ($key, $value) = each %$genotype) {
-    	next unless defined $value
-             && (ref($value) eq 'ARRAY' ? @$value : $value ne '');
-    	$genome->{$key} = $value;
-  	}
+	while (my($key, $value) = each %{$genomeObj->{genotype_annotation} || {}}) {
+	    next unless defined $value
+		&& (ref($value) eq 'ARRAY' ? @$value : $value ne '');
+	    $genome->{$key} = $value;
 	}
 
 	foreach my $seqObj (@{$genomeObj->{contigs}}) {
