@@ -265,12 +265,20 @@ sub getGenomeInfo {
 		$genome->{mlst} .= "," if $genome->{mlst};
 		$genome->{mlst} .= $type->{typing_method}.".".$type->{database}.".".$type->{tag};
 	}
-
+	
 	foreach my $st (@{$genomeObj->{sequence_types}}){
 		my $hc = $st->{cgmlst_hc};
 		foreach my $level (sort keys %$hc) {
 			$genome->{$level} = $hc->{$level};
 		}
+	}
+
+	foreach my $genotype (@{$genomeObj->{genotype_annotation} || []}) {
+  	while (my ($key, $value) = each %$genotype) {
+    	next unless defined $value
+             && (ref($value) eq 'ARRAY' ? @$value : $value ne '');
+    	$genome->{$key} = $value;
+  	}
 	}
 
 	foreach my $seqObj (@{$genomeObj->{contigs}}) {
@@ -951,11 +959,13 @@ sub getMetadataFromGenBankFile {
 	} 
 
 	# For Influenza, get missing metadata from strain name	
-	if ($genome->{genome_name}=~/Influenza (A|B|C|D)/){	
-		if ($genome->{strain}=~/\s*\(([HN0-9-x]*)\)\s*$/){
+	if ($genome->{genome_name}=~/Influenza [A-D] virus\s*(.*)/){
+		$genome->{strain} = $1 unless $genome->{strain};
+		if ($genome->{strain}=~/\(([HN0-9-x]*)\)/){
 			$genome->{serovar}=$1;
-			$genome->{strain}=~s/\s*\([HN0-9-x]*\)\s*$//;
+			$genome->{strain}=~s/\s*\([HN0-9-x]*\)\s*//;
 		}
+		$genome->{strain}=~s/^\(|\)$//g;	
 		if ($genome->{strain}=~/(A|B|C|D)\/(.*?)\/(.*?)\/(.*?)\/(.*)/){ # type/host/location/identifier/year
 			$genome->{host_name} = $2 unless $genome->{host_name};
 			$genome->{geographic_location} = $3 unless $genome->{geographic_location};
@@ -967,6 +977,8 @@ sub getMetadataFromGenBankFile {
 		}else{
 			# strain is not expected format
 		}
+		
+		print "####$genome->{genome_name}\t$genome->{strain}\t$genome->{geographic_location}\n";
 	}
 
 
@@ -1203,11 +1215,12 @@ sub curateMetadata {
 
 	print "Auto curate genome metadata\n";
 
-	my ($href1, $href2, $href3) = readMetadataRefs();
+	my ($href1, $href2, $href3, $href4) = readMetadataRefs();
 
 	my %host_map = %{$href1};
 	my %country_map = %{$href2};
 	my %country_flu = %{$href3};
+	my %state_map = %{$href4};
 
 	# clean host name
 	my $host_name_orig = $genome->{host_name}; 
@@ -1220,7 +1233,8 @@ sub curateMetadata {
 	
 	# host group and common name
 	if ($host_map{$genome->{host_name}}){ 
-		($genome->{host_common_name}, $genome->{host_group}) = split /\t/, $host_map{$genome->{host_name}};
+		($genome->{host_scientific_name}, $genome->{host_common_name}, $genome->{host_group}) = split /\t/, $host_map{$genome->{host_name}};
+		$genome->{host_scientific_name} = "" if $genome->{host_scientific_name}=~/null/i; 
 		$genome->{host_common_name} = "" if $genome->{host_common_name}=~/null/i; 
 		$genome->{host_group} = "" if $genome->{host_group}=~/null/i; 
 	}else{
@@ -1288,14 +1302,18 @@ sub curateMetadata {
 	
 	# isolation country and geographic group
 	if ($genome->{geographic_location}){
-		my $country = $genome->{geographic_location};
-		$country=~s/"//g;
-		$country=~s/\s*[:,;].*//;
-		if ($country_map{$country}){
-			$genome->{isolation_country} = $country;
-			$genome->{geographic_group} = $country_map{$country};
+		my $location = $genome->{geographic_location};
+		$location=~s/"//g;
+		$location=~s/\s*[:,;].*//;
+		if ($country_map{$location}){
+			$genome->{isolation_country} = $location;
+			$genome->{geographic_group} = $country_map{$location};
+		}elsif($state_map{$location}){
+			$genome->{state_province} = $state_map{$location};		
+			$genome->{isolation_country} = "USA";
+			$genome->{geographic_group} = "North America";
 		}else{
-			# not on the country list
+			# not on country or us  state list
 		}
 	}
 
@@ -1499,17 +1517,30 @@ sub readMetadataRefs {
     my $refs_dir = "$ENV{KB_TOP}/lib/autocuration-metadata";
     $refs_dir = "$Bin/refs" unless -d $refs_dir;
 
-    my(%host_map, %country_map, %country_flu);
+    my(%host_map, %country_map, %country_flu, %state_map);
 
     # process host mappings
     if (open FH, "$refs_dir/host_mapping"){
 			%host_map = ();
 			while (my $entry = <FH>){
 	    	chomp $entry;
-	    	my ($host_name, $host_common_name, $host_group) = $entry=~/(.*)\t(.*)\t(.*)/;
-	    	$host_map{$host_name} = "$host_common_name\t$host_group";
-				$host_map{lc $host_name} = "$host_common_name\t$host_group";
-				$host_map{ucfirst lc $host_name} = "$host_common_name\t$host_group";
+	    	my ($host_name, $host_scientific_name, $host_common_name, $host_group) = $entry=~/(.*)\t(.*)\t(.*)\t(.*)/;
+	    
+				$host_common_name = lc $host_common_name;
+				$host_common_name =~ s/^\s+|\s+$//g;
+				$host_common_name = ucfirst($host_common_name);
+				
+				# fix common proper words (expand as needed)
+				my $proper = join '|', qw(
+					African American Asian Australian Brazilian Canadian Chinese European
+					Eurasian Indian Japanese Mexican North South Western Eastern
+					Atlantic Pacific Mediterranean Mandarin
+				);
+				$host_common_name =~ s/\b($proper)\b/\u\L$1/gi;
+
+				$host_map{$host_name} = "$host_scientific_name\t$host_common_name\t$host_group";
+				$host_map{lc $host_name} = "$host_scientific_name\t$host_common_name\t$host_group";
+				$host_map{ucfirst lc $host_name} = "$host_scientific_name\t$host_common_name\t$host_group";
 		}
 		close FH;
    }else{
@@ -1530,5 +1561,21 @@ sub readMetadataRefs {
 	}else{
 		warn "Cannot open country mapping file $refs_dir/country_mapping: $!";
 	}
-    return (\%host_map, \%country_map, \%country_flu);
+
+
+	# process state mapping
+  if (open FH, "$refs_dir/us_states"){
+		%state_map = ();
+		while (my $entry = <FH>) {
+			chomp $entry;
+			my ($state, $code) = $entry=~/(.*)\t(.*)/;
+			$state_map{$state} = "$state";
+			$state_map{$code} = "$state";
+		}
+		close FH;
+	}else{
+		warn "Cannot open country mapping file $refs_dir/us_state: $!";
+	}
+
+    return (\%host_map, \%country_map, \%country_flu, \%state_map);
 }
