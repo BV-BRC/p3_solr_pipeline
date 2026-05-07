@@ -28,16 +28,17 @@ eval
 use lib "$Bin/../lib";
 use SolrAPI;
 
-my ($data_api_url, $reference_data_dir);
-if ($have_config)
+my $data_api_url = $ENV{PATRIC_DATA_API};
+my $reference_data_dir = $ENV{PATRIC_REFERENCE_DATA};
+
+if (!defined($data_api_url) && $have_config)
 {
     $data_api_url = Bio::KBase::AppService::AppConfig->data_api_url;
-    $reference_data_dir = Bio::KBase::AppService::AppConfig->reference_data_dir;
 }
-else
+
+if (!defined($reference_data_dir) && $have_config)
 {
-    $data_api_url = $ENV{PATRIC_DATA_API};
-    $reference_data_dir = $ENV{PATRIC_REFERENCE_DATA};	
+    $reference_data_dir = Bio::KBase::AppService::AppConfig->reference_data_dir;
 }
 
 my $json = JSON->new->allow_nonref;
@@ -84,20 +85,17 @@ sub genomeQuality
     my $species;
     my $glin = $genomeObj->{ncbi_lineage} = [];
 
-    if ($lineage_ranks)
-    {
-	# Identify species, needed for comparing to species level stats 
-	for (my $i=0; $i < @$lineage_ranks; $i++)
-	{
-	    push(@$glin, [$lineage_names->[$i], $lineage_ids->[$i], $lineage_ranks->[$i]]);
-	    if ($lineage_ranks->[$i] =~ /species/i)
-	    {
-			$genomeObj->{ncbi_species} = $lineage_names->[$i];
-			$species = $solrh->getSpeciesInfo($lineage_ids->[$i]);
-	    }
-	    $genomeObj->{ncbi_genus} = $lineage_names->[$i] if $lineage_ranks->[$i] =~ /genus/i;
-	    $genomeObj->{ncbi_superkingdom} = $lineage_names->[$i] if $lineage_ranks->[$i] =~ /superkingdom/i;
-	}
+    if ($lineage_ranks){
+			# Identify species, needed for comparing to species level stats 
+			for (my $i=0; $i < @$lineage_ranks; $i++){
+	    	push(@$glin, [$lineage_names->[$i], $lineage_ids->[$i], $lineage_ranks->[$i]]);
+	    	if ($lineage_ranks->[$i] =~ /species/i){
+					$genomeObj->{ncbi_species} = $lineage_names->[$i];
+					$species = $solrh->getSpeciesInfo($lineage_ids->[$i]);
+	    	}
+	    	$genomeObj->{ncbi_genus} = $lineage_names->[$i] if $lineage_ranks->[$i] =~ /genus/i;
+	    	$genomeObj->{ncbi_superkingdom} = $1 if $lineage_names->[$i]=~/^(Archaea|Bacteria|Eukaryotes|Viruses)$/;
+			}
     }
 
     # Read the existing genome quality data
@@ -111,6 +109,7 @@ sub genomeQuality
 	$qc->{plasmids}++ if $seqObj->{genbank_locus}->{definition}=~/plasmid/i;
 	$qc->{segments}++ if $seqObj->{genbank_locus}->{definition}=~/segment/i;
 	$qc->{contigs}++;
+	$qc->{ambiguous_bases} += ($seqObj->{dna} =~ tr/nN//); 
     }
 	
     $qc->{gc_content} = $genomeObj->compute_contigs_gc();
@@ -332,8 +331,30 @@ sub genomeQuality
 			$qc->{genome_quality} = "Good";
 		}
 
-	}else{ # Not a microbial genome
+	}elsif($genomeObj->{ncbi_superkingdom}=~/viruses/i){
 	
+		if ($qc->{segments}){
+			# Segmented virus
+		}elsif ($species && $species->{genome_length_mean}){
+    	push @{$qc->{genome_quality_flags}}, "Genome too short"
+				if $qc->{genome_length} < 0.95 * $species->{genome_length_mean};
+			push @{$qc->{genome_quality_flags}}, "Genome too long"
+				if $qc->{genome_length} > 1.05 * $species->{genome_length_mean}; 
+			push @{$qc->{genome_quality_flags}}, "Too many Ns"
+				if $qc->{ambiguous_bases} / $qc->{genome_length} > 0.1; 
+		}
+    
+		# Overall genome quality 
+		if (scalar @{$qc->{genome_quality_flags}}){
+			$qc->{genome_quality} = "Poor";
+			$qc->{genome_status} = "Partial";
+		}else{
+			$qc->{genome_quality} = "Good";
+			$qc->{genome_status} = "Complete";
+		}
+		
+	}else{
+
 	}
     
 	# Update the genome quality measure obj in the GTO

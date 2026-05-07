@@ -85,6 +85,8 @@ die($usage->text) unless $opt->write_reference_data || $opt->genomeobj_file;
 my $lookup_client = Bio::P3::NCBILookup::NCBILookupClient->new($opt->lookup_client_url) if $opt->lookup_client_url;
 my $solrh = SolrAPI->new($opt->data_api_url, $opt->reference_data_dir);
 
+print "Refrence data: $reference_data_dir\n";
+
 if ($opt->write_reference_data)
 {
     $solrh->getECRef();
@@ -97,8 +99,6 @@ my $genomeobj_file = $opt->genomeobj_file;
 my $genbank_file = $opt->genbank_file;
 my $outfile = $genomeobj_file;
 $outfile=~s/(.gb|.gbf|.json)$//;
-
-print "Processing $genomeobj_file\n";
 
 # Read GenomeObj
 open GOF, $genomeobj_file or die "Can't open input RASTtk GenomeObj JSON file: $genomeobj_file\n";
@@ -302,7 +302,6 @@ sub getGenomeInfo {
 
 	$genome->{assembly_accession}=$1 if $genbank_file=~/(GCA_\d+\.\d+|GCF_\d+\.\d+)/;
 
-	
 }
 
 
@@ -321,7 +320,6 @@ sub getGenomeQuality {
 	$genome->{contig_n50} = $qc->{genome_metrics}->{N50};
 
 	$genome->{genome_status} = $qc->{genome_status};
-	$genome->{genome_status} = "Partial" if $genome->{superkingdom} eq "Viruses"; 
 
 	$genome->{trna} = $qc->{feature_summary}->{tRNA};
 	$genome->{rrna} = $qc->{feature_summary}->{rRNA};
@@ -422,10 +420,18 @@ sub getGenomeSequences {
 		#$sequence->{mol_type} =	$seqObj->{genbank_locus}->{mol_type};
 
 		$sequence->{sequence_type} = $1 if $sequence->{description}=~/(chromosome|plasmid|segment|contig|scaffold)/i;
-		$sequence->{sequence_status} = $1 if $sequence->{description}=~/(complete|partial)/i;
+		
+			print "$sequence->{accession}\t$seqObj->{contig_quality}\n";
+		if ($seqObj->{contig_quality}=~/good/i){
+			$sequence->{sequence_status} = "Complete";
+		}elsif($sequence->{description}=~/complete *(chromosome|plasmid|segment)/i){
+			$sequence->{sequence_status} = "Complete";
+		}else{
+			$sequence->{sequence_status} = "Partial";
+		}
 
-		$genome->{genome_status} = "Complete" 
-			if $sequence->{description}=~/complete genome|complete segment|assembly|complete sequence/i && $genome->{superkingdom} eq "Viruses";
+		#$genome->{genome_status} = "Complete" 
+		#	if $sequence->{description}=~/complete genome|complete segment|assembly|complete sequence/i && $genome->{superkingdom} eq "Viruses";
 
 		$sequence->{chromosome} = $1 if $sequence->{description}=~/chromosome (\S*)\s*,/i;
 		$sequence->{plasmid} = $1 if $sequence->{description}=~/plasmid (\S*)\s*,/i;
