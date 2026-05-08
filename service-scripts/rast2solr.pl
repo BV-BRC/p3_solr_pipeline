@@ -906,15 +906,20 @@ sub getMetadataFromGenBankFile {
 		next unless $entry=~/::/;
 		my ($attrib,$value) = $entry=~/^\s*(\S+)\s+::\s+(.*)\s*$/;
 		$attrib = lc $attrib;
-		if ($attrib=~/host_age|host_gender|passage/i){
+		$attrib=~s/\//_/g;
+
+		if ($attrib=~/^(host_age|host_gender)$/i){
 			$genome->{$attrib} = $value;
-		}elsif($attrib=~/^collect_date$/i){
+		}elsif($attrib=~/^(passage|passage_history)$/i){
+			$genome->{passage}=$value;
+		}elsif($attrib=~/^(collect_date|collection_date)$/i){
 			$genome->{collection_date}=$value;
-		}elsif($attrib=~/^type$/i){
+		}elsif($attrib=~/^(type|subtype)$/i){
 			$genome->{serovar}=$value;
 		}else{
 			push @{$genome->{other_clinical}}, "$attrib:$value"; 
 		}
+
 	} 
 
 
@@ -978,7 +983,6 @@ sub getMetadataFromGenBankFile {
 			# strain is not expected format
 		}
 		
-		print "####$genome->{genome_name}\t$genome->{strain}\t$genome->{geographic_location}\n";
 	}
 
 
@@ -1465,7 +1469,7 @@ sub biosample2patricAttrib{
 		"strain" => "strain",
 		"isolate" => "strain",
 		"subgroup" => "",
-		"subtype" => "",
+		"subtype" => "subtype",
 		"temp" => "other_environmental:temperature"
 	);
 
