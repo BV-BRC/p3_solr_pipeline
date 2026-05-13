@@ -950,10 +950,10 @@ sub getMetadataFromGenBankFile {
 	$genome->{genome_name}=~s/\($genome->{strain}\)/$genome->{strain}/;
 
 	#$genome->{segment} = $1 if $gb=~/\/segment="([^"]*)"/; && (grep {$_=~/Bunyavirales|Reoviridae|Orthomyxoviridae/} @{$genome->{taxon_lineage_names}});
-	$genome->{segment} = $1 if $gb=~/\/segment="([^"]*)"/ && (grep {$_=~/Viruses/} @{$genome->{taxon_lineage_names}});
+	#$genome->{segment} = $1 if $gb=~/\/segment="([^"]*)"/ && (grep {$_=~/Viruses/} @{$genome->{taxon_lineage_names}});
 
 	my @segments = ($gb =~ /\/segment="([^"]*)"/g);
-	$genome->{segments} = \@segments if @segments;
+	$genome->{segment} = \@segments if @segments;
 	#$genome->{segment}  = join(",", sort @segments) if @segments;
 
 	$genome->{serovar} = $1 if $gb=~/\/serotype="([^"]*)"/;
