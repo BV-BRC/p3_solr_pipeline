@@ -488,6 +488,13 @@ sub getGenomeFeatures{
 	
 	print "Getting genome features ...\n";
 
+	my %analysis_events;
+	foreach my $event (@{ $genomeObj->{analysis_events} || [] }) {
+		my $id   = $event->{id};
+		my $name = $event->{tool_name};
+		$analysis_events{$id} = $name if defined $id && defined $name;
+	}
+
 	foreach my $featObj (@{$genomeObj->{features}}){
 			
 		my ($feature, $sequence, $aa_sequence, $pathways, $ecpathways);
@@ -508,6 +515,8 @@ sub getGenomeFeatures{
 		$feature->{feature_type} = $1 if ($featObj->{type} eq "rna" && $featObj->{function}=~/(rRNA|tRNA)/);
 		$feature->{feature_type} = 'misc_RNA' if ($featObj->{type} eq "rna" && !($featObj->{function}=~/rRNA|tRNA/));
 		$feature->{feature_type} = 'repeat_region' if ($featObj->{type} eq "repeat");
+
+		$feature->{prediction_method} = $analysis_events{$featObj->{feature_creation_event}} || $analysis_events{$featObj->{analysis_event_id}};
 
 		$feature->{product} = $featObj->{function};
 		$feature->{product} = "hypothetical protein" if ($feature->{feature_type} eq 'CDS' && !$feature->{product});
@@ -944,8 +953,8 @@ sub getMetadataFromGenBankFile {
 	$genome->{segment} = $1 if $gb=~/\/segment="([^"]*)"/ && (grep {$_=~/Viruses/} @{$genome->{taxon_lineage_names}});
 
 	my @segments = ($gb =~ /\/segment="([^"]*)"/g);
-	#$genome->{segments} = \@segments if @segments;
-	$genome->{segment}  = join(",", sort @segments) if @segments;
+	$genome->{segments} = \@segments if @segments;
+	#$genome->{segment}  = join(",", sort @segments) if @segments;
 
 	$genome->{serovar} = $1 if $gb=~/\/serotype="([^"]*)"/;
 	$genome->{geographic_location} = $1 if $gb=~/\/geo_loc_name="([^"]*)"/;
