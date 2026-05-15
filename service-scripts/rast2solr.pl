@@ -495,6 +495,8 @@ sub getGenomeFeatures{
 		$analysis_events{$id} = $name if defined $id && defined $name;
 	}
 
+	my %feature_ids = ();
+
 	foreach my $featObj (@{$genomeObj->{features}}){
 			
 		my ($feature, $sequence, $aa_sequence, $pathways, $ecpathways);
@@ -586,8 +588,21 @@ sub getGenomeFeatures{
 		}
 
 		my $strand = ($feature->{strand} eq '+')? 'fwd':'rev';
-		$feature->{feature_id}		=	"$annotation.$feature->{genome_id}.$feature->{accession}.".
+
+		#$feature->{feature_id}		=	"$annotation.$feature->{genome_id}.$feature->{accession}.".
+		#															"$feature->{feature_type}.$feature->{start}.$feature->{end}.$strand";
+		
+		my $feature_id =	"$annotation.$feature->{genome_id}.$feature->{accession}.".
 																	"$feature->{feature_type}.$feature->{start}.$feature->{end}.$strand";
+
+		if ($feature_ids{$feature_id}){
+			$feature_ids{$feature_id}++;
+			$feature_id = $feature_id.".".$feature_ids{$feature_id};
+		}else{
+			$feature_ids{$feature_id}++;
+		}
+		$feature->{feature_id} = $feature_id;
+
 
 		if ($feature->{feature_type}=~/classifier_predicted_region/){
 			my $evidence =  $featObj->{annotations}->[0]->[0];
@@ -605,9 +620,10 @@ sub getGenomeFeatures{
 
 		foreach my $family (@{$featObj->{family_assignments}}){
 			my ($family_type, $family_id, $family_function) = @{$family};
-			$feature->{figfam_id} = $family_id if ($family_id=~/^FIG/);
-			$feature->{plfam_id} = $family_id if ($family_id=~/^PLF/);
-			$feature->{pgfam_id} = $family_id if ($family_id=~/^PGF/);
+			$feature->{figfam_id} = $family_id if $family_type=~/figfam/i;
+			$feature->{plfam_id} = $family_id if $family_type=~/plfam/i;
+			$feature->{pgfam_id} = $family_id if $family_type=~/pgfam/i;
+			$feature->{sog_id} = $family_id if $family_type=~/lowvan/i;
 		}
 
 		@ec_no = $feature->{product}=~/\( *EC[: ]([\d-\.]+) *\)/g if $feature->{product}=~/EC[: ]/;
