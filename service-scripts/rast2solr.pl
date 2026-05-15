@@ -589,19 +589,17 @@ sub getGenomeFeatures{
 
 		my $strand = ($feature->{strand} eq '+')? 'fwd':'rev';
 
-		#$feature->{feature_id}		=	"$annotation.$feature->{genome_id}.$feature->{accession}.".
-		#															"$feature->{feature_type}.$feature->{start}.$feature->{end}.$strand";
 		
 		my $feature_id =	"$annotation.$feature->{genome_id}.$feature->{accession}.".
-																	"$feature->{feature_type}.$feature->{start}.$feature->{end}.$strand";
+																	"$feature->{feature_type}.$feature->{start}.$feature->{end}.$strand";	
+	
 
 		if ($feature_ids{$feature_id}){
-			$feature_ids{$feature_id}++;
-			$feature_id = $feature_id.".".$feature_ids{$feature_id};
+			$feature->{feature_id} = $feature_id.".".$feature_ids{$feature_id};
 		}else{
-			$feature_ids{$feature_id}++;
+			$feature->{feature_id} = $feature_id;
 		}
-		$feature->{feature_id} = $feature_id;
+		$feature_ids{$feature_id}++;
 
 
 		if ($feature->{feature_type}=~/classifier_predicted_region/){
