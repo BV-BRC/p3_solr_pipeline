@@ -972,11 +972,14 @@ sub getMetadataFromGenBankFile {
 
 	$genome->{serovar} = $1 if $gb=~/\/serotype="([^"]*)"/;
 	$genome->{geographic_location} = $1 if $gb=~/\/geo_loc_name="([^"]*)"/;
+	$genome->{geographic_location} = $1 if $gb=~/\/country="([^"]*)"/;
 	$genome->{host_name} = $1 if $gb=~/\/host="([^"]*)"/;
 	$genome->{lab_host} = $1 if $gb=~/\/lab_host="([^"]*)"/;
 	$genome->{isolation_source} = $1 if $gb=~/\/isolation_source="([^"]*)"/;
 	$genome->{collection_date} = $1 if $gb=~/\/collection_date="([^"]*)"/;
 	$genome->{culture_collection} = $1 if $gb=~/\/culture_collection="([^"]*)"/;
+
+	print "$genome->{geographic_location}\n";
 
 	if ($gb=~/\/note="(passage.details|passage.history) *: *([^"]*) *"/){
 		$genome->{passage} = $1;
@@ -1008,6 +1011,7 @@ sub getMetadataFromGenBankFile {
 		
 	}
 
+	print "$genome->{geographic_location}\n";
 
 }
 
