@@ -1437,9 +1437,25 @@ sub curateMetadata {
 	}
 
 	# Segments labels for segmented viruses
-	$genome->{segment}=~s/^(segment|rna)\s*//i;
-	if (grep {$_=~/Influenza/} @{$genome->{taxon_lineage_names}}){		
-		#
+	if (ref $genome->{segment} eq 'ARRAY'){
+		$_=~s/^(segment|rna)\s*//i for @{$genome->{segment}};
+	}elsif(defined $genome->{segment}){
+		$genome->{segment}=~s/^(segment|rna)\s*//i;
+	}
+
+	if (grep {$_=~/Influenza/} @{$genome->{taxon_lineage_names}}){
+		my %flu_num2name = (1=>'PB2', 2=>'PB1', 3=>'PA', 4=>'HA', 5=>'NP', 6=>'NA', 7=>'M', 8=>'NS');
+		my %flu_alias   = (MA=>'M');
+		my $norm_seg = sub {
+			my $s = shift;
+			return $flu_num2name{$s} if exists $flu_num2name{$s};
+			return $flu_alias{uc $s} // $s;
+		};
+		if (ref $genome->{segment} eq 'ARRAY'){
+			$genome->{segment} = [ map { $norm_seg->($_) } @{$genome->{segment}} ];
+		}elsif(defined $genome->{segment}){
+			$genome->{segment} = $norm_seg->($genome->{segment});
+		}
 	}elsif(grep {$_=~/Bunyavirales/} @{$genome->{taxon_lineage_names}}){
 		#	
 	}elsif(grep {$_=~/Reoviridae/} @{$genome->{taxon_lineage_names}}){
