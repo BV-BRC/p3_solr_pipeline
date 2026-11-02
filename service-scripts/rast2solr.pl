@@ -1456,8 +1456,31 @@ sub curateMetadata {
 		}elsif(defined $genome->{segment}){
 			$genome->{segment} = $norm_seg->($genome->{segment});
 		}
-	}elsif(grep {$_=~/Bunyavirales/} @{$genome->{taxon_lineage_names}}){
-		#	
+	}elsif(grep {$_=~/Bunyaviricetes/} @{$genome->{taxon_lineage_names}}){
+		my $norm_bunya_seg = sub {
+			my $s = shift;
+			# RNA S/M/L -> S/M/L
+			return 'S' if $s =~ /^rna[-\s]*s$/i;
+			return 'M' if $s =~ /^rna[-\s]*m$/i;
+			return 'L' if $s =~ /^rna[-\s]*l$/i;
+			# Normalize to S/M/L by keyword (only when no sub-segment suffix follows)
+			return 'S' if $s =~ /^s(?:$|\s|[-;,_(]|rna|mall| segment| rna| complete| partial)/i && $s !~ /^s[ab\d]$/i;
+			return 'M' if $s =~ /^m(?:$|\s|[-;,_(]|rna|edium|iddle| segment| rna)/i && $s !~ /^m[ab\d]$/i;
+			return 'L' if $s =~ /^(?:large|l(?:$|\s|[-;,_(]|rna|arge| segment| rna)|partial\s+l)/i && $s !~ /^l[ab\d]$/i;
+			# Normalize RNAn / RNA n / RNA-n / Seg n -> RNAn (preserve sub-segment letter suffix e.g. RNA3a)
+			if (my ($n, $suffix) = $s =~ /^(?:rna\s*[-]?\s*|seg(?:ment)?\s*)(\d+)([a-z]*)/i){
+				return "RNA$n" . lc($suffix);
+			}
+			if (my ($n) = $s =~ /^(\d+)$/){
+				return "RNA$n";
+			}
+			return $s;
+		};
+		if (ref $genome->{segment} eq 'ARRAY'){
+			$genome->{segment} = [ map { $norm_bunya_seg->($_) } @{$genome->{segment}} ];
+		}elsif(defined $genome->{segment}){
+			$genome->{segment} = $norm_bunya_seg->($genome->{segment});
+		}
 	}elsif(grep {$_=~/Reoviridae/} @{$genome->{taxon_lineage_names}}){
 		#
 	}else{
