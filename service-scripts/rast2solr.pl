@@ -966,9 +966,9 @@ sub getMetadataFromGenBankFile {
 	#$genome->{segment} = $1 if $gb=~/\/segment="([^"]*)"/; && (grep {$_=~/Bunyavirales|Reoviridae|Orthomyxoviridae/} @{$genome->{taxon_lineage_names}});
 	#$genome->{segment} = $1 if $gb=~/\/segment="([^"]*)"/ && (grep {$_=~/Viruses/} @{$genome->{taxon_lineage_names}});
 
-	my @segments = ($gb =~ /\/segment="([^"]*)"/g);
+	my %seen;
+	my @segments = grep { !$seen{lc $_}++ } ($gb =~ /\/segment="(?:segment\s+)?([^"]*)"/gi);
 	$genome->{segment} = \@segments if @segments;
-	#$genome->{segment}  = join(",", sort @segments) if @segments;
 
 	$genome->{serovar} = $1 if $gb=~/\/serotype="([^"]*)"/;
 	$genome->{geographic_location} = $1 if $gb=~/\/geo_loc_name="([^"]*)"/;
@@ -990,9 +990,9 @@ sub getMetadataFromGenBankFile {
 	# For Influenza, get missing metadata from strain name	
 	if ($genome->{genome_name}=~/Influenza [A-D] virus\s*(.*)/){
 		$genome->{strain} = $1 unless $genome->{strain};
-		if ($genome->{strain}=~/\(([HN0-9-x]*)\)/){
-			$genome->{serovar}=$1;
-			$genome->{strain}=~s/\s*\([HN0-9-x]*\)\s*//;
+		if ($genome->{strain}=~/\((H\d+N\d+)\)/i){
+			$genome->{serovar}=$1 unless $genome->{serovar};
+			$genome->{strain}=~s/\s*\(H\d+N\d+\)\s*//i;
 		}
 		$genome->{strain}=~s/^\(|\)$//g;	
 		if ($genome->{strain}=~/(A|B|C|D)\/(.*?)\/(.*?)\/(.*?)\/(.*)/){ # type/host/location/identifier/year
