@@ -998,11 +998,13 @@ sub getMetadataFromGenBankFile {
 		if ($genome->{strain}=~/(A|B|C|D)\/(.*?)\/(.*?)\/(.*?)\/(.*)/){ # type/host/location/identifier/year
 			$genome->{host_name} = $2 unless $genome->{host_name};
 			$genome->{geographic_location} = $3 unless $genome->{geographic_location};
-			$genome->{collection_date} = $5 unless $genome->{collection_date};
+			my $year = $5; $year =~ s|.*/||; $year =~ s/\W+$//;
+			$genome->{collection_date} = $year unless $genome->{collection_date};
 		}elsif($genome->{strain}=~/(A|B|C|D)\/(.*?)\/(.*?)\/(.*?)/){ # type/location/identifier/year
 			$genome->{host_name} = "Homo sapiens" unless $genome->{host_name};
 			$genome->{geographic_location} = $2 unless $genome->{geographic_location};
-			$genome->{collection_date} = $4 unless $genome->{collection_date};	
+			my $year = $4; $year =~ s/\W+$//;
+			$genome->{collection_date} = $year unless $genome->{collection_date};
 		}else{
 			# strain is not expected format
 		}
@@ -1358,6 +1360,8 @@ sub curateMetadata {
 		$date_clean = defined $day? "$year-$month_clean-$day" : "$year-$month_clean";
 	}elsif($genome->{collection_date}=~/^(\d{4})[-\/](\d{4})$/){
 		$date_clean = $2>=$1 ? "$1-$2" : "$2-$1";
+	}elsif($genome->{collection_date}=~/^(\d{2})$/){
+		$date_clean = $1 <= $current_yy ? "20$1" : "19$1";
 	}else{
 		# unexpected date format
 	}
