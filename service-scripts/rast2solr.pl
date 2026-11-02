@@ -1436,55 +1436,46 @@ sub curateMetadata {
 		($genome->{h_type}, $genome->{n_type}) = $genome->{subtype}=~/H0*([\d]+)N0*([\d]+)/;
 	}
 
-	# Segments labels for segmented viruses
-	if (ref $genome->{segment} eq 'ARRAY'){
-		$_=~s/^(segment|rna)\s*//i for @{$genome->{segment}};
-	}elsif(defined $genome->{segment}){
-		$genome->{segment}=~s/^(segment|rna)\s*//i;
-	}
-
+	# Segment label normalization for segmented viruses
+	my $norm_seg;
 	if (grep {$_=~/Influenza/} @{$genome->{taxon_lineage_names}}){
 		my %flu_num2name = (1=>'PB2', 2=>'PB1', 3=>'PA', 4=>'HA', 5=>'NP', 6=>'NA', 7=>'M', 8=>'NS');
 		my %flu_alias   = (MA=>'M');
-		my $norm_seg = sub {
+		$norm_seg = sub {
 			my $s = shift;
+			$s =~ s/^(segment|rna)\s*//i;
 			return $flu_num2name{$s} if exists $flu_num2name{$s};
 			return $flu_alias{uc $s} // $s;
 		};
+	}elsif(grep {$_=~/Bunyaviricetes/} @{$genome->{taxon_lineage_names}}){
+		$norm_seg = sub {
+			my $s = shift;
+			$s =~ s/^(segment|rna)\s*//i;
+			return 'S' if $s =~ /^rna[-\s]*s$/i;
+			return 'M' if $s =~ /^rna[-\s]*m$/i;
+			return 'L' if $s =~ /^rna[-\s]*l$/i;
+			return 'S' if $s =~ /^s(?:$|\s|[-;,_(]|rna|mall| segment| rna| complete| partial)/i && $s !~ /^s[ab\d]$/i;
+			return 'M' if $s =~ /^m(?:$|\s|[-;,_(]|rna|edium|iddle| segment| rna)/i && $s !~ /^m[ab\d]$/i;
+			return 'L' if $s =~ /^(?:large|l(?:$|\s|[-;,_(]|rna|arge| segment| rna)|partial\s+l)/i && $s !~ /^l[ab\d]$/i;
+			if (my ($n, $suffix) = $s =~ /^(?:rna\s*[-]?\s*|seg(?:ment)?\s*)(\d+)([a-z]*)/i){
+				return "RNA$n" . lc($suffix);
+			}
+			if (my ($n) = $s =~ /^(\d+)$/){ return "RNA$n"; }
+			return $s;
+		};
+	}elsif(grep {$_=~/Reoviridae/} @{$genome->{taxon_lineage_names}}){
+		$norm_seg = sub { my $s = shift; $s =~ s/^(segment|rna)\s*//i; return $s; };
+	}
+
+	if ($norm_seg){
 		if (ref $genome->{segment} eq 'ARRAY'){
 			$genome->{segment} = [ map { $norm_seg->($_) } @{$genome->{segment}} ];
 		}elsif(defined $genome->{segment}){
 			$genome->{segment} = $norm_seg->($genome->{segment});
 		}
-	}elsif(grep {$_=~/Bunyaviricetes/} @{$genome->{taxon_lineage_names}}){
-		my $norm_bunya_seg = sub {
-			my $s = shift;
-			# RNA S/M/L -> S/M/L
-			return 'S' if $s =~ /^rna[-\s]*s$/i;
-			return 'M' if $s =~ /^rna[-\s]*m$/i;
-			return 'L' if $s =~ /^rna[-\s]*l$/i;
-			# Normalize to S/M/L by keyword (only when no sub-segment suffix follows)
-			return 'S' if $s =~ /^s(?:$|\s|[-;,_(]|rna|mall| segment| rna| complete| partial)/i && $s !~ /^s[ab\d]$/i;
-			return 'M' if $s =~ /^m(?:$|\s|[-;,_(]|rna|edium|iddle| segment| rna)/i && $s !~ /^m[ab\d]$/i;
-			return 'L' if $s =~ /^(?:large|l(?:$|\s|[-;,_(]|rna|arge| segment| rna)|partial\s+l)/i && $s !~ /^l[ab\d]$/i;
-			# Normalize RNAn / RNA n / RNA-n / Seg n -> RNAn (preserve sub-segment letter suffix e.g. RNA3a)
-			if (my ($n, $suffix) = $s =~ /^(?:rna\s*[-]?\s*|seg(?:ment)?\s*)(\d+)([a-z]*)/i){
-				return "RNA$n" . lc($suffix);
-			}
-			if (my ($n) = $s =~ /^(\d+)$/){
-				return "RNA$n";
-			}
-			return $s;
-		};
-		if (ref $genome->{segment} eq 'ARRAY'){
-			$genome->{segment} = [ map { $norm_bunya_seg->($_) } @{$genome->{segment}} ];
-		}elsif(defined $genome->{segment}){
-			$genome->{segment} = $norm_bunya_seg->($genome->{segment});
+		for my $seq (@sequences){
+			$seq->{segment} = $norm_seg->($seq->{segment}) if defined $seq->{segment};
 		}
-	}elsif(grep {$_=~/Reoviridae/} @{$genome->{taxon_lineage_names}}){
-		#
-	}else{
-
 	}
 
 }
