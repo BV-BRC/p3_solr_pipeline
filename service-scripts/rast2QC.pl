@@ -69,8 +69,14 @@ my $ecRef = $solrh->getECRef();
 my $pathwayRef = $solrh->getPathwayRef();
 my $spgeneRef = $solrh->getSpGeneRef();
 
-# Process GenomeObj
-genomeQuality();
+#
+# Only do this if we have a taxon id
+#
+if ($genomeObj->{ncbi_taxonomy_id} =~ /^\d+$/)
+{
+    # Process GenomeObj
+    genomeQuality();
+}
 
 $genomeObj->destroy_to_file($outfile);
 
