@@ -443,7 +443,13 @@ sub getGenomeSequences {
 
 		$sequence->{chromosome} = $1 if $sequence->{description}=~/chromosome (\S*)\s*,/i;
 		$sequence->{plasmid} = $1 if $sequence->{description}=~/plasmid (\S*)\s*,/i;
-		$sequence->{segment} = $1	if $seqObj->{description}=~/segment (\S*)\s*,/i;
+		# Prefer replicon_type from GTO contig (set by GenBankToGTO); strip trailing " Segment"
+		if ($seqObj->{replicon_type} && $seqObj->{replicon_type}=~/\S/) {
+			(my $seg = $seqObj->{replicon_type}) =~ s/\s*Segment\s*$//i;
+			$sequence->{segment} = $seg if $seg =~ /\S/;
+		} elsif ($seqObj->{description}=~/segment (\S*)\s*,/i) {
+			$sequence->{segment} = $1;
+		}
 
 		$sequence->{gc_content} = sprintf("%.2f", ($seqObj->{dna}=~tr/GCgc//)*100/length($seqObj->{dna})) if $seqObj->{dna};
 		$sequence->{length} = length($seqObj->{dna});
@@ -966,9 +972,19 @@ sub getMetadataFromGenBankFile {
 	#$genome->{segment} = $1 if $gb=~/\/segment="([^"]*)"/; && (grep {$_=~/Bunyavirales|Reoviridae|Orthomyxoviridae/} @{$genome->{taxon_lineage_names}});
 	#$genome->{segment} = $1 if $gb=~/\/segment="([^"]*)"/ && (grep {$_=~/Viruses/} @{$genome->{taxon_lineage_names}});
 
+	# Prefer replicon_type values from contig objects (set by GenBankToGTO), stripping " Segment" suffix.
+	# Fall back to /segment= qualifiers from genbank text.
 	my %seen;
-	my @segments = grep { !$seen{lc $_}++ } ($gb =~ /\/segment="(?:segment\s+)?([^"]*)"/gi);
-	$genome->{segment} = \@segments if @segments;
+	my @replicon_segs = grep { !$seen{lc $_}++ }
+	                    map  { (my $s = $_->{replicon_type}) =~ s/\s*Segment\s*$//i; $s }
+	                    grep { $_->{replicon_type} && $_->{replicon_type}=~/\S/ }
+	                    @{$genomeObj->{contigs}};
+	if (@replicon_segs) {
+		$genome->{segment} = \@replicon_segs;
+	} else {
+		my @segments = grep { !$seen{lc $_}++ } ($gb =~ /\/segment="(?:segment\s+)?([^"]*)"/gi);
+		$genome->{segment} = \@segments if @segments;
+	}
 
 	$genome->{serovar} = $1 if $gb=~/\/serotype="([^"]*)"/;
 	$genome->{geographic_location} = $1 if $gb=~/\/geo_loc_name="([^"]*)"/;
@@ -1443,20 +1459,26 @@ sub curateMetadata {
 		my %flu_alias   = (MA=>'M');
 		$norm_seg = sub {
 			my $s = shift;
-			$s =~ s/^(segment|rna)\s*//i;
+			$s =~ s/^(?:segment|seg|rna)\s*//i;   # strip "Segment", "Seg", "RNA" prefix
 			return $flu_num2name{$s} if exists $flu_num2name{$s};
 			return $flu_alias{uc $s} // $s;
 		};
 	}elsif(grep {$_=~/Bunyaviricetes/} @{$genome->{taxon_lineage_names}}){
 		$norm_seg = sub {
 			my $s = shift;
-			$s =~ s/^(segment|rna)\s*//i;
+			$s =~ s/^\s+|\s+$//g;
+			# Extract S/M/L from strain-prefixed labels: "Terpeniya_L", "CabsLBV1-L", "strain X, L"
+			return uc($1) if $s =~ /[,_-]\s*([LMS])(?:_partial)?$/i && $s !~ /^[LMS]$/i;
+			return uc($1) if $s =~ /^defective\s+([LMS])$/i;
+			$s =~ s/^putative\s+//i;
+			$s =~ s/\s*\(.*?\)\s*$//;                 # strip parentheticals e.g. "1 (largest)"
+			$s =~ s/^(?:segment|seg|rna)[-\s]*//i;
 			return 'S' if $s =~ /^rna[-\s]*s$/i;
 			return 'M' if $s =~ /^rna[-\s]*m$/i;
 			return 'L' if $s =~ /^rna[-\s]*l$/i;
 			return 'S' if $s =~ /^s(?:$|\s|[-;,_(]|rna|mall| segment| rna| complete| partial)/i && $s !~ /^s[ab\d]$/i;
 			return 'M' if $s =~ /^m(?:$|\s|[-;,_(]|rna|edium|iddle| segment| rna)/i && $s !~ /^m[ab\d]$/i;
-			return 'L' if $s =~ /^(?:large|l(?:$|\s|[-;,_(]|rna|arge| segment| rna)|partial\s+l)/i && $s !~ /^l[ab\d]$/i;
+			return 'L' if $s =~ /^(?:large|l(?:$|\s|[-;,_(]|rna|arge| segment| rna)|partial\s+l(?:\s+gene)?)/i && $s !~ /^l[ab\d]$/i;
 			if (my ($n, $suffix) = $s =~ /^(?:rna\s*[-]?\s*|seg(?:ment)?\s*)(\d+)([a-z]*)/i){
 				return "RNA$n" . lc($suffix);
 			}
@@ -1464,7 +1486,24 @@ sub curateMetadata {
 			return $s;
 		};
 	}elsif(grep {$_=~/Reoviridae/} @{$genome->{taxon_lineage_names}}){
-		$norm_seg = sub { my $s = shift; $s =~ s/^(segment|rna)\s*//i; return $s; };
+		$norm_seg = sub {
+			my $s = shift;
+			$s =~ s/^putative\s+//i;
+			$s =~ s/^(?:segment|seg|rna)[-\s]*//i;
+			$s =~ s/^(\d+)\s*([A-Za-z]+)$/$1.lc($2)/e;   # "1A" -> "1a", "1 A" -> "1a"
+			$s =~ s/^(\d+[a-z]*)\s+\S+$/$1/i;             # strip trailing noise e.g. "3 1501"
+			return $s;
+		};
+	} else {
+		# Other virus families: strip segment/rna prefix and descriptive suffixes
+		$norm_seg = sub {
+			my $s = shift;
+			$s =~ s/^(?:segment|seg|rna)[-\s]*//i;
+			$s =~ s/;\s*(small|medium|large|middle|largest)\s*$//i;
+			$s =~ s/\s+(gene|segment|rna)$//i;
+			$s =~ s/\s+$//;
+			return $s;
+		};
 	}
 
 	if ($norm_seg){
