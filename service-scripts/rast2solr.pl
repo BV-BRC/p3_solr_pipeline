@@ -1014,12 +1014,12 @@ sub getMetadataFromGenBankFile {
 		if ($genome->{strain}=~/(A|B|C|D)\/(.*?)\/(.*?)\/(.*?)\/(.*)/){ # type/host/location/identifier/year
 			$genome->{host_name} = $2 unless $genome->{host_name};
 			$genome->{geographic_location} = $3 unless $genome->{geographic_location};
-			my $year = $5; $year =~ s|.*/||; $year =~ s/\W+$//;
+			my $year = $5; $year =~ s|.*/||; $year =~ s/[\W_]+$//;
 			$genome->{collection_date} = $year unless $genome->{collection_date};
 		}elsif($genome->{strain}=~/(A|B|C|D)\/(.*?)\/(.*?)\/(.*?)/){ # type/location/identifier/year
 			$genome->{host_name} = "Homo sapiens" unless $genome->{host_name};
 			$genome->{geographic_location} = $2 unless $genome->{geographic_location};
-			my $year = $4; $year =~ s/\W+$//;
+			my $year = $4; $year =~ s/[\W_]+$//;
 			$genome->{collection_date} = $year unless $genome->{collection_date};
 		}else{
 			# strain is not expected format
