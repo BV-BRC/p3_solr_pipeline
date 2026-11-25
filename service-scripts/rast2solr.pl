@@ -441,7 +441,13 @@ sub getGenomeSequences {
 
 		$sequence->{chromosome} = $1 if $sequence->{description}=~/chromosome (\S*)\s*,/i;
 		$sequence->{plasmid} = $1 if $sequence->{description}=~/plasmid (\S*)\s*,/i;
-		$sequence->{segment} = $1	if $seqObj->{description}=~/segment (\S*)\s*,/i;
+		# Prefer replicon_type from GTO contig (set by GenBankToGTO); strip trailing " Segment"
+		if ($seqObj->{replicon_type} && $seqObj->{replicon_type}=~/\S/) {
+			(my $seg = $seqObj->{replicon_type}) =~ s/\s*Segment\s*$//i;
+			$sequence->{segment} = $seg if $seg =~ /\S/;
+		} elsif ($seqObj->{description}=~/segment (\S*)\s*,/i) {
+			$sequence->{segment} = $1;
+		}
 
 		$sequence->{gc_content} = sprintf("%.2f", ($seqObj->{dna}=~tr/GCgc//)*100/length($seqObj->{dna})) if $seqObj->{dna};
 		$sequence->{length} = length($seqObj->{dna});
@@ -964,9 +970,19 @@ sub getMetadataFromGenBankFile {
 	#$genome->{segment} = $1 if $gb=~/\/segment="([^"]*)"/; && (grep {$_=~/Bunyavirales|Reoviridae|Orthomyxoviridae/} @{$genome->{taxon_lineage_names}});
 	#$genome->{segment} = $1 if $gb=~/\/segment="([^"]*)"/ && (grep {$_=~/Viruses/} @{$genome->{taxon_lineage_names}});
 
-	my @segments = ($gb =~ /\/segment="([^"]*)"/g);
-	$genome->{segment} = \@segments if @segments;
-	#$genome->{segment}  = join(",", sort @segments) if @segments;
+	# Prefer replicon_type values from contig objects (set by GenBankToGTO), stripping " Segment" suffix.
+	# Fall back to /segment= qualifiers from genbank text.
+	my %seen;
+	my @replicon_segs = grep { !$seen{lc $_}++ }
+	                    map  { (my $s = $_->{replicon_type}) =~ s/\s*Segment\s*$//i; $s }
+	                    grep { $_->{replicon_type} && $_->{replicon_type}=~/\S/ }
+	                    @{$genomeObj->{contigs}};
+	if (@replicon_segs) {
+		$genome->{segment} = \@replicon_segs;
+	} else {
+		my @segments = grep { !$seen{lc $_}++ } ($gb =~ /\/segment="(?:segment\s+)?([^"]*)"/gi);
+		$genome->{segment} = \@segments if @segments;
+	}
 
 	$genome->{serovar} = $1 if $gb=~/\/serotype="([^"]*)"/;
 	$genome->{geographic_location} = $1 if $gb=~/\/geo_loc_name="([^"]*)"/;
@@ -988,19 +1004,21 @@ sub getMetadataFromGenBankFile {
 	# For Influenza, get missing metadata from strain name	
 	if ($genome->{genome_name}=~/Influenza [A-D] virus\s*(.*)/){
 		$genome->{strain} = $1 unless $genome->{strain};
-		if ($genome->{strain}=~/\(([HN0-9-x]*)\)/){
-			$genome->{serovar}=$1;
-			$genome->{strain}=~s/\s*\([HN0-9-x]*\)\s*//;
+		if ($genome->{strain}=~/\((H\d+N\d+)\)/i){
+			$genome->{serovar}=$1 unless $genome->{serovar};
+			$genome->{strain}=~s/\s*\(H\d+N\d+\)\s*//i;
 		}
 		$genome->{strain}=~s/^\(|\)$//g;	
 		if ($genome->{strain}=~/(A|B|C|D)\/(.*?)\/(.*?)\/(.*?)\/(.*)/){ # type/host/location/identifier/year
 			$genome->{host_name} = $2 unless $genome->{host_name};
 			$genome->{geographic_location} = $3 unless $genome->{geographic_location};
-			$genome->{collection_date} = $5 unless $genome->{collection_date};
+			my $year = $5; $year =~ s|.*/||; $year =~ s/[\W_]+$//;
+			$genome->{collection_date} = $year unless $genome->{collection_date};
 		}elsif($genome->{strain}=~/(A|B|C|D)\/(.*?)\/(.*?)\/(.*?)/){ # type/location/identifier/year
 			$genome->{host_name} = "Homo sapiens" unless $genome->{host_name};
 			$genome->{geographic_location} = $2 unless $genome->{geographic_location};
-			$genome->{collection_date} = $4 unless $genome->{collection_date};	
+			my $year = $4; $year =~ s/[\W_]+$//;
+			$genome->{collection_date} = $year unless $genome->{collection_date};
 		}else{
 			# strain is not expected format
 		}
@@ -1356,6 +1374,8 @@ sub curateMetadata {
 		$date_clean = defined $day? "$year-$month_clean-$day" : "$year-$month_clean";
 	}elsif($genome->{collection_date}=~/^(\d{4})[-\/](\d{4})$/){
 		$date_clean = $2>=$1 ? "$1-$2" : "$2-$1";
+	}elsif($genome->{collection_date}=~/^(\d{2})$/){
+		$date_clean = $1 <= $current_yy ? "20$1" : "19$1";
 	}else{
 		# unexpected date format
 	}
@@ -1430,16 +1450,69 @@ sub curateMetadata {
 		($genome->{h_type}, $genome->{n_type}) = $genome->{subtype}=~/H0*([\d]+)N0*([\d]+)/;
 	}
 
-	# Segments labels for segmented viruses
-	$genome->{segment}=~s/^(segment|rna)\s*//i;
-	if (grep {$_=~/Influenza/} @{$genome->{taxon_lineage_names}}){		
-		#
-	}elsif(grep {$_=~/Bunyavirales/} @{$genome->{taxon_lineage_names}}){
-		#	
+	# Segment label normalization for segmented viruses
+	my $norm_seg;
+	if (grep {$_=~/Influenza/} @{$genome->{taxon_lineage_names}}){
+		my %flu_num2name = (1=>'PB2', 2=>'PB1', 3=>'PA', 4=>'HA', 5=>'NP', 6=>'NA', 7=>'M', 8=>'NS');
+		my %flu_alias   = (MA=>'M');
+		$norm_seg = sub {
+			my $s = shift;
+			$s =~ s/^(?:segment|seg|rna)\s*//i;   # strip "Segment", "Seg", "RNA" prefix
+			return $flu_num2name{$s} if exists $flu_num2name{$s};
+			return $flu_alias{uc $s} // $s;
+		};
+	}elsif(grep {$_=~/Bunyaviricetes/} @{$genome->{taxon_lineage_names}}){
+		$norm_seg = sub {
+			my $s = shift;
+			$s =~ s/^\s+|\s+$//g;
+			# Extract S/M/L from strain-prefixed labels: "Terpeniya_L", "CabsLBV1-L", "strain X, L"
+			return uc($1) if $s =~ /[,_-]\s*([LMS])(?:_partial)?$/i && $s !~ /^[LMS]$/i;
+			return uc($1) if $s =~ /^defective\s+([LMS])$/i;
+			$s =~ s/^putative\s+//i;
+			$s =~ s/\s*\(.*?\)\s*$//;                 # strip parentheticals e.g. "1 (largest)"
+			$s =~ s/^(?:segment|seg|rna)[-\s]*//i;
+			return 'S' if $s =~ /^rna[-\s]*s$/i;
+			return 'M' if $s =~ /^rna[-\s]*m$/i;
+			return 'L' if $s =~ /^rna[-\s]*l$/i;
+			return 'S' if $s =~ /^s(?:$|\s|[-;,_(]|rna|mall| segment| rna| complete| partial)/i && $s !~ /^s[ab\d]$/i;
+			return 'M' if $s =~ /^m(?:$|\s|[-;,_(]|rna|edium|iddle| segment| rna)/i && $s !~ /^m[ab\d]$/i;
+			return 'L' if $s =~ /^(?:large|l(?:$|\s|[-;,_(]|rna|arge| segment| rna)|partial\s+l(?:\s+gene)?)/i && $s !~ /^l[ab\d]$/i;
+			if (my ($n, $suffix) = $s =~ /^(?:rna\s*[-]?\s*|seg(?:ment)?\s*)(\d+)([a-z]*)/i){
+				return "RNA$n" . lc($suffix);
+			}
+			if (my ($n) = $s =~ /^(\d+)$/){ return "RNA$n"; }
+			return $s;
+		};
 	}elsif(grep {$_=~/Reoviridae/} @{$genome->{taxon_lineage_names}}){
-		#
-	}else{
+		$norm_seg = sub {
+			my $s = shift;
+			$s =~ s/^putative\s+//i;
+			$s =~ s/^(?:segment|seg|rna)[-\s]*//i;
+			$s =~ s/^(\d+)\s*([A-Za-z]+)$/$1.lc($2)/e;   # "1A" -> "1a", "1 A" -> "1a"
+			$s =~ s/^(\d+[a-z]*)\s+\S+$/$1/i;             # strip trailing noise e.g. "3 1501"
+			return $s;
+		};
+	} else {
+		# Other virus families: strip segment/rna prefix and descriptive suffixes
+		$norm_seg = sub {
+			my $s = shift;
+			$s =~ s/^(?:segment|seg|rna)[-\s]*//i;
+			$s =~ s/;\s*(small|medium|large|middle|largest)\s*$//i;
+			$s =~ s/\s+(gene|segment|rna)$//i;
+			$s =~ s/\s+$//;
+			return $s;
+		};
+	}
 
+	if ($norm_seg){
+		if (ref $genome->{segment} eq 'ARRAY'){
+			$genome->{segment} = [ map { $norm_seg->($_) } @{$genome->{segment}} ];
+		}elsif(defined $genome->{segment}){
+			$genome->{segment} = $norm_seg->($genome->{segment});
+		}
+		for my $seq (@sequences){
+			$seq->{segment} = $norm_seg->($seq->{segment}) if defined $seq->{segment};
+		}
 	}
 
 }

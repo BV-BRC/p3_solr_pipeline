@@ -332,24 +332,26 @@ sub genomeQuality
 		}
 
 	}elsif($genomeObj->{ncbi_superkingdom}=~/viruses/i){
-	
-		if ($qc->{segments}){
-			# Segmented virus
-		}elsif ($species && $species->{genome_length_mean}){
-    	push @{$qc->{genome_quality_flags}}, "Genome too short"
+
+		$qc->{genome_quality_flags} = [ @{$genomeObj->{genome_quality_flags}} ] if $genomeObj->{genome_quality_flags};
+		$qc->{genome_quality_flags} = [] unless $qc->{genome_quality_flags};
+
+		if (!$qc->{segments} && $species && $species->{genome_length_mean}){
+			# Non-segmented: add length/N checks before scoring
+			push @{$qc->{genome_quality_flags}}, "Genome too short"
 				if $qc->{genome_length} < 0.95 * $species->{genome_length_mean};
 			push @{$qc->{genome_quality_flags}}, "Genome too long"
-				if $qc->{genome_length} > 1.05 * $species->{genome_length_mean}; 
+				if $qc->{genome_length} > 1.05 * $species->{genome_length_mean};
 			push @{$qc->{genome_quality_flags}}, "Too many Ns"
-				if $qc->{ambiguous_bases} / $qc->{genome_length} > 0.1; 
+				if $qc->{ambiguous_bases} / $qc->{genome_length} > 0.1;
 		}
 		# Overall genome quality 
 		if (scalar @{$qc->{genome_quality_flags}}){
 			$qc->{genome_quality} = "Poor";
-			$qc->{genome_status} = "Partial";
+			$qc->{genome_status}  = "Partial";
 		}else{
 			$qc->{genome_quality} = "Good";
-			$qc->{genome_status} = "Complete";
+			$qc->{genome_status}  = "Complete";
 		}
 		
 	}else{
