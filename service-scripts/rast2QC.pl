@@ -333,7 +333,7 @@ sub genomeQuality
 
 	}elsif($genomeObj->{ncbi_superkingdom}=~/viruses/i){
 
-		$qc->{genome_quality_flags} = $genomeObj->{genome_quality_flags} if $genomeObj->{genome_quality_flags};
+		$qc->{genome_quality_flags} = [ @{$genomeObj->{genome_quality_flags}} ] if $genomeObj->{genome_quality_flags};
 		$qc->{genome_quality_flags} = [] unless $qc->{genome_quality_flags};
 
 		if (!$qc->{segments} && $species && $species->{genome_length_mean}){
