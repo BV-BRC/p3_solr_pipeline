@@ -266,10 +266,10 @@ sub genomeQuality
     
     # Prepare Genome quality flags based on the assembly and annotation stats
 
+    $qc->{genome_quality_flags} = [];
+
 	if ($genomeObj->{ncbi_superkingdom}=~/bacteria|archaea/i){ 
 
-    $qc->{genome_quality_flags} = [];
-	
     # Genome quality flags blased on genome assembly quality
     push @{$qc->{genome_quality_flags}}, "High contig L50" if $qc->{genome_metrics}->{L50} > 500;
     push @{$qc->{genome_quality_flags}}, "Low contig N50" if $qc->{genome_metrics}->{N50} < 5000;
@@ -345,10 +345,7 @@ sub genomeQuality
 			push @{$qc->{genome_quality_flags}}, "Too many Ns"
 				if $qc->{ambiguous_bases} / $qc->{genome_length} > 0.1;
 		}
-
-		# Overall genome quality and status for all viruses
-		# genome_status from the assembly loop is "WGS" for segmented viruses
-		# (segments aren't counted as chromosomes/plasmids), so always set it here.
+		# Overall genome quality 
 		if (scalar @{$qc->{genome_quality_flags}}){
 			$qc->{genome_quality} = "Poor";
 			$qc->{genome_status}  = "Partial";
